@@ -1,0 +1,17 @@
+{
+  "name": "apprecord",
+  "version": "1.0.0",
+  "description": "web app that let you to register your voice on music",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js 3006"
+  },
+  "author": "lcs",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.12.0-beta.1"
+  }
+}
