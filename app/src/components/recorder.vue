@@ -5,7 +5,7 @@
             <v-btn color="red" class="mx-10" @click="record">Record</v-btn>
             <v-btn color="success" class="mx-10" @click="stop">Stop</v-btn>
             <v-btn color="success" class="mx-10" @click="play">play</v-btn>
-            <v-btn color="success" class="mx-10" @click="save">save</v-btn>
+            <v-btn color="orangez" class="mx-10" @click="save">save</v-btn>
               <v-file-input v-model="files"
                 color="deep-purple accent-4"
                 counter

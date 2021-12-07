@@ -1,4 +1,4 @@
-import pist from "../pist"
+import pist from "../pist.vue"
 
 export default{
     components:{
@@ -95,7 +95,7 @@ export default{
         },
 
         addTemplate: function(file){ // Add audio file to pists
-            
+            console.log(file);
         },
 
     }
