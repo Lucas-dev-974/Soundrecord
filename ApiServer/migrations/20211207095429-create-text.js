@@ -7,13 +7,17 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
-        references: {
-          model: 'RecordSessions',
-          key: 'role'
-        }
       },
       text: {
         type: Sequelize.STRING
+      },
+      recordsession_id:{
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references:{
+          model: 'RecordSessions',
+          key: 'id'
+        }
       },
       createdAt: {
         allowNull: false,

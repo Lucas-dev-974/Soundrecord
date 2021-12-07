@@ -32,9 +32,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
-      role: {
+      roleID: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       }
     });
   },
