@@ -1,11 +1,11 @@
 const express = require('express')
 const cors = require("cors");
-
 // Server params
 const port        = process.env['SERVER_port']
 const corsOptions = {
     origin: process.env['CORS_OPTIONS_ORIGIN']
 } 
+
 
 // Instanciate server
 const app     = express()
@@ -16,6 +16,12 @@ app.use(express.urlencoded({extended: true}))// Parse request of content-type: a
 
 app.get('/', (req, res) => {
     res.status(200).send('Hello World')
+})
+
+app.get('/get-file', (req, res) => {
+    let file = fs.readFileSync(__dirname + '/medias/')
+    res.setHeader('Content-Length', file.length)
+    // res.
 })
 
 
