@@ -1,28 +1,33 @@
-const express = require('express')
-const cors = require("cors");
+require('dotenv').config()
+
+const express    = require('express')
+const cors       = require("cors");
+
+const apiRouter    = require('./apiRotuer').router
+const UploadsMidle = require('./middleware/UploadsMid').upload
+const JwtMidle     = require('./middleware/Jwt').isAuthorized
+
 // Server params
-const port        = process.env['SERVER_port']
+const port        = process.env.SERVER_PORT
 const corsOptions = {
-    origin: process.env['CORS_OPTIONS_ORIGIN']
+    origin: process.env.CORS_OPTIONS_ORIGIN
 } 
 
 
 // Instanciate server
-const app     = express()
-app.use(cors(corsOptions));
+const server     = express()
+server.use(cors(corsOptions));
 
-app.use(express.json());                      // Parsse request of content-type: application/json
-app.use(express.urlencoded({extended: true}))// Parse request of content-type: application/x-www-form-urlencoded
-
-app.get('/', (req, res) => {
-    res.status(200).send('Hello World')
-})
-
-app.get('/get-file', (req, res) => {
-    let file = fs.readFileSync(__dirname + '/medias/')
-    res.setHeader('Content-Length', file.length)
-    // res.
-})
+// Tell to the serve we want parse json and url-encoded from request
+server.use(express.json());
+server.use(express.urlencoded({extended: true}));
 
 
-app.listen(port, () => console.log('Server Started on http://localhost:3000'))
+// Setup Middleware
+server.use(JwtMidle)
+server.use(UploadsMidle)
+
+// Handle Api Routes
+server.use('/api/', apiRouter)
+
+server.listen(port, () => console.log('Server Started on http://localhost:' + port))
