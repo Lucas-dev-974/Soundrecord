@@ -10,7 +10,7 @@ module.exports = {
             'password': 'string',
             'name':     'string'
         }) 
-        if(validated.errors) res.status(403).json(validated)
+        if(validated.errors) return res.status(403).json(validated)
 
 
         let user = await models.User.findOne({ attributes: ['email'], where: {email: validated.email} })
@@ -26,9 +26,8 @@ module.exports = {
                 roleID: 2,
                 isadmin: false
             }).then(user => {   // Apres création de l'utilisteur
-
                 return res.status(200).json({
-                    'token': jwt.generateToken({ userID: user.id, password: user.password })
+                    'token': jwt.generateToken(user)
                 })
 
             }).catch(err => {   // Si erreur lors de la création de l'utilisateur
@@ -75,7 +74,16 @@ module.exports = {
         return res.status(200).json({userID})
     },
 
-    test: function(req, res ){
+    checkToken: function(req, res ){
+        let headerAuth = req.headers['authorization']
+        let token      = jwt.parseauthorization(headerAuth)
+        console.log('TOKEN: ', token);
+        if(token == null) return res.status(401).json({error: 'Veuillez vous connectez !'})
+
+
+        let validToken = jwt.checkToken(token)
+        if(validToken.error) return res.status(401).json({error: 'Token invalide veuillez vous reconnecté !'})
+
         return res.status(200).json(true)
     }
 }
