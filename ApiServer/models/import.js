@@ -12,20 +12,17 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       models.Import.belongsTo(models.User, { 
         foreignKey: {
-          allowNull: false
-        }
-      })
-
-      models.Import.belongsTo(models.ImportedInProject, {
-        foreignKey: {
-          allowNull: false
+          field: 'userID',
+          allowNull: true
         }
       })
     }
   };
+  
   Import.init({
     user: DataTypes.INTEGER,
-    name: DataTypes.STRING
+    name: DataTypes.STRING,
+    imported_date: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Import',
