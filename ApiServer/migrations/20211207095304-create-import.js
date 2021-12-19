@@ -12,8 +12,12 @@ module.exports = {
         type: Sequelize.INTEGER,
         references: {
           model: 'Users',
-          key: 'id'
+          key: 'id',
+          allowNull: true
         }
+      },
+      imported_date: {
+        type: Sequelize.STRING
       },
       name: {
         type: Sequelize.STRING
