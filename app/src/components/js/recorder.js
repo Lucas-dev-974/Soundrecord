@@ -16,7 +16,7 @@ export default{
             selectedPist: [],
             slider: 40,
             pists: [],
-
+            files: null,
             contextAudio: null
 
         }
@@ -70,8 +70,8 @@ export default{
         },
 
         save: function(){
-            this.pist.currentTime = 1
-            console.log(this.audio.duration);
+            console.log(this.selectedPist);
+            console.log(this.files);
         },
 
         setSelectedPist: function(pist){

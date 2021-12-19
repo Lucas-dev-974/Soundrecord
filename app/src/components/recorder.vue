@@ -1,12 +1,11 @@
 <template>
     <div>
-
         <div id="song-manager-bar" class=" d-flex justify-center">
             <v-btn color="red" class="mx-10" @click="record">Record</v-btn>
             <v-btn color="success" class="mx-10" @click="stop">Stop</v-btn>
             <v-btn color="success" class="mx-10" @click="play">play</v-btn>
             <v-btn color="orangez" class="mx-10" @click="save">save</v-btn>
-              <v-file-input v-model="files"
+            <v-file-input v-model="files"
                 color="deep-purple accent-4"
                 counter
                 label="Importé un fichier.mp3"
@@ -15,25 +14,16 @@
                 outlined
                 :show-size="1000"
             >
-    <template v-slot:selection="{ index, text }">
-      <v-chip
-        v-if="index < 2"
-        color="deep-purple accent-4"
-        dark
-        label
-        small
-      >
-        {{ text }}
-      </v-chip>
+              <template v-slot:selection="{ index, text }">
+                <v-chip v-if="index < 2" color="deep-purple accent-4" dark label small>
+                  {{ text }}
+                </v-chip>
 
-      <span
-        v-else-if="index === 2"
-        class="text-overline grey--text text--darken-3 mx-2"
-      >
-        +{{ files.length - 2 }} File(s)
-      </span>
-    </template>
-  </v-file-input>
+                <span v-else-if="index === 2" class="text-overline grey--text text--darken-3 mx-2">
+                  +{{ files.length - 2 }} File(s)
+                </span>
+              </template>
+            </v-file-input>
         </div>
 
         <div ref="pistes">
@@ -44,8 +34,7 @@
                 </span>
             </div>
         </div>
-
-
+        <!-- <audio src="http://127.0.0.1:3000/api/pists/10?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEsInBhc3N3b3JkIjoiJDJiJDA1JGE0a2xHSlpaUzJOQjBvNGF6TUxPTk9KczNXa0NZSy9ESHlTYi43UDdGLkNmN3hNQUNlLkhLIiwiaWF0IjoxNjM5ODMxMzUzLCJleHAiOjE2Mzk4MzQ5NTN9.6QVdJa1mEqoXb1JsC-Bm2XEEJ3X8xglXwnXHz64rtms" controls  /> -->
     </div>
 </template>
 
