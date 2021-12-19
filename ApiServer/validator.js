@@ -2,8 +2,8 @@ module.exports = {
     validate: function(body, params){
         let errors    = []
         let validated = {}
+
         for(const [key, value] of Object.entries(params)){
-            console.log(key);
             if(body[key]){
                 switch(value){
                     case 'string':
@@ -13,6 +13,11 @@ module.exports = {
                         break
 
                     case 'int':
+                        try{
+                            body[key] = parseInt(body[key])
+                        }catch(err){
+                            console.log(err);
+                        }
                         if(Number.isInteger(body[key])) validated[key] = body[key]
                         else errors.push('Le champs ' + key + ' doit être un nombre')
                         break
