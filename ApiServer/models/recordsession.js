@@ -10,14 +10,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      models.RecordSession.belongsTo(models.Text)
       models.RecordSession.hasMany(models.ImportedInProject)
-      models.RecordSession.hasOne(models.Text)
+
     }
   };
   RecordSession.init({
     user: DataTypes.INTEGER,
-    session_name: DataTypes.STRING,
-    text_id: DataTypes.INTEGER
+    session_name: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'RecordSession',
