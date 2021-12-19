@@ -1,25 +1,35 @@
-#pist-container{
-    z-index: 1;
-    width: 100%;
-    height: 50px;
-    background-color: rgb(61, 61, 61);
-}#pist-slider{
-    display: block;
-    z-index: 3;
-    width: 100%;
-    height: 30px;
-    background-color: red;
+html{
+    overflow-y: hidden;
 }
 
-#audioSlider{
-    width: 100%;
-    background-color: red;
-    display: flex;
-    overflow-x: hidden;
-    
-}
+.no-radius{ border-radius: 0 !important; }
 
-.mx-10{
-    margin-left: 10px;
-    margin-right: 10px;
+.bg-red{ background-color: #B02929; }
+.bg-dark{ background-color: #1A1D21; }
+
+.text-center{ text-align: center;}
+
+.audios-controller{
+    height: 60px;
+    align-items: center;
+}.audios-controller-content{
+    width: fit-content;
+    margin: 0 auto 0 auto;
+    padding-top: 15px;
 }
+.slider-time{ 
+    width: 2000px;
+    height: 40px;
+}   
+
+.home-content{
+    overflow-x: scroll;
+    padding: 0 !important;
+}
+.pist-container{
+    overflow-x: auto;
+    height: calc(100% - 40px);
+}
+/* .v-main{ max-width: none !important;} */
+.v-content { padding: 0 !important;}
+.v-card{ max-width: none !important; }
