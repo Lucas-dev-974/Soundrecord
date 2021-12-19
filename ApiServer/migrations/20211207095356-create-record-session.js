@@ -18,9 +18,6 @@ module.exports = {
       session_name: {
         type: Sequelize.STRING
       },
-      text_id: {
-        type: Sequelize.INTEGER
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
