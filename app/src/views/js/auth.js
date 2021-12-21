@@ -1,5 +1,5 @@
-import Login from '../login.vue'
-import Register from '../register.vue'
+import Login from '../login_card.vue'
+import Register from '../register_card.vue'
 
 
 export default{
