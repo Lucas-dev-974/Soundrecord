@@ -7,12 +7,29 @@ const { json } = require('body-parser')
 const filesPath = path.resolve(__dirname, '../public/')
 
 module.exports = {
+
+    getAll: async function(req, res){
+
+        try{
+            let pists = await models.Import.findAll({
+                where: { 'userID': req.userID },
+                include: [
+                    { model: models.User }
+                ]
+            })
+
+            return res.status(200).json(pists)
+        }catch(err){
+            // console.log(err);
+        }
+    },
+
     get: async function(req, res){
         let validated = validator.validate(req.params, { "id": 'int' }) // Check if params is given
         if(validated.errors) return res.status(403).json(validated)     
         
         let pist = await models.Import.findOne({    // Get Imported file infos in database
-            attributes: ['id', 'user', 'name', 'imported_date'],
+            attributes: ['id', 'userID', 'name', 'imported_date'],
             where: {id: validated.id}
         })
         if(!pist) return res.status(403).json({errors: 'L\'audio n\'a pas été trouvé !'})
@@ -67,16 +84,17 @@ module.exports = {
         })
         models.Import.create({
             name: path.parse(req.fileInfos.originalname).name.replace(/ /g, ''),
-            user: 1,
+            userID: req.userID,
             imported_date: req.fileInfos.date
         }).then(imp => {
             // console.log(imp);
-        }).catch(err => {
             // console.log('-------------- Error ---------------');
+        }).catch(err => {
+            console.log('-------------- Error ---------------');
             console.log(err);
         })
 
-        res.status(200).json({})
+        return res.status(200).json({})
     },
 
     delete: function(req, res){
