@@ -10,11 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      models.Text.belongsTo(models.RecordSession, {
-        foreignKey: {
-          allowNull: false
-        }
-      })
+      models.Text.belongsTo(models.Session)
     }
   };
   Text.init({

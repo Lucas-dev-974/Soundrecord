@@ -4,9 +4,7 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class ImportedInProject extends Model {
     static associate(models) {
-      models.ImportedInProject.hasMany(models.Import)
-      
-      models.ImportedInProject.belongsTo(models.RecordSession, {
+      models.ImportedInProject.belongsTo(models.Session, {
         foreignKey: {
           allowNull: false
         }
@@ -14,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   ImportedInProject.init({
-    recordsession_id: DataTypes.INTEGER,
+    session_id: DataTypes.INTEGER,
     import_id: DataTypes.INTEGER
   }, {
     sequelize,
