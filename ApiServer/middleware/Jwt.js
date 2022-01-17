@@ -7,7 +7,7 @@ module.exports = {
         return jwt.sign({
             userID: user.id,
             password: user.password
-        }, JWT_SIGN_SECRET, {expiresIn: '1h'})
+        }, JWT_SIGN_SECRET, {expiresIn: '365d'})
     },
 
     parseauthorization: function(authorization){
@@ -20,19 +20,20 @@ module.exports = {
         let token = module.exports.parseauthorization(headerAuth)
         if(req.query.token) token = req.query.token // Si le token est spécifié dans l'url via http://url...?token=ferjnfiejrn
 
-
-        if(req.path !== "/api/auth/"){ // Authorize l'accès au controller si c'est pour l'authentification
-            if(token !== null){
-                let tokenInfos = module.exports.checkToken(token)
-                if(tokenInfos.error) res.status(403).json(tokenInfos)
-                req.userID = tokenInfos.userID
-            }else{
-                return res.status(401).json({
-                    error: "Aucun Token renseigner veuillez vous connectez !"
-                })
-            }
-            next()
-        }else next()
+        
+        // if(req.path !== "/api/auth/"){ // Authorize l'accès au controller si c'est pour l'authentification
+        //     if(token !== null){
+        //         let tokenInfos = module.exports.checkToken(token)
+        //         if(tokenInfos.error) res.status(403).json(tokenInfos)
+        //         req.userID = tokenInfos.userID
+        //     }else{
+        //         return res.status(401).json({
+        //             error: "Aucun Token renseigner veuillez vous connectez !"
+        //         })
+        //     }
+        //     next()
+        // }
+        next()
     },
 
     checkToken: function(token){
