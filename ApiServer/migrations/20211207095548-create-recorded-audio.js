@@ -11,7 +11,7 @@ module.exports = {
       recorded_session: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'RecordSessions',
+          model: 'Sessions',
           key: 'id'
         }
       },
