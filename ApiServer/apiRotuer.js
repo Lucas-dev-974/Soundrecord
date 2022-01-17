@@ -14,16 +14,17 @@ exports.router = (() => {
     apiRouter.route('/auth/').get(AuthController.checkToken)  // Test le token
 
     // Sessions routes
-    apiRouter.route('/sessions/create').post(SessionController.test)
-    apiRouter.route('/sessions/update').put(SessionController.test)
-    apiRouter.route('/sessions/delete').delete(SessionController.test)
+    apiRouter.route('/sessions/').get(SessionController.get)
+    apiRouter.route('/sessions/').post(SessionController.create)
+    apiRouter.route('/sessions/').delete(SessionController.delete)
+    apiRouter.route('/sessions/').patch(SessionController.update)
 
     // Pists routes
-    // apiRouter.route('/pists/').get(PistController.get)
+    apiRouter.route('/pists/').get(PistController.getAll)
     apiRouter.route('/pists/:id').get(PistController.get)
     apiRouter.route('/pists/').post(MulterFilesManager.upload.single('audio'), PistController.import)
-    apiRouter.route('/pists/delete').delete(PistController.delete)
-    apiRouter.route('/pists/search')
+    apiRouter.route('/pists/').delete(PistController.delete)
+    apiRouter.route('/pists/').patch()
 
     //
     return apiRouter
