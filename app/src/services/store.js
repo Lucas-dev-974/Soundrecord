@@ -13,12 +13,32 @@ export default new Vuex.Store({
         token: null,
         user:  null,
         alerts: [],
+        is_mobile: false,
 
-        Sessions: [],
-        Bibliotheque: [],
+        Sessions: [
+            {
+                id: null,
+                name: '',
+                imported: null // if variable 'onit' is true we have the imported pists for the session
+            }
+        ],
 
-        currentSession: null,
+        Bibliotheque: [
+            {
+                id: null,
+                url: '',
+                name: '',
+                imported: false,
+            }
+        ],
 
+        // currentSession: [{
+        //     id: null,
+        //     name: '',
+        //     pists: {},
+        //     text: '',
+        // }],
+        currentSession: null
     },
 
     mutations: {
@@ -30,6 +50,7 @@ export default new Vuex.Store({
         },
 
         push_alert: function(state, alert){
+            console.log('in push alert', alert);
             alert.id = state.alerts.length + 1
             state.alerts.push(alert)
         },
@@ -38,9 +59,14 @@ export default new Vuex.Store({
             state.alerts = state.alerts.filter(alert => alert.id !== id)
         },
         
+        setIsMobile(state, value){
+            state.is_mobile = value
+        },
+
         set_currentSession: function(state, session){
             state.currentSession = session
         }
+        
         
         // add_session: function(state, session){
 

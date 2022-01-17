@@ -1,22 +1,15 @@
 <template>
-<v-content>
-    <v-container fluid fill-height>
-        <v-layout align-center justify-center>
-            <v-flex xs12 sm8 md4>
-                <div v-if="on_login">
-                    <Login @switchCard="switchCard"/>
-                </div>
+    <div class="d-flex align-center w-100 justify-center"  style="height: 100% !important">
+        <section id="animated_background" z-index="10" />
 
-                <div v-if="on_register">
-                    <Register @switchCard="switchCard" />
-                </div>
-            </v-flex>
-        </v-layout>
-    </v-container>
-</v-content>
-    <!-- <div class="d-flex justify-center align-center">
+        <div v-if="on_login">
+            <Login @switchCard="switchCard"/>
+        </div>
 
-    </div>         -->
+        <div v-if="on_register">
+            <Register @switchCard="switchCard" />
+        </div>
+    </div>
 </template>
 
 <script src='./js/auth.js'>

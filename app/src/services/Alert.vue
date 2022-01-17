@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-for="alert in alerts" :key="alert.id">
-            <v-alert type="primary" v-model="alert.open"  transition="scale-transition" style="width: fit-content; ">
+            <v-alert type="warning" v-model="alert.open"  transition="scale-transition" style="width: fit-content; ">
                 <v-row >
                     <v-col cols="11" style="padding: 0 !important">
                         <div  v-if="Array.isArray(alert.message)">
@@ -14,7 +14,7 @@
                         </div>
                     </v-col>
                     <v-col cols="1"  style="padding: 0 !important">
-                        <v-btn color="success" icon @click="removeAlert(alert)">
+                        <v-btn color="red"  icon @click="removeAlert(alert)">
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
                     </v-col>

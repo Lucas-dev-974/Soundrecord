@@ -1,6 +1,12 @@
 import Pist from '../pist.vue'
 
 export default{
+    props:{
+        imported_pists: {
+            required: true
+        }
+    },
+
     components: {
         Pist
     },
@@ -8,21 +14,15 @@ export default{
     data(){
         return {
             Recorder: {},
-            pists: this.$store.state.currentSession.pists ?? []
+            pists: [],
+            volume: 1
         }
     },
 
     mounted(){
-        this.state.Recorder.Context   = new AudioContext()
-        this.state.Recorder.recorder  = false
-        this.state.Recorder.recording = false
+        console.log(this.pists);
     },
 
     methods:{
-        startRecord: function(){
-            this.state.Recorder.recording = this.state.Recorder.Context.createMediaStreamDestination();
-            this.state.Recorder.recorder  = new MediaRecorder(this.state.Recorder.recording)
-            this.state.Recorder.recorder.start()
-        }
     }
 }

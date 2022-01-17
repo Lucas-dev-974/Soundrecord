@@ -1,12 +1,9 @@
 import axios from "axios";
-
-let token
-if(window.localStorage.getItem('vuex'))
- token = JSON.parse(window.localStorage.getItem('vuex')).token ?? ''
+import store from './store'
 
 export default axios.create({
     baseURL: 'http://localhost:3000',
     headers: {
-        'Authorization': 'Bearer ' + token
-    }
+        'Authorization': 'Bearer ' + store.state.token ?? ''
+    },
 })

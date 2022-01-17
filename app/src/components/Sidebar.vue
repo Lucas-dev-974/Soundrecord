@@ -9,6 +9,11 @@
                     <v-icon>mdi-chevron-left</v-icon>
                 </v-btn>
             </v-list-item>
+
+            <v-list-item id="session-manager" class="d-flex justify-end " style="width: 100%">
+                <span></span>
+                <v-btn color="#333940">Sessions</v-btn>
+            </v-list-item>
         </v-navigation-drawer>
     </v-card>
 </template>
