@@ -9,7 +9,6 @@ const filesPath = path.resolve(__dirname, '../public/')
 module.exports = {
 
     getAll: async function(req, res){
-
         try{
             let pists = await models.Import.findAll({
                 where: { 'userID': req.userID },
@@ -17,31 +16,34 @@ module.exports = {
                     { model: models.User }
                 ]
             })
-
             return res.status(200).json(pists)
         }catch(err){
-            // console.log(err);
+            console.log(err);
         }
     },
 
     get: async function(req, res){
-        let validated = validator.validate(req.params, { "id": 'int' }) // Check if params is given
+
+        // Check if params is given
+        let validated = validator.validate(req.params, { "id": 'int' })
         if(validated.errors) return res.status(403).json(validated)     
         
-        let pist = await models.Import.findOne({    // Get Imported file infos in database
+        // Get Imported file infos in database
+        let pist = await models.Import.findOne({    
             attributes: ['id', 'userID', 'name', 'imported_date'],
             where: {id: validated.id}
         })
-        if(!pist) return res.status(403).json({errors: 'L\'audio n\'a pas été trouvé !'})
 
         
+        if(!pist) return res.status(403).json({errors: 'L\'audio n\'a pas été trouvé !'})
+
+        // create user directory to upload file and the file directory name
         let userDir = filesPath + '/user-' + req.userID + '/imported/'
-        let fileDir = userDir + req.userID + '-' + pist.dataValues.imported_date + '-' + pist.dataValues.name + '.mp3'
+        let fileDir = userDir + req.userID + '-' + pist.dataValues.imported_date + '-' + pist.dataValues.name + '.mp3' 
 
-        console.log(fileDir);   
-
-        if(!fs.existsSync(fileDir)) return res.status(403);json({}) // Check si le fichié existe si non retourne une erreur
-        let stat = fs.statSync(fileDir);    
+        // Check si le fichié existe si non retourne une erreur
+        if(!fs.existsSync(fileDir)) return res.status(403).json({}) 
+        let stat = fs.statSync(fileDir); 
         
         let readStream  
 
@@ -82,6 +84,9 @@ module.exports = {
         if(req.isNotAudio === true) return res.status(403).json({
             error: 'Un fichier de type mp3 est attendu !'
         })
+        console.log('------------------------okokokokok');
+        console.log(req.fileInfos);
+
         models.Import.create({
             name: path.parse(req.fileInfos.originalname).name.replace(/ /g, ''),
             userID: req.userID,
