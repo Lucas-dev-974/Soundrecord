@@ -7,18 +7,17 @@ module.exports = {
     register: async function(req, res){
         let validated = validator.validate(req.body, {
             'email':    'string',
-            'password': 'string',
+            'password':  'string',
             'name':     'string'
         }) 
-        if(validated.errors) return res.status(403).json(validated)
 
+        if(validated.errors) return res.status(403).json(validated)
 
         let user = await models.User.findOne({ attributes: ['email'], where: {email: validated.email} })
         
         if(user) res.status(403).json({'error': 'Cet email est déjà enregistrer, veuillez vous connecté !'})
 
         bcrypt.hash(validated.password, 5, async (err, hashed) => {
-
             models.User.create({ // Création de l'utilisateur
                 name: validated.name,
                 email: validated.email,
