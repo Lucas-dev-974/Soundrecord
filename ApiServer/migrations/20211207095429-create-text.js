@@ -11,11 +11,11 @@ module.exports = {
       text: {
         type: Sequelize.STRING
       },
-      recordsession_id:{
+      session_id:{
         type: Sequelize.INTEGER,
         allowNull: false,
         references:{
-          model: 'RecordSessions',
+          model: 'Sessions',
           key: 'id'
         }
       },
