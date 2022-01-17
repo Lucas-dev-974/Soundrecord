@@ -13,7 +13,7 @@ html{
     height: 60px;
     align-items: center;
 }.audios-controller-content{
-    width: fit-content;
+    width: 90%;
     margin: 0 auto 0 auto;
     padding-top: 15px;
 }
@@ -33,3 +33,36 @@ html{
 /* .v-main{ max-width: none !important;} */
 .v-content { padding: 0 !important;}
 .v-card{ max-width: none !important; }
+
+
+.text-white{
+    color: white !important;
+}
+
+.text-orange{ color: #F24E1E !important;}
+.text-green{ color: #4CAF50 !important;}
+
+
+#bottom-panel-container{ width: 300px;}
+#bottom-panel{
+    position: fixed;
+    bottom: 0;
+    left: calc(50% - 300px);
+    width: 600px;
+}
+
+@media screen and (min-width: 600px){
+    .audios-controller-content{
+        width: 500px;
+    }
+}   
+
+.dark{
+    background-color: #1A1D21;
+    color: white;
+}
+
+#session-manager{
+    position: absolute;
+    bottom: 1px;
+}
