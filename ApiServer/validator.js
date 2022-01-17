@@ -1,3 +1,5 @@
+const htmlspecialchars = require('htmlspecialchars')
+
 module.exports = {
     validate: function(body, params){
         let errors    = []
@@ -9,7 +11,7 @@ module.exports = {
                     case 'string':
                         if(typeof(body[key]) !==  'string'){
                             errors.push('Le champs ' + key + ' doit être une chaine de charactère')
-                        }else validated[key] = body[key]
+                        }else validated[key] = htmlspecialchars(body[key])
                         break
 
                     case 'int':
