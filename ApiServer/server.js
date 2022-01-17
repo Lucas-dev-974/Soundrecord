@@ -5,22 +5,22 @@ const cors       = require("cors");
 const apiRouter = require('./apiRotuer').router
 const JwtMidle  = require('./middleware/Jwt').isAuthorized
 
-
 // Server params
 const port        = process.env.SERVER_PORT
 const corsOptions = {
-    origin: process.env.CORS_OPTIONS_ORIGIN
+    origin: '*',
+    methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
 } 
 
 // Instanciate server
 const server     = express()
-server.use(JwtMidle)
-
-server.use(cors(corsOptions));
-server.use(express.json());
-server.use(express.urlencoded({extended: true}))
 
 // Setup Middleware
+server.use(cors(corsOptions))
+server.use(JwtMidle)
+
+server.use(express.json());
+server.use(express.urlencoded({extended: true}))
 
 
 // Handle Api Routes
