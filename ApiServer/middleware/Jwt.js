@@ -33,6 +33,15 @@ module.exports = {
         //     }
         //     next()
         // }
+        if(token !== null){
+            let tokenInfos = module.exports.checkToken(token)
+            if(tokenInfos.error) res.status(403).json(tokenInfos)
+            req.userID = tokenInfos.userID
+        }else{
+            return res.status(401).json({
+                error: "Aucun Token renseigner veuillez vous connectez !"
+            })
+        }
         next()
     },
 
