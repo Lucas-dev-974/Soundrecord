@@ -1,6 +1,17 @@
 # AppRecord Api Server
+    copy .env-example to .env
+    create jwt secret key like (modkmzefl,de54feznez)
+
+    configure /config/config.json to match with your database credentials
+
+    npm install
+    Install sequelize CLI: npm install --save-dev sequelize-cli
+
+    sequelize db:migrate
+    - npm start
 
 
+    
 
 ## Source
     - https://www.tutsmake.com/node-js-express-rest-api-file-upload-example/
