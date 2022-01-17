@@ -10,11 +10,9 @@ module.exports = {
             'password':  'string',
             'name':     'string'
         }) 
-
         if(validated.errors) return res.status(403).json(validated)
 
         let user = await models.User.findOne({ attributes: ['email'], where: {email: validated.email} })
-        
         if(user) res.status(403).json({'error': 'Cet email est déjà enregistrer, veuillez vous connecté !'})
 
         bcrypt.hash(validated.password, 5, async (err, hashed) => {
@@ -28,7 +26,6 @@ module.exports = {
                 return res.status(200).json({
                     'token': jwt.generateToken(user)
                 })
-
             }).catch(err => {   // Si erreur lors de la création de l'utilisateur
                 return res.status(500).json({error: err})
             })
@@ -43,7 +40,6 @@ module.exports = {
         if(validated.errors) res.status(403).json(validated)
         
         let user = await models.User.findOne({ where: {email: validated.email} })
-
         if(!user) return res.status(403).json({'errors': 'Email ou mot de passe incorrecte'})
 
         bcrypt.compare(validated.password, user.password, (err, resBycrypt) => {
@@ -67,7 +63,6 @@ module.exports = {
             let user = await models.User.findOne({
                 where: {id: userID}
             })
-
             return res.status(200).json({user})
         }
         return res.status(200).json({userID})
@@ -78,7 +73,6 @@ module.exports = {
         let token      = jwt.parseauthorization(headerAuth)
         console.log('TOKEN: ', token);
         if(token == null) return res.status(401).json({error: 'Veuillez vous connectez !'})
-
 
         let validToken = jwt.checkToken(token)
         if(validToken.error) return res.status(401).json({error: 'Token invalide veuillez vous reconnecté !'})
