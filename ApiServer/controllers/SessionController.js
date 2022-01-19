@@ -28,22 +28,20 @@ module.exports = {
         }
 
         let session = await models.Session.findOne({ where: {id: id}, 
+            attributes: { exclude: ['createdAt', 'updatedAt'] }, 
             include: [
                 { model: models.Text, attributes: ['id', 'text'] },
                 { model: models.ImportedInProject, attributes: ['id', 'sessionid', 'importid']}
             ]}).catch(error => { console.log(error) })
             
 
-        text       = session.dataValues.Text.dataValues
+        text       = session.dataValues.Text.dataValues // 
         importedIn = session.dataValues.ImportedInProjects
-        session    = returnFields(session.dataValues, ['id', 'session_name', 'userid']);     
+        // session    = returnFields(session.dataValues, ['id', 'session_name', 'userid']);     
         
         // Check if token userID is the userid via database
-        if(session.userid !== req.userID) return res.status(403).json({error: 'Vous devez avoir créer cet session pour la modifier !'})
+        if(session.userid !== req.userID) return res.status(403).json({error: 'Vous devez avoir créer cet session pour la récuperer !'})
 
-        session['text'] = text
-        session['importedIn'] = importedIn
-        
         return res.status(200).json(session)
     },
 
