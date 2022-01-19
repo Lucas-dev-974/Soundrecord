@@ -2,7 +2,7 @@ const fs = require('fs')
 const path      = require('path')
 const validator = require('../validator')
 const models    = require('../models')
-const { json } = require('body-parser')
+const { returnFields } = require('../utils')
 
 const filesPath = path.resolve(__dirname, '../public/')
 
@@ -12,9 +12,9 @@ module.exports = {
         try{
             let pists = await models.Import.findAll({
                 where: { 'userID': req.userID },
-                include: [
-                    { model: models.User }
-                ]
+                // include: [
+                //     { model: models.User }
+                // ]
             })
             return res.status(200).json(pists)
         }catch(err){
@@ -80,29 +80,34 @@ module.exports = {
         readStream.pipe(res);
     },
 
-    import: function(req, res){
-        if(req.isNotAudio === true) return res.status(403).json({
-            error: 'Un fichier de type mp3 est attendu !'
-        })
-        console.log('------------------------okokokokok');
-        console.log(req.fileInfos);
-
-        models.Import.create({
+    Import: async function(req, res){
+        // Check if is an audio, Setting up in MulterMiddleware
+        if(req.isNotAudio === true) return res.status(403).json({ error: 'Un fichier de type mp3 est attendu !' })
+        
+        let validated = validator.validate(req.body, {sessionid: 'int'}) // Check if we have session id
+        if(validated.errors) return res.status(403).json({errors: validated.errors}) // If not return error
+        
+        let importModel = await models.Import.create({
             name: path.parse(req.fileInfos.originalname).name.replace(/ /g, ''),
             userID: req.userID,
             imported_date: req.fileInfos.date
-        }).then(imp => {
-            // console.log(imp);
-            // console.log('-------------- Error ---------------');
-        }).catch(err => {
-            console.log('-------------- Error ---------------');
-            console.log(err);
-        })
-
-        return res.status(200).json({})
+        }).catch(error => { console.log('okokokokko') })
+    
+        let importedInSession = await models.ImportedInProject.create({
+            sessionid: validated.sessionid,
+            importid: importModel.dataValues.id,
+            userid: req.userID
+        }).catch(error => { console.log(error) })
+        let data = returnFields(importModel, ['name', 'id', 'imported_date'])
+        
+        return res.status(200).json(importModel.dataValues)
     },
 
-    delete: function(req, res){
+    delete: async function(req, res){
+        let validated = validator.validate(req.query, {'pistid': 'int'})
+        if(validated.errors) return res.status(400).json({error: validated.errors})
 
+        let pist = await models.Pist.findByPk(validated.id)
+        pist.destroy()
     }
 }
