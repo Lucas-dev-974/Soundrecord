@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Text.init({
-    text: DataTypes.STRING
+    text: DataTypes.STRING,
+    sessionid: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Text',
