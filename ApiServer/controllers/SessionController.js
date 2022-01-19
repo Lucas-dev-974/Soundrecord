@@ -27,22 +27,20 @@ module.exports = {
             return res.status(200).json(session)
         }
 
-        let session = await models.Session.findOne({ where: {id: id}, include: [models.Text, models.ImportedInProject] })
-        console.log(session.dataValues.Text);
-        text     = returnFields(session.dataValues.Text.dataValues, ['id', 'text'])
-        session  = returnFields(session.dataValues, ['id', 'session_name', 'userid']);     
+        let session = await models.Session.findOne({ where: {id: id}, 
+            include: [
+                { model: models.Text, attributes: ['id', 'text'] },
+                { model: models.ImportedInProject, attributes: ['id', 'sessionid', 'importid']}
+            ]}).catch(error => { console.log(error) })
+            
 
+        text       = session.dataValues.Text.dataValues
+        importedIn = session.dataValues.ImportedInProjects
+        session    = returnFields(session.dataValues, ['id', 'session_name', 'userid']);     
+        
         // Check if token userID is the userid via database
         if(session.userid !== req.userID) return res.status(403).json({error: 'Vous devez avoir créer cet session pour la modifier !'})
 
-        // Get all imported pist for the session
-        let importedIn = await models.ImportedInProject.findAll({
-            where: {sessionid: id},
-            attributes: ['sessionid', 'importid', 'id', 'userid']
-        }).catch(error => { console.log(error); })
-
-        if(!importedIn) return res.status(400).json({'error': 'Une erreur est survenue veuillez réesayer plus tard !'})
-        
         session['text'] = text
         session['importedIn'] = importedIn
         
