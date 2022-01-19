@@ -8,19 +8,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      session_id: {
+      sessionid: {
         type: Sequelize.INTEGER,
-        references: {
-          model: 'Sessions',
-          key: 'id'
-        }
       },
-      import_id: {
+      importid: {
         type: Sequelize.INTEGER,
-        references: {
-          model: 'Imports',
-          key: 'id'
-        }
+      },
+      userid: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,

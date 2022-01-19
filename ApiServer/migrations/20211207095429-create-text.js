@@ -9,15 +9,11 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       text: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: true
       },
-      session_id:{
+      sessionid:{
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references:{
-          model: 'Sessions',
-          key: 'id'
-        }
       },
       createdAt: {
         allowNull: false,
