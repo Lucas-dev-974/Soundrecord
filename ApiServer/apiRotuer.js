@@ -22,7 +22,7 @@ exports.router = (() => {
     // Pists routes
     apiRouter.route('/pists/').get(PistController.getAll)
     apiRouter.route('/pists/:id').get(PistController.get)
-    apiRouter.route('/pists/').post(MulterFilesManager.upload.single('audio'), PistController.import)
+    apiRouter.route('/pists/').post(MulterFilesManager.upload.single('audio'), PistController.Import)
     apiRouter.route('/pists/').delete(PistController.delete)
     apiRouter.route('/pists/').patch()
 
