@@ -13,21 +13,19 @@ export default new Vuex.Store({
 
     state:{
         current_session: null,
-        is_mobile: false,
-
-        token: null,
-        user:  null,
-        alerts: [],
-        
         pist_playlist: [], // Bibliotheque
         sessions:      [], // all sessions created by user 
         pists:         [], // all pist for the current session
 
-        main_audio: null,
-        player: [],
         player_currentTime: 0,
 
+        user:  null,
+        token: null,
+        
+        alerts: [],
+
         main_theme: 'bg-dark',
+        is_mobile: false,
         WIDTH: null
     },
 

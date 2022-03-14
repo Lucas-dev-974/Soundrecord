@@ -8,7 +8,7 @@
   },
   "test": {
     "username": "root",
-    "password": "",
+    "password": "#Social-wall@",
     "database": "soundrecord",
     "host": "127.0.0.1",
     "dialect": "mysql"
