@@ -6,7 +6,7 @@
             </v-card-title>
             <v-container fluid class="pa-8">
                 <v-text-field  v-model="email" label="Email"></v-text-field>
-                <v-text-field  v-model="password" label="Mot de passe"></v-text-field>
+                <v-text-field  type="password" v-model="password" label="Mot de passe"></v-text-field>
             </v-container>
 
             <v-card-actions class="d-flex justify-space-around">
@@ -18,4 +18,4 @@
 
 </template>
 
-<script src='./js/login.js' />
+<script src='./js/Login.js' />

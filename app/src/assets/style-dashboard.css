@@ -1,0 +1,133 @@
+#user-case {
+  width: 100%;
+}
+
+.user-card-input {
+  font-size: 16px !important;
+  color: black !important;
+
+}.user-card-link{
+  font-size: 10px;
+  text-decoration: none;
+  color: rgb(226, 47, 47) !important;
+  font-weight: 600;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#dash-container{
+  width: 70%;
+  flex-wrap: wrap;
+}#sessions_container{
+  width: 60%;
+}#registered_audios{
+  width: 40%;
+}
+
+.title-custom{
+  font-size: 24px;
+}.table-header{
+  font-size: 14px !important;
+}
+
+@media (max-width: 350px){
+  #sessions_container{
+    margin: 0 !important;
+  }
+  .title-custom{
+    font-size: 20px !important;
+  }.table-header{
+    font-size: 11px !important;
+  }
+}
+
+@media (max-width: 390px){
+  #dashboard-logout button{
+    transition: all 0.5s ;
+    transform: translateY(35px);
+    position: absolute;
+    right: 15px;
+  }.user-card-input{
+    font-size: 14px !important;
+  }
+}
+
+@media (max-width: 630px){
+  #sessions_container{
+    width: 100%;
+  }#registered_audios{
+    width: 100%;
+  }
+}
+
+@media (max-width: 1000px){
+  #dash-container{
+    width: 90%;
+  }
+}
+
+
+#audioContainer{
+  height: 165px;
+  background-color: red;
+  display: grid;
+}
+.pist-content{
+  display: grid;
+  background-color: transparent;
+}
+
+
+
+.pists-container-inline{
+  height: 90px;
+  background-color: transparent;
+  border-top: 1px solid gray;
+  border-bottom: 1px solid gray;
+}
+
+
+
+.text-tanslate-x{
+  transition: all 3s;
+  align-items: center;
+  
+}.text-tanslate-x:hover{
+  transform: translateX(-50%);
+}
+
+
+/*# sourceMappingURL=style-dashboard.css.map */
+
+.playlist-time-scale{
+  height: 48px;
+}.WaveLine, .channel canvas{
+  height: 90px !important;
+  background-color: white;
+}.waveLine .waveform{
+  height: 100% ;
+}.waveLine .waveform .channel canvas{
+  height: 90px ;
+}
+
+
+.custom-btn {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}.custom-btn-label{
+  width: 100%;
+  text-align: center;
+  background-color: transparent;
+  border: 1px solid #63d189;
+  border-radius: 5px;
+  display: inline-block;
+  margin: 0 auto;
+  cursor: pointer;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #63d189;
+  
+}

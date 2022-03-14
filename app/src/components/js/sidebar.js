@@ -1,8 +1,9 @@
-import Bibi from '../bibi.vue'
+import PistPlaylist from '../PistPlaylist.vue'
+import SidebarPistManager from '../SidebarPistManager.vue';
 
 export default{
     components: {
-        Bibi
+        PistPlaylist, SidebarPistManager
     },
 
     data(){
@@ -12,6 +13,9 @@ export default{
         }
     },
 
+    mounted(){
+        
+    },
 
     methods: {
 

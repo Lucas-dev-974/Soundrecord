@@ -14,6 +14,11 @@ module.exports = {
       },
       sessionid:{
         type: Sequelize.INTEGER,
+        references: {
+          model: 'sessions',
+          key: 'id'
+        },
+        onDelete: 'cascade'
       },
       createdAt: {
         allowNull: false,

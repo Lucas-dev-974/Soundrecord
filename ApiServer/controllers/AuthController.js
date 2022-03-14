@@ -22,9 +22,10 @@ module.exports = {
                     name: validated.name,
                     email: validated.email,
                     password: hashed,
-                    roleID: 2,
-                    isadmin: false
+                    roleid: 2
                 }
+
+            
             ).catch(error => { return res.status(500).json({error: error}) })
             
             let token = jwt.generateToken(user) // Let generate Token for the user
@@ -47,27 +48,11 @@ module.exports = {
 
         bcrypt.compare(validated.password, user.password, (err, resBycrypt) => {
             if(resBycrypt) return res.status(200).json({
-                'userID': user.id,
+                'user': returnFields(user.dataValues, ['email', 'id', 'name', 'picture', 'roleid²']),
                 'token': jwt.generateToken(user)
             })
             else return res.status(403).json({'error': 'Email ou mot de passe incorrecte'})
         })
-    },
-
-    getUser: async function(req, res){
-        let headerAuth = req.headers['authorization']
-        let userID     = jwt.getUsetId(headerAuth)
-
-        let validated  = validator.validate(req.body, { name: 'string' })
-        if(validated.errors) return res.json(validated)
-
-        if(userID != -1){
-            let user = await models.User.findOne({
-                where: {id: userID}
-            })
-            return res.status(200).json({user})
-        }
-        return res.status(200).json({userID})
     },
 
     checkToken: function(req, res ){

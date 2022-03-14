@@ -5,17 +5,17 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
-      models.User.hasOne(models.Role)
-      models.User.hasMany(models.Import)
-      models.User.hasMany(models.Session)
+      models.User.hasOne(models.Role, { onDelete: 'cascade' })
+      models.User.hasMany(models.Import, { onDelete: 'cascade' })
+      models.User.hasMany(models.Session, { onDelete: 'cascade' })
     }
   };
   User.init({
     email:    DataTypes.STRING,
     name:     DataTypes.STRING,
     password: DataTypes.STRING,
-    isadmin: DataTypes.BOOLEAN,
-    roleID:  DataTypes.INTEGER
+    roleid:  DataTypes.INTEGER,
+    picture: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'User',

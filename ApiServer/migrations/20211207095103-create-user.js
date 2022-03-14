@@ -20,10 +20,6 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      isadmin: {
-        allowNull: false,
-        type: Sequelize.BOOLEAN
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -32,9 +28,14 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
-      roleID: {
+      roleid: {
         allowNull: false,
         type: Sequelize.INTEGER,
+      },
+
+      picture: {
+        allowNull: true,
+        type: Sequelize.STRING
       }
     });
   },

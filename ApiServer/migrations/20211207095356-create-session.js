@@ -10,8 +10,19 @@ module.exports = {
       },
       userid: {
         type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id'
+        },
+        onDelete: 'cascade'
       },
       session_name: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      text: {
+        allowNull: true,
         type: Sequelize.STRING
       },
       createdAt: {

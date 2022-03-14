@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      models.Text.belongsTo(models.Session)
+      models.Text.belongsTo(models.Session,  { onDelete: 'cascade' })
     }
   };
   Text.init({

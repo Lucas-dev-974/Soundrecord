@@ -14,7 +14,8 @@ module.exports = {
         references: {
           model: 'users',
           key: 'id'
-        }
+        },
+        onDelete: 'cascade'
       },
       imported_date: {
         type: Sequelize.STRING

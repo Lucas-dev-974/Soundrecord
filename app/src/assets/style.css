@@ -5,12 +5,12 @@ html{
 .no-radius{ border-radius: 0 !important; }
 
 .bg-red{ background-color: #B02929; }
-.bg-dark{ background-color: #1A1D21; }
+.bg-dark{ background-color: #1A1D21 !important; }
 
 .text-center{ text-align: center;}
 
 .audios-controller{
-    height: 60px;
+    height: 80px;
     align-items: center;
 }.audios-controller-content{
     width: 90%;
@@ -19,11 +19,11 @@ html{
 }
 .slider-time{ 
     width: 2000px;
-    height: 40px;
+    height: 48px;
 }   
 
 .home-content{
-    overflow-x: scroll;
+    overflow-x: auto;
     padding: 0 !important;
 }
 .pist-container{
@@ -41,7 +41,7 @@ html{
 
 .text-orange{ color: #F24E1E !important;}
 .text-green{ color: #4CAF50 !important;}
-
+.text-red{ color: #942020 !important;}
 
 #bottom-panel-container{ width: 300px;}
 #bottom-panel{
@@ -60,9 +60,122 @@ html{
 .dark{
     background-color: #1A1D21;
     color: white;
+}.dark-1{
+    background-color: #1A1D21 !important;
+    color: white;
 }
+
+.bg-red{ background-color: #942020; }
+
 
 #session-manager{
     position: absolute;
     bottom: 1px;
 }
+
+
+
+.theme--dark.v-data-table{
+    background-color: #1A1D21 !important;
+}.theme--dark.v-data-table.v-data-table--fixed-header thead th{
+    background-color: #1A1D21;
+}
+
+
+.w-10{ width: 10% !important;}
+.w-20{ width: 20% !important;}
+.w-30{ width: 30%;}
+.w-40{ width: 40%;}
+.w-50{ width: 50%;}
+.w-60{ width: 60%;}
+.w-70{ width: 70%;}
+.w-80{ width: 80%;}
+.w-90{ width: 90%;}
+.w-100{ width: 100%;}
+
+.h-10{ height: 10% !important;}
+.h-20{ height: 20% !important;}
+.h-30{ height: 30%;}
+.h-40{ height: 40%;}
+.h-50{ height: 50%;}
+.h-60{ height: 60%;}
+.h-70{ height: 70%;}
+.h-80{ height: 80%;}
+.h-90{ height: 90%;}
+.h-100{ height: 100% !important;}
+
+.t-10{ position: relative; top: 10% !important;}
+.t-20{ position: relative; top: 20% !important;}
+.t-30{ position: relative; top: 30%;}
+.t-40{ position: relative; top: 40%;}
+.t-50{ position: relative; top: 50%;}
+.t-60{ position: relative; top: 60%;}
+.t-70{ position: relative; top: 70%;}
+.t-80{ position: relative; top: 80%;}
+.t-90{ position: relative; top: 90%;}
+.t-100{ position: relative; top: 100%;}
+
+.Smanager-select{
+    height: 100%;
+    width: 10px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    min-width: 30px !important;
+    border-radius: 0 !important;
+}
+
+
+.Slist-Pmanager{
+    margin: 0;
+    padding: 0;
+    height: 85vh;
+}.Slist-item{
+    height: 90px;
+    padding: 0;
+}.Smanager-content{
+    padding-left: 20px;
+}
+
+.h-100{ height: 100% !important;}
+
+#barManager-audiosController{
+    padding-left: 265px;
+}
+
+
+.custom-link{
+    color: white !important;
+    text-decoration: none;
+    font-family: sans-serif,Apple Color Emoji,Segoe UI Emoji;
+    font-size: 14px;
+}
+
+.timer{ padding-top: 7px;}
+
+#user-card{
+    width: 70%;
+}
+
+@media screen and (max-width: 1000px){
+    #user-card{
+        width: 90%;
+    }
+}
+
+.app-menu{
+    width: 170px;
+}
+.menu-item{
+    transition: all 0.3s;
+    cursor: pointer;
+}
+.menu-item:hover{
+    background-color: #393c44;
+    color: white !important;
+}
+
+.cursor{
+    color: red !important;
+    border-left: 3px solid red;
+    cursor: crosshair;
+  }

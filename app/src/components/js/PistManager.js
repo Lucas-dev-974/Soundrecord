@@ -1,11 +1,6 @@
 import Pist from '../pist.vue'
 
 export default{
-    props:{
-        imported_pists: {
-            required: true
-        }
-    },
 
     components: {
         Pist
@@ -13,16 +8,31 @@ export default{
     
     data(){
         return {
-            Recorder: {},
-            pists: [],
-            volume: 1
+            text: this.$store.state.current_session.Text.text,
+            Timeline: 0,
+
+            playlist: null,
+            play: null,
+            pause: null, 
         }
     },
 
     mounted(){
-        console.log(this.pists);
     },
 
     methods:{
+        update_text: function(){
+            
+        },
+
+
+
+        action_Play: function(){
+            this.playlist.ee.emit('play')
+        },
+
+        action_Pause: function(){
+            this.playlist.ee.emit('pause')
+        }
     }
 }

@@ -1,11 +1,11 @@
 <template>
     <div>
-        <div v-for="alert in alerts" :key="alert.id">
-            <v-alert type="warning" v-model="alert.open"  transition="scale-transition" style="width: fit-content; ">
+        <div v-for="alert in this.$store.state.alerts" :key="alert.id">
+            <v-alert elevation='15' :type="alert.type" v-model="alert.open"  transition="scale-transition" style="width:720px " class="mx-auto">
                 <v-row >
-                    <v-col cols="11" style="padding: 0 !important">
+                    <v-col cols="11" >
                         <div  v-if="Array.isArray(alert.message)">
-                            <div  v-for="message in alert.message" :key="message">
+                            <div v-for="message in alert.message" :key="message">
                                 {{message}}
                             </div>
                         </div>
@@ -13,7 +13,7 @@
                             {{alert.message}}
                         </div>
                     </v-col>
-                    <v-col cols="1"  style="padding: 0 !important">
+                    <v-col cols="1"  class="ma-0 pa-0 pt-1">
                         <v-btn color="red"  icon @click="removeAlert(alert)">
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
@@ -26,15 +26,8 @@
 
 <script>
 export default{
-    data(){
-        return{
-            alerts: this.$store.state.alerts,
-        }
-    },
-
     methods: {
         removeAlert: function(alert){
-            console.log(alert);
             alert.open = false
             this.$store.commit('remove_alert', alert.id)
         }

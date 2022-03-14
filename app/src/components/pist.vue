@@ -1,6 +1,5 @@
 <template>
-    <div>
-        <span id="audioContainer"></span>
+    <div :id='"audioContainer-" + pist.id' class=" pists-container-inline">
     </div>
 </template>
 

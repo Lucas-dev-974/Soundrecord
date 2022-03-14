@@ -4,19 +4,26 @@ import AudioVisual from 'vue-audio-visual'
 import Storage from './services/store'
 import Router from './router'
 import Layout from './layout.vue'
+import store from './services/store'
 
-require('./assets/style.css')
+
 
 if(window.location.pathname == '/authentication') { 
   // Load auth css and js for animation only if user is in the auth page
   require('./assets/auth.js')
   require('./assets/auth.css')
 }
+require('./assets/style.css')
+require('./assets/style-dashboard.css')
 
 Vue.use(AudioVisual)
 
  // If data is not used bypass warning
-Vue.config.productionTip = false
+Vue.config.productionTip = true
+
+window.addEventListener('resize', () => {
+  store.commit('set_Width', window.innerWidth)
+})
 
 new Vue({
   vuetify,

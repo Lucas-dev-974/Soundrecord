@@ -8,10 +8,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      role: {
+      rolename: {
         type: Sequelize.STRING
       },
-
+      
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

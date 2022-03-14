@@ -2,8 +2,9 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 // Views
-import Home from './views/home.vue'
+import Session from './views/Session.vue'
 import Auth from './views/Auth.vue'
+import Dashboard from './views/Dashboard.vue'
 
 Vue.use(VueRouter);
 
@@ -12,14 +13,20 @@ const router = new VueRouter({
     routes: [
         {
             path: '/',  
-            name: 'home',
-            component: Home,
+            name: 'session',
+            component: Session,
         },
 
         {
             path: '/authentication',
             name: 'authentication',
             component: Auth
+        },
+
+        {
+            path: '/dashboard',
+            name: 'dashboard',
+            component: Dashboard
         }
     ],
 

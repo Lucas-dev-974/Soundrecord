@@ -2,7 +2,7 @@ require('dotenv').config()
 const express    = require('express')
 const cors       = require("cors");
 
-const apiRouter = require('./apiRotuer').router
+const apiRouter = require('./ApiRouter').router
 const JwtMidle  = require('./middleware/Jwt').isAuthorized
 
 // Server params
@@ -16,12 +16,12 @@ const corsOptions = {
 const server     = express()
 
 // Setup Middleware
+
 server.use(cors(corsOptions))
 server.use(JwtMidle)
 
 server.use(express.json());
 server.use(express.urlencoded({extended: true}))
-
 
 // Handle Api Routes
 server.use('/api/', apiRouter)

@@ -5,7 +5,8 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Import extends Model {
     static associate(models) {
-      models.Import.belongsTo(models.User, {foreignKey: 'userID'})
+      models.Import.belongsTo(models.User)
+      models.Import.hasMany(models.ImportedInProject)
     }
   };
   
