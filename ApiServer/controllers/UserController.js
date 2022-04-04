@@ -8,20 +8,48 @@ const stream = require('stream')
 
 module.exports = {
     get: async function(req, res){
-        let validated = validator.validate(req.body, {userid: 'int'})
-        if(validated.errors) {
-            if(req.user.roleid !== 1) return res.status(401).json({error: 'Vous n\'ete pas autorisée recevoir ces information'})
-            let users = await models.User.findAll({ attributes: { exclude: ['createdAt', 'updatedAt', 'password']} })
-            return res.status(200).json(users)
+        let params = req.query
+        // let params = req.params
+        let validated = validator.validate(params, {id: 'int'})
+        if(validated.errors) return res.status(400).json({error: 'ID utilisateur requis !'})
+
+        let user
+        if(req.user.roleid == 1){
+            user = await models.User.findOne({
+                where: { id: validated.id },
+                attributes: { exclude: ['updatedAt', 'createdAt', 'password', 'roleid']}
+            })
+        }else{
+            user = await models.User.findOne({
+                where: { id: validated.id },
+                attributes: { exclude: ['updatedAt', 'createdAt', 'password', 'roleid']}
+            })
         }
 
-        let user = await models.User.findOne({
-            where: { id: validated.userid },
-            attributes: { exclude: ['updatedAt', 'createdAt', 'password']}
-        })
-
         if(!user) return res.status(200).json(user)
-        return res.status(200).json(user)
+        return res.status(200).json(user) 
+    },
+
+    all: async function(req, res){
+        let users
+        let params = req.query
+        
+        if(req.user.roleid == 1) {
+            users = await models.User.findAndCountAll({
+                where: { id: validated.userid },
+                attributes: { exclude: ['updatedAt', 'createdAt', 'password', 'roleid']}
+            })
+        }else{
+            users = await models.User.findOne({
+                where: { id: validated.userid },
+                attributes: { exclude: ['updatedAt', 'createdAt', 'password', 'roleid']}
+            })
+        }
+
+        console.log('utilisateur');
+
+        if(!users) return res.status(200).json(users)
+        return res.status(200).json(users) 
     },
 
     update: async function(req, res){
@@ -81,7 +109,7 @@ module.exports = {
 
     upload: async function(req, res){
         // Check if is autorized, Setting up in MulterMiddleware
-        if(!req.AutorizedFile || !req.Isimage ) return res.status(403).json({ error: 'Un fichier de type .png, .jpg, .jpeg est attendu !' })
+        if(!req.AutorizedFile || !req.Isimage ) return res.status(403).json({ error: 'Un fichier de type .png - .jpg - .jpeg - .wav est attendu !' })
 
         console.log(req.fileInfos);
         let user = await models.User.findByPk(req.user.id)
@@ -92,7 +120,7 @@ module.exports = {
 
     },
 
-    getPicture: function(req, res){
+    picture: function(req, res){
         let pictureDir = path.resolve(__dirname, '../public/user-') + req.user.id + '/picture/' + req.user.picture
         if(!fs.existsSync(pictureDir)) pictureDir = path.resolve(__dirname, '../public/default_picture/defaultpp.jpg')
 

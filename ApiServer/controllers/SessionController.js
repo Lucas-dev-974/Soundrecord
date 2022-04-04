@@ -2,36 +2,20 @@ const models = require('../models')
 const validator = require('../validator')
 
 const {returnFields} = require('../utils.js')
-const { json } = require('body-parser')
 
 module.exports = {
-    get: async function(req, res){ // return the current session if id params is given else return all session
-        let id = req.query.sessionid ?? null     // For axios request
-        // let id = req.body.sessionid ?? null   // For postman request
-        
-        if(id == null){    // IF NO ID, RETURN ALL SESSION FOR THE USER
-            let sessions =  await models.Session.findAll({
-                where: { userid: req.user.id },
-                attributes: { exclude: ['createdAt', 'updatedAt'] },
-                include: [  // get relation with include
-                    {model: models.Text, attributes: {exclude: ['createdAt', 'updatedAt']}},
-                    {model: models.ImportedInProject, attributes: {exclude: ['createdAt', 'updatedAt']}}
-                ],
-            }).catch(error => { console.log(error) })
-            return res.status(200).json({sessions})
-        }
-
-        // if id is not number return error
+    get: async function(req, res){
+        // Get the session id from url params
+        let id = req.params.sessionid
         if(isNaN(id) == true) return res.status(400).json({error: 'L\'id renseigner est incorrect !'})
-        
-        // IF SESSION ID IS GIVEN
+
         let session = await models.Session.findOne({ 
-            where: {id: id, userid: req.user.id}, 
+            where:      {id: id, userid: req.user.id}, 
             attributes: { exclude: ['createdAt', 'updatedAt'] }, 
             include: [
                 { model: models.Text,  attributes: {exclude: ['createdAt', 'updatedAt']} },
                 { 
-                    model: models.ImportedInProject,  
+                    model: models.session_track,  
                     attributes: {exclude: ['createdAt', 'updatedAt']},
                     include: [{model: models.Import}]   
                 }
@@ -40,6 +24,23 @@ module.exports = {
 
         if(!session) return res.status(400).json({error: 'La session demandé n\'existe pas !'})
         return res.status(200).json({session})
+    },
+
+    all: async function(req, res){
+        let params = req.query
+
+        console.log('params: ', params);
+        let limit = await models.Session.findAll().length
+        console.log(limit);
+        let sessions =  await models.Session.findAll({
+            where: { userid: req.user.id },
+            attributes: { exclude: ['createdAt', 'updatedAt'] },
+            include: [  // get relation with include
+                {model: models.Text, attributes: {exclude: ['createdAt', 'updatedAt']}},
+                {model: models.session_track, attributes: {exclude: ['createdAt', 'updatedAt']}}
+            ],
+        }).catch(error => { console.log(error) })
+        return res.status(200).json({sessions})
     },
 
     delete: async function(req, res){
@@ -61,20 +62,20 @@ module.exports = {
         // Check of given data
         let validated = validator.validate(req.body, {'name': 'string' })
 
-        let user    = await models.User.findByPk(req.user.id)
+        // let user    = await models.User.findByPk(req.user.id)
         let session = await models.Session.create({
             session_name: validated.name ?? 'Untilted',
-            user: req.user.id,
+            userid: req.user.id
         }).catch(error => { console.log(error) })
 
+        // session.setUser(req.user.id)
+        
         let text = await models.Text.create({
             text: '',
             sessionid: session.id
         }).catch(error => console.log(error))
-        
-        session.setUser(user)
 
-        session = returnFields(session.dataValues, ['id', 'session_name'])
+        session      = returnFields(session.dataValues, ['id', 'session_name'])
         session.text = returnFields(text.dataValues, ['id', 'text'])
 
         return res.status(200).json(session)
