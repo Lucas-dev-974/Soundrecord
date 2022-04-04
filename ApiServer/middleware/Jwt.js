@@ -38,12 +38,12 @@ module.exports = {
             let user = await models.User.findByPk(tokenInfos.userID).catch(error => console.log(error))
             // Set "req.user = user" to have information in all controller that use JWT Middleware
             req.user = user                                          
-            if(!user) return res.status(403).json({'error': 'Votre compte persoit un problèment. L\'accèes y est impossible pour le moment !'})
+            // if(!user) return res.status(403).json({'error': 'Votre compte persoit un problèment. L\'accèes y est impossible pour le moment !'})
         }else{
             return res.status(401).json({
                 error: "Aucun Token renseigner veuillez vous connectez !"
             })
-        }
+        }   
         next() // Continue
     },
 

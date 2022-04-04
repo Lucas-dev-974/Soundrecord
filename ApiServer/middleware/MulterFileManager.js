@@ -9,7 +9,7 @@ let storage = multer.diskStorage({
         let folderFile // Repository where to import all file for the usere
 
         switch(req.path){
-            case '/pists/': // if path of the route is /api/pist/ 
+            case '/pist': // if path of the route is /api/pist/ 
                 // We want to difine where to import the file
                 folderFile = StoragePath + req.user.id + '/imported/'   
                 break
@@ -44,7 +44,7 @@ exports.upload = multer({
     fileFilter: function(req, file, callback){
         let ext = path.extname(file.originalname)
         
-        let extensions = ['.mp3', '.jpeg', '.png', '.jpg']
+        let extensions = ['.mp3', '.jpeg', '.png', '.jpg', '.wav']
 
         if(!extensions.includes(ext)){
             req.AutorizedFile = false
