@@ -1,12 +1,11 @@
+if(!window.localStorage.getItem('vuex')) window.localStorage.setItem('vuex', '{}')
+
 import Vue from 'vue'
 import vuetify from './plugins/vuetify'
 import AudioVisual from 'vue-audio-visual'
-import Storage from './services/store'
+import store from './Store/store'
 import Router from './router'
 import Layout from './layout.vue'
-import store from './services/store'
-
-
 
 if(window.location.pathname == '/authentication') { 
   // Load auth css and js for animation only if user is in the auth page
@@ -27,7 +26,7 @@ window.addEventListener('resize', () => {
 
 new Vue({
   vuetify,
-  store: Storage,
+  store: store,
   router: Router,
   render: h => h(Layout)
 }).$mount('#app')
