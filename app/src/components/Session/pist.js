@@ -53,12 +53,10 @@ export default{
             if(volume > 1) volume = '0.' + parseInt(volume)
             this.audio.volume =   volume
             pistContainer.appendChild(this.audio)
-
-            
         },
 
         getPistBuffer: function(){
-            ApiService.get('/api/pists/' + this.pist.importid, {responseType: 'arraybuffer'}) // Get array buffer of the pist
+            ApiService.get('/api/pist/' + this.pist.importid, {responseType: 'arraybuffer'}) // Get array buffer of the pist
             .then(({data}) => {
                 const blob = new Blob([data], {type: 'audio/mpeg'})
                 this.src = URL.createObjectURL(blob);

@@ -7,10 +7,14 @@ export default{
             name: '',
         }   
     },
+
+    created(){
+
+    },
     
     methods: {
         createSession: function(){
-            api.post('/api/sessions/', {name: this.name})
+            api.post('/api/session/', {name: this.name})
             .then(({data}) => {
                 this.dialog = false
                 this.$store.commit('append_Session', data)

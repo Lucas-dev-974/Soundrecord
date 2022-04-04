@@ -3,4 +3,4 @@
     </div>
 </template>
 
-<script src='./js/pist.js'></script>
+<script src='./pist.js'></script>

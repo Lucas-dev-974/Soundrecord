@@ -16,12 +16,12 @@
                     <div class="text-tanslate-x h-100 d-flex" style="width: fit-content"> {{pist.name}} </div>
                   </div>
                 </td>
-                <td class="text-center">{{pist.ImportedInProjects.length }}</td>
+                <td class="text-center">{{pist.session_tracks.length }}</td>
                 <td class="text-center">
                   <v-btn color="success" v-if="$route.name == 'session'" @click="import_PistInSession(pist)"  icon>
                     <v-icon small>mdi-transfer-down</v-icon>
                   </v-btn>
-                  <Delete :whatDelete="'pist'" :id="pist.id" :url="'/api/pists/' + pist.id" :message="'Cette piste est importée dans une ou plusieurs sessions, si vous la supprimez elle serrât supprimer de toutes les sessions'"/>
+                  <Delete :whatDelete="'pist'" :id="pist.id" :url="'/api/pist/' + pist.id" :message="'Cette piste est importée dans une ou plusieurs sessions, si vous la supprimez elle serrât supprimer de toutes les sessions'"/>
                 </td>
               </tr>
             </tbody>
@@ -29,4 +29,4 @@
         </v-simple-table>
 </template>
 
-<script src="./js/PistPlaylist_List.js" />
+<script src="./PistPlaylist_List.js" />

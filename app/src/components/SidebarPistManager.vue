@@ -2,7 +2,11 @@
         <v-list-item class="Slist-item">
             <div class="h-100  w-100  d-flex">
                 <div class="Smanage-item h-100">
-                    <v-btn :id="'select-btn-' + pist.id"  class="Smanager-select h-100" @click="DeselectSelect">S</v-btn>
+                    <v-btn :id="'select-btn-' + pist.id"  class="Smanager-select h-100" @click="$store.commit('update_Pist', {
+                        pistid: pist.id,
+                        field: 'muted',
+                        value: _pist.muted
+                    })">S</v-btn>
                 </div>
 
                 <div class="w-100 Smanager-content">
@@ -31,7 +35,7 @@
                                         </div>
                                     </v-list-item>
                                     
-                                    <v-list-item class="text-3 menu-item" @click="DeselectSelect" v-if="selected"> Déselectionner </v-list-item>
+                                    <v-list-item class="text-3 menu-item" @click="DeselectSelect" v-if="pist.muted"> Déselectionner </v-list-item>
 
                                     <v-list-item class="text-3 menu-item" v-else @click="DeselectSelect"> 
                                         Sélectionner 
@@ -44,8 +48,10 @@
                         </v-menu>
                     </div>
 
-                    <v-slider v-model="volume" step="0" class="w-50" max="9" prepend-icon="mdi-volume-high">
-                    </v-slider>
+                    <div class="w-50">
+                        <VolumeController :type="'track_volume'" :track="pist"/>
+                    </div>
+                    
                 </div>
             </div>
         </v-list-item>    

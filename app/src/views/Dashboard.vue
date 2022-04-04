@@ -5,7 +5,7 @@
     <v-card elevation="10" class="mx-auto px-lg-15 px-md-5 px-xs-2 mt-5 " height="100px" id="user-card">
       <v-list-item class="grow w-100">
         <v-list-item-avatar width="40" height="40" color="grey darken-3">
-          <v-img alt="" :src="'http://127.0.0.1:3000/api/user/?token=' + $store.state.token "></v-img>
+          <v-img alt="" :src="'http://127.0.0.1:3000/api/picture/?token=' + $store.state.token "></v-img>
         </v-list-item-avatar>
 
         <v-list-item-content>

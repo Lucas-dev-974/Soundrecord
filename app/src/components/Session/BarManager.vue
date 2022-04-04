@@ -47,11 +47,10 @@
                      {{$store.state.player_currentTime}}
                 </div>
             </div>        
-            <div class="align-center " :style="{width: responsive.g_volumeWidth}">
-                <v-slider  v-model="g_volume" step="0" max=100 prepend-icon="mdi-volume-high"></v-slider>
-            </div>
+
+            <VolumeController :type='"g_volume"' />
         </div>
     </v-card>
 </template>
 
-<script src='./js/BarManager.js' />
+<script src='./BarManager.js' />

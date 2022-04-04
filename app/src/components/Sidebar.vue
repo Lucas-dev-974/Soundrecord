@@ -12,7 +12,7 @@
             </v-list-item>
 
             <div  class="Slist-Pmanager" >
-                <SidebarPistManager v-for="pist in $store.state.pists" :key="pist.id" :pist="pist" />
+                <SidebarPistManager v-for="pist in tracks" :key="pist.id" :pist="pist" />
             </div>
 
         </v-navigation-drawer>

@@ -4,4 +4,4 @@
     </div>
 </template>
 
-<script src='./js/PistManager.js' />
+<script src='./PistManager.js' />

@@ -1,4 +1,4 @@
-import Pist from '../pist.vue'
+import Pist from './pist.vue'
 
 export default{
 
@@ -24,9 +24,7 @@ export default{
         update_text: function(){
             
         },
-
-
-
+        
         action_Play: function(){
             this.playlist.ee.emit('play')
         },

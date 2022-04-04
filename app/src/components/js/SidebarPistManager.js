@@ -1,67 +1,67 @@
+import VolumeController from '../Session/VolumeController.vue'
+
 import api from "../../services/ApiService";
-import store from '../../services/store'
+import { player } from '../../services/Player'
+
 export default {
+    components: {
+        VolumeController
+    },
+
     props: {
-        pist: { required: true }
+        pist: { required: true } // pist in player ( manage the player track)
     },
 
     data(){
         return {
-            selected: this.pist.selected,
-            name: this.pist.Import.name,
+            name: this.pist.name,
             nameInput_ref: 'pistnameinput' + this.id,
-            volume: this.pist.volume,
-            selectBtn: null
+            volume: this.pist.gain,
+            selectBtn: null,
+
+            index: player.player.tracks.indexOf(this.pist), // index of the pist in player
+            _pist: null      // pist out of player
         }
     },
 
     watch: {
         volume: function(val){
-            val = '0.' + parseInt(val)
-            let pist = document.getElementById('pist-' + this.pist.id)  
-            if(pist){
-                pist.volume = val
-                store.commit('update_Pist', {
-                    pistid: this.pist.id,
-                    field: 'volume',
-                    value: val
-                })
-            }
+            val
         }
     },
 
     mounted(){  
-        // console.log('in sidebar pist manager pist :', this.pist);
-        this.volume = this.volume.toString().split('.')[1]
-
+        // Set pist
+        this._pist = this.$store.state.pists[this.index]
+        
+        // Muted button if the track is muted so button is gray else is green
         this.selectBtn = document.getElementById('select-btn-' + this.pist.id)
-        if(this.selected) this.selectBtn.style.backgroundColor = 'green'
+        if(this.pist.muted) this.selectBtn.style.backgroundColor = 'green'
         else this.selectBtn.style.backgroundColor = 'gray'
     },
 
     methods: {
         deleteImportedPist: function(){
-            let url = `/api/importedIn/${this.$store.state.current_session.id}/${this.pist.importid}`
+            let url = `/api/session_track/${this._pist.id}`
+            
             api.delete(url)
-                .then( async ({data}) => {
-                    data
-                    console.log('remove datas');
-                    this.$store.commit('remove_PistPlaylist', this.pist.id)
-                    this.$store.commit('remove_SelectedPist  ', this.pist.id)
-                    await this.$emmit('load_PlayerPist')
+                .then( async () => {
+                    this.$store.commit('remove_Pist', this._pist.id)
+                    this.pist.ee.emit('removeTrack', this.pist)
+                    // console.log('pist removed')
                 }).catch(error => console.log(error))
         },
 
         DeselectSelect: function(){
-            this.selected = !this.selected
+            this.pist.muted = !this.pist.muted
             this.$store.commit('update_SelectedPist', {
                 pistid: this.pist.id,
                 field: 'muted',
-                value: this.selected
+                value: this.muted
             })
 
             document.getElementById('select-btn-' + this.pist.id)
-            if(this.selected) this.selectBtn.style.backgroundColor = 'green'
+            if(this.muted == false) this.selectBtn.style.backgroundColor = 'green'
             else this.selectBtn.style.backgroundColor = 'gray'
         },
 

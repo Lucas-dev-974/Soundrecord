@@ -42,4 +42,4 @@
     </v-dialog>
 </template>
 
-<script src="./js/PistPlaylist.js"/>
+<script src="./PistPlaylist.js"/>

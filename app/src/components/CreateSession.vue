@@ -15,7 +15,7 @@
             </v-card-title>
 
             <div class="px-5">
-                <v-text-field name="name" label="Nom de la session" v-model="name"></v-text-field>
+                <v-text-field ref="session_name" label="Nom de la session" v-model="name" v-on:keypress.enter="createSession"></v-text-field>
             </div>
 
             <v-card-actions class="d-flex justify-space-around  px-5">

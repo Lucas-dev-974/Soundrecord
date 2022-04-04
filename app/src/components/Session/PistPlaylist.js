@@ -1,5 +1,6 @@
+import Playlist_List from './PistPlaylist_List.vue'
 import api from '../../services/ApiService'
-import Playlist_List from '../PistPlaylist_List.vue'
+import { player } from '../../services/Player'
 
 export default{
     components: {
@@ -17,21 +18,21 @@ export default{
     methods: {
         Upload: function(){
             if(this.localFile !== null){
+
+                // Create form to send file
                 let formData = new FormData()
                 formData.append('audio', this.localFile) // Add file
                 formData.append('sessionid', this.$store.state.current_session.id) // Add the current Session ID
 
                 // Send request with the form data
-                api.post('/api/pists/', formData)
-                .then(({data}) => {
-                    console.log(data);
-
-                    // console.log('imported in ? pist: ', data);
-                    // this.$store.commit('push_PistPlaylist', data.Import)
-                    this.$store.commit('push_PistPlaylist', data)
-                }).catch(error => {
-                    console.log(error);
-                })
+                api.post('/api/pist', formData)
+                    .then(({data}) => {
+                        this.$store.commit('push_PistPlaylist', data.Import)
+                        this.$store.commit('push_Pist', data.Pist)
+                        player.laodTrack()
+                    }).catch(error => {
+                        console.log(error);
+                    })
             }
         },
 
@@ -42,23 +43,13 @@ export default{
 
         delete_Pist: function(pistid){   
             api.delete('/api/pist/' + pistid).then(() => {
-                console.log(pistid);
                 this.$store.commit('remove_PistPlaylist', pistid)
-
             }).catch(error => console.log(error))
         },
 
-        
         import_Microphone: function(){
-            let microphonePist = {
-                name: 'vois/micro',
-                type: 'microphone',
-                media: null,
-                selected: true
-            }
-            this.$store.commit('push_Pist', microphonePist)
-        },
 
+        },
 
     }
 }

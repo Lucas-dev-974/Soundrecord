@@ -2,12 +2,13 @@ import Vuex from 'vuex'
 import VuePersist from 'vuex-persist'
 import Vue from 'vue'
 
-import ApiService from './ApiService.js'
+import ApiService from '../services/ApiService.js'
 
 Vue.use(Vuex)
 const vuexLocal = new VuePersist({
     storage: window.localStorage
 })
+
 export default new Vuex.Store({
     plugins: [vuexLocal.plugin],
 
@@ -18,6 +19,7 @@ export default new Vuex.Store({
         pists:         [], // all pist for the current session
 
         player_currentTime: 0,
+        player_g_volume:    0,
 
         user:  null,
         token: null,
@@ -50,6 +52,8 @@ export default new Vuex.Store({
         
         set_PlayerCurrentTime: function(state, time){ state.player_currentTime = time},
 
+        set_PlayerGlobalVolume: function(state, volume){ state.player_g_volume = volume},
+        
         set_PistParams: function(state, data){
             if(typeof(data.field) == 'string'){
                 state.pists.forEach(pist => {
@@ -88,8 +92,8 @@ export default new Vuex.Store({
             state.pists.forEach((pist, key) => {
                 if(pist.id == data.pistid){
                     state.pists[key][data.field] = data.value
-                    // console.log('data value', data.value);
-                    ApiService.patch('/api/importedin', {
+                    
+                    ApiService.patch('/api/session_track', {
                         pistid: data.pistid,
                         field: data.field,
                         value: `${data.value}`
@@ -99,8 +103,9 @@ export default new Vuex.Store({
                 }
             });
         },
+
         remove_Pist: function(state, pistid){
-            state.pist = state.pist.filter(importedIn => importedIn.id != pistid)
+            state.pists = state.pists.filter(session_track => session_track.id != pistid)
         },
         
 

@@ -1,12 +1,10 @@
-import Sidebar from '../../components/Sidebar.vue'
-import BarManager from '../../components/BarManager.vue'
-import PistContainer  from '../../components/PistManager.vue'
-
-import WaveformPlaylist from 'waveform-playlist'
+import Sidebar        from '../../components/Sidebar.vue'
+import BarManager       from '../../components/Session/BarManager.vue'
+import PistContainer  from '../../components/Session/PistManager.vue'
 
 import api from '../../services/ApiService'
 
-import { EventBus } from '../../services/EventBus'
+import { player } from '../../services/Player'
 
 export default{
     components: {
@@ -15,57 +13,19 @@ export default{
 
     data(){
         return{
-            player: null
+            imported_pists: null,
+            track_loaded: false
         }
     },
     
-    mounted(){  
-        this.init_Player()
-        this.loadImportedPist()
-        this.format_pists()
-
-        let _this = this
-        EventBus.$on('global_volume', function(val){
-            _this.player.getEventEmitter().emit('mastervolumechange', val)
-        })
-
-        this.player.getEventEmitter().on('timeupdate', function(time){
-            time = time.toFixed(2)  
-            
-            let minutes = Math.floor(time / 60)
-            let seconds = time - minutes * 60
-
-            seconds = seconds.toFixed(2)
-            _this.$store.commit('set_PlayerCurrentTime', minutes + ':' + seconds)
-        })
-
+    async mounted(){  
+        await this.loadImportedPist()
+       
         window.addEventListener('resize', this.checkScreen)
         this.checkScreen()
     },
     
     methods: {
-        init_Player: async function(){
-            this.player = WaveformPlaylist({
-                samplesPerPixel: 3000,
-                mono: true,
-                waveHeight: 90,
-                container: document.getElementById("pists-container"),
-                state: "select",
-                seekStyle: "fill",
-                colors: {
-                    waveOutlineColor: "rgb(26, 29, 33)",
-                    timeColor: "#FFF",
-                    fadeColor: "red",
-                },
-                zoomLevels: [500, 1000, 3000, 5000],
-                timescale: true,
-                barWidth: 2
-            })
-        },
-        
-        load_PlayerPist: function(){
-            this.player.load(this.$store.state.pists)
-        },
 
         checkScreen: function(){
             if(window.screen.width > 600){
@@ -75,9 +35,10 @@ export default{
         },
 
         loadImportedPist: function(){
-            api.get('/api/importedIn/' + this.$store.state.current_session.id)
+            api.get('/api/session_track/' + this.$store.state.current_session.id)
                 .then(({data}) => {
-                    this.$store.commit('set_Pists', data)
+                    this.imported_pists = data
+                    this.format_pists()
                 }).catch(error => {
                     this.$store.commit('push_Alert', {
                         open: true,
@@ -87,20 +48,21 @@ export default{
         },
 
         play_Pists: function(){
-            this.player.getEventEmitter().emit('play')
+            player.getEventEmitter().emit('play')
         },
 
         pause_Pists: function(){
-            this.player.getEventEmitter().emit('pause')
+            player.getEventEmitter().emit('pause')
         },
 
-        format_pists: function(){ // To format the selected pist as library is asking
+        format_pists: async function(){ // To format the selected pist as library is asking
             let formated_pists = []
 
-            this.$store.state.pists.forEach(pist => {
+            this.imported_pists.forEach(pist => {
                 let pist_ = {
                     id: pist.id,
-                    src: "http://localhost:3000/api/pists/1?token=" + this.$store.state.token,
+                    Importid: pist.ImportId,
+                    src: "http://localhost:3000/api/pist/"+ pist.importid +"?token=" + this.$store.state.token,
                     name: pist.Import.name,
                     gain: pist.volume,
                     muted: !pist.selected,
@@ -111,7 +73,11 @@ export default{
             })
 
             this.$store.commit('set_Pists', formated_pists)
-            this.load_PlayerPist()
-        },
+            
+            player.init_Player()
+            player.laodTrack().then(() => {
+                this.track_loaded = true
+            })
+        }
     }
 }
