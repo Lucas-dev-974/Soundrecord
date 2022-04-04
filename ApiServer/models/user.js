@@ -1,21 +1,22 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
-      models.User.hasOne(models.Role, { onDelete: 'cascade' })
-      models.User.hasMany(models.Import, { onDelete: 'cascade' })
+      models.User.hasOne(models.Role,     { onDelete: 'cascade', as: 'roles', foreignKey: 'userid' })
+      models.User.hasMany(models.Import,  { onDelete: 'cascade' })
       models.User.hasMany(models.Session, { onDelete: 'cascade' })
+      models.User.hasMany(models.Liked,   { onDelete: 'cascade' })
+      models.User.hasMany(models.Pack,    { onDelete: 'cascade' })
     }
   };
   User.init({
     email:    DataTypes.STRING,
     name:     DataTypes.STRING,
     password: DataTypes.STRING,
-    roleid:  DataTypes.INTEGER,
-    picture: DataTypes.STRING
+    roleid:   DataTypes.INTEGER,
+    picture:  DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'User',

@@ -1,26 +1,25 @@
 'use strict';
 const { Model } = require('sequelize');
-const { Sequelize } = require('.');
 
 module.exports = (sequelize, DataTypes) => {
-  class ImportedInProject extends Model {
+  class session_track extends Model {
     static associate(models) {
-      models.ImportedInProject.belongsTo(models.Session)
-      models.ImportedInProject.belongsTo(models.Import)
+      models.session_track.belongsTo(models.Session)
+      models.session_track.belongsTo(models.Import)
     }
   };
-  ImportedInProject.init({
+  session_track.init({
     sessionid: DataTypes.INTEGER,
     importid:  DataTypes.INTEGER,
     userid:    DataTypes.INTEGER,
-    volume:    DataTypes.FLOAT,
-    selected:  DataTypes.BOOLEAN,
+    gain:    DataTypes.FLOAT,
+    muted:  DataTypes.BOOLEAN,
     color:     DataTypes.STRING,
-    url:       DataTypes.STRING,
+    src:       DataTypes.STRING,
     
   }, {
     sequelize,
-    modelName: 'ImportedInProject',
+    modelName: 'session_track',
   });
-  return ImportedInProject;
+  return session_track;
 };
