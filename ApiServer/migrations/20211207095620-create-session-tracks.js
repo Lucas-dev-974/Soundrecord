@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('ImportedInProjects', {
+    await queryInterface.createTable('session_tracks', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -33,7 +33,7 @@ module.exports = {
         onDelete: 'cascade'
       },
 
-      selected: {
+      muted: {
         type: Sequelize.BOOLEAN,
       },
 
@@ -41,11 +41,11 @@ module.exports = {
         type: Sequelize.STRING
       },
 
-      url: {
+      src: {
         type: Sequelize.STRING
       },
 
-      volume: {
+      gain: {
         type: Sequelize.FLOAT
       },
 
@@ -64,6 +64,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('ImportedInProjects');
+    await queryInterface.dropTable('session_tracks');
   }
 };
