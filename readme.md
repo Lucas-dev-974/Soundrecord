@@ -3,6 +3,5 @@
     - Il est possible d'importer des audios de type .mp3
 
 ## Initialisé le serveur et le serveur client
-    | Server | Serveur client |
+    | [Serveur](https://github.com/Lucas-dev-974/Soundrecord/tree/main/ApiServer) | Serveur client |
     ---------------------------
-    |  <a href="https://github.com/Lucas-dev-974/Soundrecord/tree/main/ApiServer"> Test </a>      |                |
