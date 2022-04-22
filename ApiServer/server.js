@@ -2,7 +2,7 @@ require('dotenv').config()
 const express    = require('express')
 const cors       = require("cors");
 
-const apiRouter = require('./ApiRouter').router
+const router = require('./api-routes').router
 const JwtMidle  = require('./middleware/Jwt').isAuthorized
 
 // Server params
@@ -19,11 +19,10 @@ const server     = express()
 
 server.use(cors(corsOptions))
 server.use(JwtMidle)
-
 server.use(express.json());
 server.use(express.urlencoded({extended: true}))
 
 // Handle Api Routes
-server.use('/api/', apiRouter)
+server.use('/api/', router)
 
 server.listen(port, () => console.log('Server Started on http://localhost:' + port))

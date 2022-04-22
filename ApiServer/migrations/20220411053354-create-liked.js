@@ -1,35 +1,22 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('packs', {
+    await queryInterface.createTable('Likeds', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      mixedid: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'mixed',
-          key: 'id'
-        },
-        onDelete: 'cascade'
+      userid: {
+        type: Sequelize.INTEGER
       },
-      
-      name: {
+      model: {
         type: Sequelize.STRING
       },
-
-      path: {
-        type: Sequelize.STRING
+      modelid: {
+        type: Sequelize.INTEGER
       },
-
-      public: {
-        type: Sequelize.BOOLEAN,
-        default: false
-      },
-
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -41,6 +28,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('packs');
+    await queryInterface.dropTable('Likeds');
   }
 };

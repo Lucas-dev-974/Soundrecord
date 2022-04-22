@@ -3,7 +3,9 @@ const jwt = require('jsonwebtoken')
 const JWT_SIGN_SECRET = process.env.JWT_SIGN_SECRET
 const models = require('../models/')
 
-module.exports = {
+const publicRoutes = require('./public-route.json')
+
+const self = module.exports = {
     generateToken: function(user){
         return jwt.sign({
             userID: user.id,
@@ -24,27 +26,29 @@ module.exports = {
         // Si le token est spécifié dans l'url via http://url...?token=ferjnfiejrn
         if(req.query.token) token = req.query.token 
 
-        // Continue if is auth routes
-        if(req.path == "/api/auth/" && req.method !== 'GET') return next()
- 
-        if(token !== null){
+        if(token != null){
             // Check if token is valid
-            let tokenInfos = module.exports.checkToken(token)   
+            let tokenInfos = self.checkToken(token)   
+            if(!tokenInfos.error) {
+                // Get user from database with the userID from the token
+                let user = await models.User.findByPk(tokenInfos.userID).catch(error => console.log(error))
+                if(user){
+                    // Set "req.user = user" to have information in all controller that use JWT Middleware
+                    req.user = {
+                        id:    user.dataValues.id,
+                        email: user.dataValues.email,
+                        role:  user.dataValues.role,
+                        name:  user.dataValues.name
+                    }        
+                }                    
+            }
+        }
 
-            // Return error if not
-            if(tokenInfos.error) res.status(403).json(tokenInfos) 
-
-            // Get user from database with the userID from the token
-            let user = await models.User.findByPk(tokenInfos.userID).catch(error => console.log(error))
-            // Set "req.user = user" to have information in all controller that use JWT Middleware
-            req.user = user                                          
-            // if(!user) return res.status(403).json({'error': 'Votre compte persoit un problèment. L\'accèes y est impossible pour le moment !'})
+        if(self.autorizeRoutes(req.path, req.method) || !self.checkToken(token).error){
+            return next()
         }else{
-            return res.status(401).json({
-                error: "Aucun Token renseigner veuillez vous connectez !"
-            })
-        }   
-        next() // Continue
+            return res.status(401).json({error: 'Vous n\'êtes pas autorisé'})
+        }
     },
 
     checkToken: function(token){
@@ -54,7 +58,16 @@ module.exports = {
                 return jwtToken
             }
         }catch(err){
-            return {error: 'Votre connexion n\'est plus valable ! Reconnectez-vous.'}
+            return {error: {TokenError: 'Invalide'}}
         }
+    },
+
+    // Retourne true si la route et renseigner en tant que route public
+    // Permet de passer la vérification du token et d'entrer directement dans le controller concerner
+    autorizeRoutes: function(asked_path, asked_method){
+        let route = asked_method + '|' + asked_path
+        if(publicRoutes.routes.includes(route)){
+            return true
+        } else return false
     }
 }

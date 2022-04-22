@@ -19,10 +19,12 @@ export default{
     },
     
     async mounted(){  
-        await this.loadImportedPist()
-       
-        window.addEventListener('resize', this.checkScreen)
-        this.checkScreen()
+        if(this.$store.state.current_session){
+            await this.loadImportedPist()
+            window.addEventListener('resize', this.checkScreen)
+            this.checkScreen()
+        }else this.$router.push('profile')
+
     },
     
     methods: {
@@ -37,13 +39,11 @@ export default{
         loadImportedPist: function(){
             api.get('/api/session_track/' + this.$store.state.current_session.id)
                 .then(({data}) => {
+                    console.log(data);
                     this.imported_pists = data
                     this.format_pists()
                 }).catch(error => {
-                    this.$store.commit('push_Alert', {
-                        open: true,
-                        message: error.response.data.errors ?? error.response.data.error
-                    })
+                    console.log(error);
                 })
         },
 
@@ -75,7 +75,9 @@ export default{
             this.$store.commit('set_Pists', formated_pists)
             
             player.init_Player()
+            
             player.laodTrack().then(() => {
+                console.log('loaded');
                 this.track_loaded = true
             })
         }

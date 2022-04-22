@@ -9,26 +9,36 @@ const vuexLocal = new VuePersist({
     storage: window.localStorage
 })
 
+let initialstate = {
+    current_session: null,
+    pist_playlist: [], // Bibliotheque
+    sessions:      [], // all sessions created by user 
+    pists:         [], // all pist for the current session
+
+    player_currentTime: 0,
+    player_g_volume:    0,
+    player: {
+        g_volume: 0,
+        current_time: 0
+    },
+
+    user:  null,
+    token: null,
+    
+    alerts: [],
+
+    main_theme: 'bg-dark',
+    is_mobile: false,
+    WIDTH: null,
+
+    profile_settings: []
+}
+
 export default new Vuex.Store({
     plugins: [vuexLocal.plugin],
 
     state:{
-        current_session: null,
-        pist_playlist: [], // Bibliotheque
-        sessions:      [], // all sessions created by user 
-        pists:         [], // all pist for the current session
-
-        player_currentTime: 0,
-        player_g_volume:    0,
-
-        user:  null,
-        token: null,
-        
-        alerts: [],
-
-        main_theme: 'bg-dark',
-        is_mobile: false,
-        WIDTH: null
+        ...initialstate
     },
 
     mutations: {
@@ -130,6 +140,21 @@ export default new Vuex.Store({
         remove_PistPlaylist: function(state, pist_id){
             state.pist_playlist = state.pist_playlist.filter(pist => pist.id != pist_id)
         },
+
+        set_ProfileSettings: function(state, settings){
+            state.profile_settings = settings
+        },
+        push_ProfileSetting: function(state, setting){
+            state.profile_settings.push(setting)
+        },
+        // update_ProfileSetting: function(state, setting){
+        //     //
+        // },
+
+        logout: function(state){
+            Object.assign(state, initialstate)
+            window.location.href = '/authentication'
+        }
     },
 
     actions:{
@@ -146,5 +171,7 @@ export default new Vuex.Store({
             })
             return toreturn
         },
+
+
     }
 })

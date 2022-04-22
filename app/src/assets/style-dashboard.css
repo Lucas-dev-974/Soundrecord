@@ -57,7 +57,17 @@
   }#registered_audios{
     width: 100%;
   }
+
+  .profile-bottom-section.w-80{
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .user-bar-bottom.w-80.container{
+    width: 100%;
+  }
 }
+
 
 @media (max-width: 1000px){
   #dash-container{

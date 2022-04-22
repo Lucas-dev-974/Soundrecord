@@ -8,7 +8,7 @@ export default{
     
     data(){
         return {
-            text: this.$store.state.current_session.Text.text,
+            text: this.$store.state.current_session.text,
             Timeline: 0,
 
             playlist: null,

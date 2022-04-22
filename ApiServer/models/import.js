@@ -5,14 +5,14 @@ module.exports = (sequelize, DataTypes) => {
   class Import extends Model {
     static associate(models) {
       models.Import.belongsTo(models.User)
-      models.Import.hasMany(models.session_track)
+      // models.Import.hasMany(models.SessionTrack)
     }
   };
 
   Import.init({
-    userID: DataTypes.INTEGER,
-    name: DataTypes.STRING,
-    imported_date: DataTypes.STRING
+    imported_date: DataTypes.STRING,
+    userID:        DataTypes.INTEGER,
+    name:          DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Import',

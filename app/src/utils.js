@@ -7,5 +7,11 @@ module.exports = {
                 element.classList.add(theClass)
             });
         }
+    },
+
+    Array2Object: function(entry_datas, name_field, value_field){
+        let out_datas = {}
+        entry_datas.forEach(data => { out_datas[data[name_field]] = data[value_field] })
+        return out_datas
     }
 }

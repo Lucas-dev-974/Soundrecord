@@ -12,5 +12,4 @@
     </div>
 </template>
 
-<script src='./js/auth.js'>
-</script>
+<script src='./js/auth.js' />

@@ -1,6 +1,7 @@
-# AppRecord Api Server
+# Soundrecord server api
+ ### Initialize the project
     copy .env-example to .env
-    create jwt secret key like (modkmzefl,de54feznez)
+    create jwt secret key like "modkmzefl1éde54feznez"
 
     configure /config/config.json to match with your database credentials
 
@@ -8,7 +9,7 @@
     Install sequelize CLI: npm install --save-dev sequelize-cli
 
     sequelize db:migrate
-    - npm start
+    - npm start 
 
 
     
@@ -17,7 +18,7 @@
     - https://www.tutsmake.com/node-js-express-rest-api-file-upload-example/
     - https://lo-victoria.com/build-rest-api-with-nodejs-upload-files-mongodb
 
-    -  https://sequelize.org/v4/manual/tutorial/associations.html
+    - https://sequelize.org/v4/manual/tutorial/associations.html
 
     - https://www.youtube.com/watch?v=uyJjyHO0Gr0
 

@@ -12,6 +12,7 @@ if(window.location.pathname == '/authentication') {
   require('./assets/auth.js')
   require('./assets/auth.css')
 }
+
 require('./assets/style.css')
 require('./assets/style-dashboard.css')
 
@@ -22,7 +23,7 @@ Vue.config.productionTip = true
 
 window.addEventListener('resize', () => {
   store.commit('set_Width', window.innerWidth)
-})
+})  
 
 new Vue({
   vuetify,

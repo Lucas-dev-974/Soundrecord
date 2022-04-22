@@ -11,12 +11,6 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
       },
-      model: {
-        type: Sequelize.STRING,
-      },
-      modelid: {
-        type: Sequelize.INTEGER
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -28,6 +22,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('mixed');
+    await queryInterface.dropTable('creations');
   }
 };

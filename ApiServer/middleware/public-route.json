@@ -1,0 +1,10 @@
+{
+    "routes": [
+        "POST|/api/auth",   
+        "PATCH|/api/auth",
+        
+        "GET|/api/profile",
+
+        "GET|/livre"
+    ]
+}

@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('session_tracks', {
+    await queryInterface.createTable('SessionTracks', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -10,49 +10,37 @@ module.exports = {
       },
       sessionid: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
-          model: 'sessions',
-          key: 'id'
-        },
-        onDelete: 'cascade'
+          model: 'sessions', key: 'id', onDelete: 'cascade'
+        }
       },
       importid: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
-          model: 'imports',
-          key: 'id'
-        },
-        onDelete: 'cascade'
+          model: 'imports', key: 'id'
+        }
       },
       userid: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
-          model: 'users',
-          key: 'id'
-        },
-        onDelete: 'cascade'
+          model: 'users', key: 'id', onDelete: 'cascade'
+        }
       },
-
+      gain: {
+        type: Sequelize.DECIMAL
+      },
       muted: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.BOOLEAN
       },
-
       color: {
         type: Sequelize.STRING
       },
-
       src: {
         type: Sequelize.STRING
       },
-
-      gain: {
-        type: Sequelize.FLOAT
-      },
-
-      type: {
-        type: Sequelize.STRING
-      },
-
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -64,6 +52,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('session_tracks');
+    await queryInterface.dropTable('SessionTracks');
   }
 };

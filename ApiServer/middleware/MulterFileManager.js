@@ -4,16 +4,15 @@ const fs   = require('fs')
 
 const StoragePath = path.resolve(__dirname, '..') + '/public/user-'
 
-let storage = multer.diskStorage({
+const storage = multer.diskStorage({
     destination: async  (req, file, cb) => {
         let folderFile // Repository where to import all file for the usere
-
         switch(req.path){
             case '/pist': // if path of the route is /api/pist/ 
                 // We want to difine where to import the file
                 folderFile = StoragePath + req.user.id + '/imported/'   
                 break
-            case '/users/': 
+            case '/picture':
                 folderFile = StoragePath + req.user.id + '/picture/'
                 break
             default:
@@ -30,20 +29,19 @@ let storage = multer.diskStorage({
     },
 
     filename: (req, file, cb) => {
+        console.log('in file name');
         let name
-        if( req.path == '/users/') name = file.originalname.replace(/ /g, '')
+        if( req.path == '/picture') name = file.originalname.replace(/ /g, '')
         else name = req.user.id + '-' + req.fileInfos.date + '-' + file.originalname.replace(/ /g, '')
         cb(null, name)
     },
 })  
 
 exports.upload = multer({
-    storage: storage,
-
     // Upload only if file is
     fileFilter: function(req, file, callback){
+        console.log('in filter file');
         let ext = path.extname(file.originalname)
-        
         let extensions = ['.mp3', '.jpeg', '.png', '.jpg', '.wav']
 
         if(!extensions.includes(ext)){
@@ -51,7 +49,8 @@ exports.upload = multer({
             callback(null, false) // Return an errorz
         }else req.AutorizedFile = true
         
-        if(ext == '.mp3'){
+        
+        if(ext == '.mp3' || ext == '.wav'){
             req.Isaudio = true
             req.Isimage = false
         }else{
@@ -60,5 +59,7 @@ exports.upload = multer({
         }
         
         callback(null, true)
-    }
+    },
+
+    storage: storage,
 }) 

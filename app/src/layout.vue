@@ -5,7 +5,9 @@
         </div>
         
         <v-app>
-            <Alert  style="z-index: 99; top: 70px; position: absolute; width: 100%;" />
+            <div v-for="alert in this.$store.state.alerts" :key="alert.id" style="position: absolute; top: 80px; right: 10px; z-index: 99">
+                <Alert :alert="alert"/>
+            </div>
             <v-main :class="$store.state.main_theme">
                 <router-view>
                 </router-view>
@@ -32,6 +34,7 @@ export default{
     },
 
     mounted(){
+        this.checkScreen()
         this.is_loggedIn()
         if(this.$route.name == 'homme'){
             this.appClass = 'bg-dark'
@@ -40,16 +43,21 @@ export default{
 
     methods: {
         is_loggedIn: function(){
-            ApiService.get('/api/auth/')
-            .then(({data}) => {
-                data
-            }).catch(err => {
-                err
-                if(window.location.pathname !== '/authentication'){
-                     window.location.href = '/authentication'
+            ApiService.get('/api/auth/').catch(() => {
+                if(this.$route.name !== 'authentication'){
+                    this.$router.push('authentication')
                 }
             })
-        }
+        },
+
+        checkScreen: function(){
+            if(window.screen.width > 600){
+                this.is_mobile = false
+                this.$store.commit('set_IsMobile', false)
+            }else{
+                this.$store.commit('set_IsMobile', true)
+            }
+        },
     }
 }
 </script>

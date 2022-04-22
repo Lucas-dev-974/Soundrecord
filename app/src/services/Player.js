@@ -28,11 +28,10 @@ class Player{
     }
 
     laodTrack(){
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             this.player.load(store.state.pists).then(() => {
                 resolve()
-            })
-            
+            }).catch(() => reject())
         })
     }
 

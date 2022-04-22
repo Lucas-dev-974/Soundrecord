@@ -1,22 +1,25 @@
 'use strict';
-const { Model } = require('sequelize');
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Text extends Model {
+  class ProfileSettings extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      models.Text.belongsTo(models.Session,  { onDelete: 'cascade' })
+      // define association here
     }
   };
-  Text.init({
-    text: DataTypes.STRING,
-    sessionid: DataTypes.INTEGER
+  ProfileSettings.init({
+    userid: DataTypes.INTEGER,
+    setting_name: DataTypes.STRING,
+    setting_value: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'Text',
+    modelName: 'ProfileSettings',
   });
-  return Text;
+  return ProfileSettings;
 };

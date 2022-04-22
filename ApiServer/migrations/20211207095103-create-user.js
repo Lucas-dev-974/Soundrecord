@@ -16,15 +16,27 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
+      pseudo: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
       password: {
         allowNull: false,
         type: Sequelize.STRING
       },
-      roleid: {
+      role: {
         allowNull: false,
         type: Sequelize.INTEGER,
       },
       picture: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
+      facebook_link: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
+      instagram_link: {
         allowNull: true,
         type: Sequelize.STRING
       },

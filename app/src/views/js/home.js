@@ -19,20 +19,11 @@ export default{
     },
 
     mounted(){
-        this.checkScreen()
+        
         window.addEventListener('resize', this.checkScreen)
     },
     
     methods: {
-        checkScreen: function(){
-            if(window.screen.width > 600){
-                this.is_mobile = false
-                this.$store.commit('setIsMobile', false)
-            }else{
-                this.$store.commit('setIsMobile', true)
-            }
-        },
-
         loadData: function(){
             ApiService
         }

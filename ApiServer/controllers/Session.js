@@ -1,7 +1,7 @@
 const models = require('../models')
 const validator = require('../validator')
 
-const {returnFields} = require('../utils.js')
+const {returnFields, GetPagination, GetPagingDatas} = require('../utils.js')
 
 module.exports = {
     get: async function(req, res){
@@ -13,9 +13,8 @@ module.exports = {
             where:      {id: id, userid: req.user.id}, 
             attributes: { exclude: ['createdAt', 'updatedAt'] }, 
             include: [
-                { model: models.Text,  attributes: {exclude: ['createdAt', 'updatedAt']} },
                 { 
-                    model: models.session_track,  
+                    model: models.SessionTrack,  
                     attributes: {exclude: ['createdAt', 'updatedAt']},
                     include: [{model: models.Import}]   
                 }
@@ -27,20 +26,25 @@ module.exports = {
     },
 
     all: async function(req, res){
-        let params = req.query
-
-        console.log('params: ', params);
-        let limit = await models.Session.findAll().length
-        console.log(limit);
-        let sessions =  await models.Session.findAll({
+        let { page, size } = req.query
+        if(!size) size = 10
+        const { limit, offset } = GetPagination(page, size);
+        
+        let sessions =  await models.Session.findAndCountAll({
             where: { userid: req.user.id },
             attributes: { exclude: ['createdAt', 'updatedAt'] },
-            include: [  // get relation with include
-                {model: models.Text, attributes: {exclude: ['createdAt', 'updatedAt']}},
-                {model: models.session_track, attributes: {exclude: ['createdAt', 'updatedAt']}}
-            ],
+            limit: limit,
+            offset: offset
         }).catch(error => { console.log(error) })
-        return res.status(200).json({sessions})
+
+        for(const key in sessions.rows){
+            const session = sessions.rows[key].dataValues
+            let imports = await models.SessionTrack.findAndCountAll({where: {sessionid: session.id}})
+            sessions.rows[key].dataValues.importedIn = imports.count
+        }
+        
+        const response = GetPagingDatas(sessions, page, limit)
+        return res.status(200).json(response)
     },
 
     delete: async function(req, res){
@@ -48,14 +52,14 @@ module.exports = {
         let params = req.params // For web axios
 
         let validated = validator.validate(params, {sessionid: 'int'})
-        if(validated.errors) return res.status(400).json(validated)
+        if(validated.fails.length > 0) return res.status(400).json(validated)
 
-        let session = await models.Session.findByPk(validated.sessionid).catch(error => console.log(error))
+        let session = await models.Session.findByPk(validated.validated.sessionid).catch(error => console.log(error))
         if(!session) return res.status(400).json({error: "Il s'emblerais que la session n'existe pas !"})
 
         session.destroy()
 
-        return res.status(200).json()
+        return res.status(200).json(true)
     },
 
     create: async function(req, res){
@@ -64,19 +68,13 @@ module.exports = {
 
         // let user    = await models.User.findByPk(req.user.id)
         let session = await models.Session.create({
-            session_name: validated.name ?? 'Untilted',
+            session_name: validated.validated.name ?? 'Untilted',
             userid: req.user.id
         }).catch(error => { console.log(error) })
 
         // session.setUser(req.user.id)
-        
-        let text = await models.Text.create({
-            text: '',
-            sessionid: session.id
-        }).catch(error => console.log(error))
 
         session      = returnFields(session.dataValues, ['id', 'session_name'])
-        session.text = returnFields(text.dataValues, ['id', 'text'])
 
         return res.status(200).json(session)
     },
@@ -107,15 +105,4 @@ module.exports = {
         })
     },
 
-    updateText: async function(req, res){
-        let validated = validator.validate(req.body, {text: 'string', id: 'int'})
-        if(validated.errors) res.status(200).json(validated)
-
-        let text = await models.Text.findOne({ where: {id: validated.id} })
-        if(!text) return res.status(400).json({error: "Le text n'existe pas !"})
-        
-        text.set('text', validated.text)
-        text.save()
-        return res.status(200).json(text)
-    }
 }
