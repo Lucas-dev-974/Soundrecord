@@ -1,11 +1,12 @@
-import PistPlaylist from '../Session/PistPlaylist.vue'
+import Menu from '../Session/menu.vue'
 import SidebarPistManager from '../SidebarPistManager.vue';
 
 import { player } from '../../services/Player';
 
 export default{
+    name: 'sidebar',
     components: {
-        PistPlaylist, SidebarPistManager
+        Menu, SidebarPistManager
     },
 
     data(){
@@ -13,7 +14,7 @@ export default{
             open: true,
             mini: true,
 
-            player: null,
+            player: player.player,
             tracks: player.player.tracks
         }
     },
