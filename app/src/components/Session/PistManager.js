@@ -1,11 +1,6 @@
-import Pist from './pist.vue'
+import { player } from "../../services/Player"
 
 export default{
-
-    components: {
-        Pist
-    },
-    
     data(){
         return {
             text: this.$store.state.current_session.text,
@@ -14,6 +9,18 @@ export default{
             playlist: null,
             play: null,
             pause: null, 
+
+            show_menu: false,
+            x: 0,
+            y: 0,
+            items: [
+              { title: 'Click Me' },
+              { title: 'Click Me' },
+              { title: 'Click Me' },
+              { title: 'Click Me 2' },
+            ],
+
+            ontrack: null
         }
     },
 
@@ -31,6 +38,35 @@ export default{
 
         action_Pause: function(){
             this.playlist.ee.emit('pause')
+        },
+
+        show(e){
+            e.preventDefault()
+            this.show_menu = false
+            this.x = e.clientX
+            this.y = e.clientY
+            this.$nextTick(() => {
+              this.show_menu = true
+            })
+        },
+
+        on_track: function(e){
+            // console.log(e.explicitOriginalTarget.parentElement.childNodes[1].children);
+            document.querySelectorAll('.channel.channel-0').forEach(element => {
+                if(element.classList.contains('selected')) element.classList.remove('selected')
+            })
+
+            // First get track container to next get the track id inside track container classList
+            let track_container = e.explicitOriginalTarget.parentElement.parentElement
+            let track = e.explicitOriginalTarget.parentElement.childNodes[1]
+            track.classList.add('selected')
+
+            // Get track from player with the track id
+            const ptrack = player.get_track(track_container.classList[2])
+            this.ontrack = ptrack[0] ? ptrack[0] : null
+
+            
+            player.player.setState('shift')
         }
     }
 }
