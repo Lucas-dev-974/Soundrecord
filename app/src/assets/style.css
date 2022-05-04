@@ -138,11 +138,6 @@ html{
 
 .h-100{ height: 100% !important;}
 
-#barManager-audiosController{
-    padding-left: 265px;
-}
-
-
 .custom-link{
     color: white !important;
     text-decoration: none;
@@ -176,7 +171,8 @@ html{
 
 .cursor{
     color: red !important;
-    border-left: 3px solid red;
+    border-left: 2px solid red;
+    height: 115%;
     cursor: crosshair;
 }
 

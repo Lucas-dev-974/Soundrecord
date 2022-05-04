@@ -110,7 +110,7 @@
 
 .playlist-time-scale{
   height: 48px;
-}.WaveLine, .channel canvas{
+}.track-container, .channel canvas{
   height: 90px !important;
   background-color: white;
 }.waveLine .waveform{
@@ -140,4 +140,35 @@
   text-transform: uppercase;
   color: #63d189;
   
+}
+
+#bar-manager-btns button{
+  padding: 9px !important;
+  border-radius: 15%;
+  transition: all 0.6s;
+  border: 0 0 0 0;
+}
+
+#pists-container{
+  height: calc(100vh - 80px) !important;
+}
+.playlist{
+  height: 100%;
+}
+.playlist-tracks{
+  height: calc(100vh - 128px) !important;
+  background-color: #1A1D21 !important;
+  scrollbar-color: red  #1A1D21;
+  scrollbar-width: thin;
+}
+
+.channel.selected canvas{
+  border: 1px solid red;
+  
+  border-left: 0;
+  border-right: 0;
+}
+
+.time{
+  color: white;
 }
