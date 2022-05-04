@@ -1,11 +1,11 @@
 import VolumeController from './VolumeController.vue'
-import PistPlaylist     from './PistPlaylist.vue'
+import Menu     from './menu.vue'
 
 import { player } from '../../services/Player'
 
 export default{
     components: {
-        VolumeController, PistPlaylist
+        VolumeController, Menu
     },
 
     data(){
@@ -32,6 +32,10 @@ export default{
         handle_Pause: function(){
             this.in_play = false
             player.pause()
+        },
+        
+        mute_unmute: function(){
+            // player.mute_unmute()
         },
 
         start_Record: function(){

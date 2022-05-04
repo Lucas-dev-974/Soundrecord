@@ -1,7 +1,7 @@
 <template>
-    <v-card dark color="1A1D21" class="no-radius audios-controller dark-1" style="border-bottom: 2.5px solid #63D189"> 
-        <div class="pl-5 " style="min-width: 270px">
-            <a href="/dashboard" class="custom-link mx-1" > Dashboard</a>
+    <v-card dark color="1A1D21" class="no-radius audios-controller dark-1" style="border-bottom: 1.5px solid #63D189"> 
+        <div class=" " style="min-width: 270px">
+            <a href="/profile" class="custom-link mx-1" > Dashboard</a>
             <v-menu dark offset-y :close-on-content-click="false" min-width="120px" width="180px">
                 <template v-slot:activator="{ on, attrs }">
                     <a href="#" class="custom-link mx-1" v-bind="attrs" v-on="on"> Fichier </a>
@@ -12,43 +12,44 @@
                     <v-list-item class="d-flex justify-center text-3 menu-item">Télécharger</v-list-item>
                 </v-list>
             </v-menu>
-            <PistPlaylist />
+            <Menu />
         </div>
         
-        <div class="d-flex" id="barManager-audiosController">
-            <div class="d-flex align-top     mr-9">
-                
-                <v-btn color="#D81616" icon @click="stop_Record" v-if="in_record">
+        <div class="d-flex"  id="barManager-audiosController">
+
+            <div class="d-flex align-top pa-2 mr-9" id="bar-manager-btns">
+                <v-btn color="#D81616" class="border-left" @click="stop_Record" v-if="in_record">
                     <v-icon>mdi-stop-circle-outline</v-icon>
                 </v-btn>
 
-                <v-btn color="#D81616" icon @click="start_Record" v-else>
+                <v-btn color="#D81616" class="border-left" icon @click="start_Record" v-else>
                     <v-icon>mdi-record-circle-outline</v-icon>
                 </v-btn>
                 
 
-                <v-btn color="#D81616" icon>
+                <v-btn color="#D81616" class="border-center" icon>
                     <v-icon>mdi-skip-previous</v-icon>
                 </v-btn>
 
-                <v-btn color="#63D189"  v-if="!in_play" @click="handlePlay"  icon id="play-button">
+                <v-btn color="#63D189" class="border-center"  v-if="!in_play" @click="handlePlay"  icon id="play-button">
                     <v-icon>mdi-play-circle-outline</v-icon>
                 </v-btn>
 
-                <v-btn color="dark" v-else @click="handle_Pause" id="pause-button" icon>
+                <v-btn color="dark" class="border-center" v-else @click="handle_Pause" id="pause-button" icon>
                     <v-icon color="#F24E1E" c>mdi-pause-circle-outline</v-icon>
                 </v-btn>
 
-                <v-btn color="#D81616" icon>
+                <v-btn color="#D81616" class="border-right" icon>
                     <v-icon>mdi-skip-next</v-icon>
                 </v-btn>
-                
+            </div>   
+            <div class="d-flex align-center w-50">
                 <div class="timer">
-                     {{$store.state.player_currentTime}}
+                    {{$store.state.player_currentTime}}
                 </div>
-            </div>        
+                <VolumeController :type='"g_volume"' />                
+            </div>     
 
-            <VolumeController :type='"g_volume"' />
         </div>
     </v-card>
 </template>
