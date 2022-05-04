@@ -22,13 +22,16 @@ module.exports = {
         let userDir = filesPath + '/user-' + req.user.id + '/imported/'
         let fileDir = userDir + req.user.id + '-' + pist.dataValues.imported_date + '-' + pist.dataValues.name + '.mp3' 
 
+
+        
         // Check si le fichié existe si non retourne une erreur
         if(!fs.existsSync(fileDir)) return res.status(403).json({}) 
 
+        // ---------------------------------------
         let stat = fs.statSync(fileDir); 
         let readStream  
         let range  = (req.headers.range) ? req.headers.range : null
-        
+
         if(range !== null){
             let parts = range.replace(/bytes=/, "").split("-");
 
@@ -48,11 +51,11 @@ module.exports = {
                 'Content-Length': content_length,
                 'Content-Range': "bytes " + start + "-" + end + "/" + stat.size
             });
-    
+            
             readStream = fs.createReadStream(fileDir, {start: start, end: end});
         }else{
             res.header({
-                'Content-Type': 'audio/mpeg',
+                'Content-Type': 'arraybuffer',
                 'Content-Length': stat.size
             });
             readStream = fs.createReadStream(fileDir);
@@ -76,6 +79,12 @@ module.exports = {
             limit: limit,
             offset: offset
         }).catch(error => console.log(error))
+
+        // for(const key in pists.rows){
+        //     const pist = pists.rows[key].dataValues
+        //     let sessions = await models.Session.findAndCountAll({where: {sessionid: pist.id}})
+        //     sessions.rows[key].dataValues.importedIn = imports.count
+        // }
         
         const response = GetPagingDatas(pists, page, limit)
         return res.status(200).json(response)
