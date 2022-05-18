@@ -36,9 +36,10 @@ export default{
     mounted(){
         this.checkScreen()
         this.is_loggedIn()
-        if(this.$route.name == 'homme'){
-            this.appClass = 'bg-dark'
-        }
+        window.onresize = this.checkScreen
+
+        if(this.$route.name == 'homme') this.appClass = 'bg-dark'
+        
     },
 
     methods: {
@@ -51,12 +52,7 @@ export default{
         },
 
         checkScreen: function(){
-            if(window.screen.width > 600){
-                this.is_mobile = false
-                this.$store.commit('set_IsMobile', false)
-            }else{
-                this.$store.commit('set_IsMobile', true)
-            }
+            this.$store.commit('set_Width', window.screen.width)  
         },
     }
 }

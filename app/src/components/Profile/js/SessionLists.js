@@ -21,11 +21,11 @@ export default{
     },
 
     mounted() {
-        this.GetSessions()
+        this.get_sessions()
     },
 
     methods: {
-        GetSessions: async function(page = 0){
+        get_sessions: async function(page = 0){
             let response = await  api.get('/api/sessions?page=' + page)
             if(response.status == 200){
                 let totalpages = response.data.totalPages

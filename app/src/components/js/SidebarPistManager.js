@@ -1,7 +1,8 @@
 import VolumeController from '../Session/VolumeController.vue'
 
 import api from "../../services/ApiService";
-import { player } from '../../services/Player'
+import { player } from '../../services/Player';
+// import { player } from '../../services/Player'
 
 export default {
     components: {
@@ -17,10 +18,7 @@ export default {
             name: this.pist.name,
             nameInput_ref: 'pistnameinput' + this.id,
             volume: this.pist.gain,
-            selectBtn: null,
-
-            index: player.player.tracks.indexOf(this.pist), // index of the pist in player
-            _pist: null      // pist out of player
+            player: player
         }
     },
 
@@ -30,48 +28,38 @@ export default {
         }
     },
 
-    mounted(){  
-        // Set pist
-        this._pist = this.$store.state.pists[this.index]
-        
+    mounted(){
         // Muted button if the track is muted so button is gray else is green
-        this.selectBtn = document.getElementById('select-btn-' + this.pist.id)
+        this.selectBtn = document.getElementById('select-btn-' + this.pist.api_options.id)
         if(this.pist.muted) this.selectBtn.style.backgroundColor = 'green'
         else this.selectBtn.style.backgroundColor = 'gray'
     },
 
     methods: {
         deleteImportedPist: function(){
-            let url = `/api/session_track/${this._pist.id}`
+            let url = `/api/session_track/${this.pist.api_options.id}`
             
             api.delete(url)
                 .then( async () => {
-                    this.$store.commit('remove_Pist', this._pist.id)
+                    this.$store.commit('remove_Pist', this.pist.api_options.id)
                     this.pist.ee.emit('removeTrack', this.pist)
                     // console.log('pist removed')
                 }).catch(error => console.log(error))
         },
 
         DeselectSelect: function(){
-            this.pist.muted = !this.pist.muted
-            this.$store.commit('update_SelectedPist', {
-                pistid: this.pist.id,
-                field: 'muted',
-                value: this.muted
-            })
-
+            console.log(this.track);
             document.getElementById('select-btn-' + this.pist.id)
             if(this.muted == false) this.selectBtn.style.backgroundColor = 'green'
             else this.selectBtn.style.backgroundColor = 'gray'
         },
 
         ChangePistColor: function(color){
-            let pist = document.getElementById('pist-' + this.pist.id)
+            let pist = document.getElementById('pist-' + this.pist.api_options.id)
             pist.style.backgroundColor = color
             if(typeof(color) !== 'object'){
-                console.log(color);
                 this.$store.commit('update_Pist', {
-                    pistid: this.pist.id,
+                    pistid: this.pist.api_options.id,
                     field: 'color',
                     value: color
                 })

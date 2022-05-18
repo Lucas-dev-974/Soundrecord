@@ -5,6 +5,7 @@ import VueRouter from 'vue-router';
 import Session from './views/Session.vue'
 import Auth from './views/Auth.vue'
 import Profile   from './views/profile.vue'
+import Discover from  './views/Discover.vue'
 
 Vue.use(VueRouter);
 
@@ -13,8 +14,8 @@ const router = new VueRouter({
     routes: [
         {
             path: '/',  
-            name: 'profile',
-            component: Profile,
+            name: 'home',
+            component: Discover,
         },
 
         {
@@ -33,7 +34,13 @@ const router = new VueRouter({
             path: '/session',
             name: 'session',
             component: Session
-        }
+        },
+        
+        {
+            path: '/discover',
+            name: 'discorver',
+            component: Discover
+        },
     ],
 
 })

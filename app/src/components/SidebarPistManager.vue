@@ -2,11 +2,7 @@
         <v-list-item class="Slist-item">
             <div class="h-100  w-100  d-flex">
                 <div class="Smanage-item h-100">
-                    <v-btn :id="'select-btn-' + pist.id"  class="Smanager-select h-100" @click="$store.commit('update_Pist', {
-                        pistid: pist.id,
-                        field: 'muted',
-                        value: _pist.muted
-                    })">S</v-btn>
+                    <v-btn :id="'select-btn-' + pist.api_options.id"  class="Smanager-select h-100" @click="DeselectSelect()">S</v-btn>
                 </div>
 
                 <div class="w-100 Smanager-content">
@@ -49,7 +45,7 @@
                     </div>
 
                     <div class="w-50">
-                        <VolumeController :type="'track_volume'" :track="pist"/>
+                        <VolumeController :track="pist"/>
                     </div>
                     
                 </div>

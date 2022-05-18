@@ -20,11 +20,13 @@ export default{
               { title: 'Click Me 2' },
             ],
 
-            ontrack: null
+            ontrack: null,
+            track_on_move: true
         }
     },
 
-    mounted(){
+    mounted() {
+        this.track_on_move = player.track_on_move   
     },
 
     methods:{
@@ -51,9 +53,9 @@ export default{
         },
 
         on_track: function(e){
-            // console.log(e.explicitOriginalTarget.parentElement.childNodes[1].children);
             document.querySelectorAll('.channel.channel-0').forEach(element => {
                 if(element.classList.contains('selected')) element.classList.remove('selected')
+                
             })
 
             // First get track container to next get the track id inside track container classList
@@ -64,9 +66,27 @@ export default{
             // Get track from player with the track id
             const ptrack = player.get_track(track_container.classList[2])
             this.ontrack = ptrack[0] ? ptrack[0] : null
+        },
 
+        move_track: function(){
+            if(!player.track_on_move) player.set_state('shift')
+            else player.set_state('select')
+            this.track_on_move = player.track_on_move
+        },
+
+        track_select: function(){
+            const render_track = document.getElementsByClassName('track-container')
+            if(!player.on_selection) player.set_state('select')
+            else player.set_state('cursor')
             
-            player.player.setState('shift')
+            for(const track in render_track){
+                console.log(track);
+            }
+        },
+
+        get_pixeltime: function(){
+            console.log(player.player);
+            
         }
     }
 }

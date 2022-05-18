@@ -45,9 +45,14 @@
             </div>   
             <div class="d-flex align-center w-50">
                 <div class="timer">
-                    {{$store.state.player_currentTime}}
+                    {{player.duration != null ? player.duration : '00:00'}}
                 </div>
-                <VolumeController :type='"g_volume"' />                
+                <VolumeController :type='"g_volume"' />      
+
+                <v-btn small elevation="10"  icon dark color="white" :class="(player.track_on_move ? 'active' : 'nocative') + ' square-btn'" @click="track_move">
+                        <v-icon>mdi-arrow-left-right</v-icon>
+                </v-btn>
+                          
             </div>     
 
         </div>

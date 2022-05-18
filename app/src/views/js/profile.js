@@ -3,8 +3,8 @@ import { Array2Object } from '../../utils.js'
 
 import SessionLists from '../../components/Profile/SessionLists.vue'
 import Bibliotheque from '../../components/Profile/Bibliotheque.vue'
-export default{
 
+export default{
     components: {
         SessionLists, Bibliotheque
     },
@@ -17,17 +17,21 @@ export default{
             page: 'session',
             overlay: false,
 
-            // User infos
-            user_img: 'http://127.0.0.1:3000/api/picture/?token=' + this.$store.state.token ,
-            name: '',
-            pseudo:   '',
-            email:    '',
-            phone: '',  
-            facebook_link: '',
+            // User infose
+            user_img: api.defaults.baseURL + '/api/picture?userid=',
+            name:   '',
+            pseudo: '',
+            email:  '',
+            phone:  '',  
+            facebook_link:  '',
             instagram_link: '',
+            likes: 0,
+            liked: false,
 
             // Profile settings
             picture_file: null,
+            banner_color: '#252525',
+            banner_img: null,
 
             // for update
             fields: [],
@@ -37,23 +41,32 @@ export default{
 
     watch: {
         picture_file: function(){
-            console.log(this.picture_file);
-            this.update_picture()
-        }
+            if(!this.overlay)
+                this.update_picture()
+            else{
+                const reader = new FileReader()
+                reader.addEventListener('load', () => this.banner_img = reader.result )
+                reader.readAsDataURL(this.picture_file);
+            }
+        },
     },
 
     mounted(){
+        // If userid param is informed in url params so get user profile data's available
         if(this.$route.query && this.$route.query.userid){
             this.my_profile = false
-            this.UserProfile()
-        }else{
+            this.user_profile()
+        }else{// Else load user connected profile
+            this.my_profile = true
+            this.user_img  += this.$store.state.user.id
             this.me()
-            this.mySettings()
+            this.my_settings()
         }
     },
 
     methods: {
         details: function(){ this.show_details = !this.show_details },
+
         me: function(){
             api.get('/api/user')
                 .then(({data}) => {
@@ -70,27 +83,62 @@ export default{
                 })
         },
 
-        mySettings: function(){
+        
+        my_settings: function(){
             api.get('/api/profile-settings').then(({data}) => {
-                this.$store.commit('set_ProfileSettings', Array2Object(data, 'setting_name', 'setting_value'))
+                console.log(data);
+                let _data = Array2Object(data, 'setting_name', 'setting_value')
+                if(_data['banner-img']) _data['banner-img'] = api.defaults.baseURL + '/api/profile/banner?userid=' + this.$store.state.user.id
+                
+                this.banner_img = _data['banner-img']
+                this.$store.commit('push_profile_settings', _data)
+                console.log(_data['banner-img']);
+                if(_data['banner-color']) this.banner_color = _data['banner-color']
+                if(_data['likes'])        this.likes        = _data.likes
+                // if(this.$store.state.profile_settings['banner-color']) this.banner_color = this.$store.state.profile_settings['banner-color']   
             }).catch(error => console.log(error))
         },
 
-        UserProfile: function(){
-            const id = this.$route.query.userid
-            api.get('/api/profile?userid=' + id).then(({data}) => { 
-                this.email = data.user.email ?? ''
-                this.name  = data.user.name  ?? ''
-                this.pseudo = data.user.pseudo ?? ''
-                this.phone  = data.user.phone ?? ''
-                
-                this.facebook_link = data.user.facebook_link ?? ''
-                this.instagram_link = data.user.instagram_link ?? ''
+        user_profile: function(){
+            const id = this.$route.query.userid ?? null
+            if(id){
+                api.get('/api/profile?&userid=' + id + '&token=' + this.$store.state.token ?? null).then(({data}) => { 
+                    // If creators field exist
+                    if(data.creator){ 
+                        for(const creator_field in data.creator){
+                            if(this[creator_field] != 'undefined') this[creator_field] = data.creator[creator_field]
+                        }
+                    }
 
-                if(Object.entries(data.settings).length > 0){
-                    this.$store.commit('set_ProfileSettings', Array2Object(data.settings, 'setting_name', 'setting_value'))
+                    // If settings fields exist
+                    if(data.settings){ 
+                        // Convert array settings to Object with format setting_name: setting_value
+                        let settings = Array2Object(data.settings, 'setting_name', 'setting_value') 
+                        for(const setting in settings){['banner-img']
+                            if(setting != null){
+                                if(this[setting.replace('-', '_')] != 'undefined') this[setting.replace('-', '_')] = settings[setting]
+                            }
+                        }
+                    }
+                    console.log(data.like);
+                    if(data.like) this.liked = true
+                }).catch(error => console.log(error))
+            }
+
+        },
+
+        like_profile: function(){
+            api.post('/api/like', {model: 'creator', modelid: this.id}).then(({data}) => {
+                if(data.destroyed_like){
+                    this.liked = false
+                    this.likes --
+                }else{
+                    this.liked = true
+                    this.likes ++
                 }
-            }).catch(error => console.log(error))
+            }).catch(error => {
+                console.log(error);
+            })
         },
 
         update_profile: function(){
@@ -99,12 +147,10 @@ export default{
                 if(this.fields.length > 0){
                     let params = {}
                     this.fields.forEach(field => { params[field] = this[field] });
-                    api.patch('/api/user', params)
-                    .then(() => {
+                    api.patch('/api/user', params).then(() => {
                         this.$store.commit('push_Alert', {
                             type: 'success', message: 'Profile mis à jour'
                         });
-                        this.on_update = false
                     }).catch(error => {
                         console.log(error);
                     })
@@ -113,14 +159,16 @@ export default{
                         console.log('update banner');
                     }
                 }
+                this.on_update = false
             }
+            
         },
 
         update_fields: function(field, field_setting = false){
             if(!this.fields.includes(field) && !field_setting) this.fields.push(field)
             else if(field_setting && !this.settings_fields.includes(field)) this.settings_fields.push(field)
         },
-
+        
         update_picture: function(){
             // Create form to send file
             let formData = new FormData()
@@ -133,8 +181,40 @@ export default{
             })
         },
 
-        update_color: function(){
-            this.overlay = !this.over
-        }
+        update_banner: function(event){
+            if(typeof(event) == 'object')           this.overlay = false
+            else if(event == 'open_banner_setting') this.overlay = true
+            else if(event == 'save_banner'){
+                if(this.picture_file){
+                    const form_data = new FormData()
+                    form_data.append('banner-img', this.picture_file)
+                    api.post('/api/profile-setting/banner-upload', form_data).then(({data}) => {
+                        console.log(data);
+                    }).catch(error => {
+                        console.log(error);
+                    })
+                }
+                
+                if(this.$store.state.profile_settings['banner-color'] && 
+                    this.$store.state.profile_settings['banner-color'] != this.banner_color){
+                        this.$store.commit('push_profile_settings', {'banner-color': this.banner_color})
+                        api.patch('/api/profile-setting', {setting_name: 'banner-color', value: this.banner_color}).then(({data}) => {
+                            console.log(data);
+                        }).catch(error => {
+                            console.log(error);
+                        })
+                    }
+                this.overlay = false
+            }
+        },
+
+        remove_banner_img: function(){
+            this.banner_img = null
+            this.$store.commit('push_profile_settings', {'banner-img': null})
+            api.delete('/api/profile-setting/banner-img').catch(error => {
+                console.log(error);
+            })
+        },
+        
     }
 }

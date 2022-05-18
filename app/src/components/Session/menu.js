@@ -39,13 +39,19 @@ export default{
 
                 // Send request with the form data
                 api.post('/api/pist', formData)
-                    .then(({data}) => {
-                        this.$store.commit('push_PistPlaylist', data.Import)
-                        this.$store.commit('push_Pist', data.Pist)
-                        player.laodTrack()
-                    }).catch(error => {
-                        console.log(error);
-                    })
+                .then(({data}) => {
+                    this.$store.commit('push_PistPlaylist', data.Import)
+                    this.$store.commit('push_Pist', data.Pist)
+                    // player.addTrack(this.localFile)
+                    console.log(data);
+                    // player.addTrack({
+                    //     src: src,
+                    //     name: toImport.name,
+                    //     api_options: {...toImport}
+                    // })
+                }).catch(error => {
+                    console.log(error);
+                })
             }
         },
 
@@ -61,7 +67,7 @@ export default{
         },
 
         import_Microphone: function(){
-
+            
         },
 
         import_PistInSession: function(pist){
@@ -71,7 +77,7 @@ export default{
                 const src = api.defaults.baseURL + data.data.src + '?token=' + this.$store.state.token
                 toImport = data.data 
                 toImport.src = src
-                player.addTrack({
+                player.add_track({
                     src: src,
                     name: toImport.name,
                     api_options: {...toImport}
@@ -80,23 +86,5 @@ export default{
               
         },
 
-        getAudioContext:  function(){
-            // AudioContext = window.AudioContext || window.webkitAudioContext;
-            const audioContent = new AudioContext();
-            return audioContent;
-        },
-
-        url2blob: async function(){
-            try{
-                const data = await api(this.imported.src)
-                Request
-                console.log(typeof(data.data));
-                var blob = new Blob(data.data, {type: 'octet/stream'})
-                console.log(blob);
-        
-            }catch(error){
-                console.log(error);
-            }
-        }
     }
 }

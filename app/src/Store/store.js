@@ -15,31 +15,24 @@ let initialstate = {
     sessions:      [], // all sessions created by user 
     pists:         [], // all pist for the current session
 
-    player_currentTime: 0,
-    player_g_volume:    0,
-    player: {
-        g_volume: 0,
-        current_time: 0
-    },
-
     user:  null,
     token: null,
-    
     alerts: [],
 
     main_theme: 'bg-dark',
-    is_mobile: false,
     WIDTH: null,
 
-    profile_settings: []
+    profile_settings: {
+        'banner-img': null,
+        'banner-color': null,
+        'show': [],
+    }
 }
 
 export default new Vuex.Store({
     plugins: [vuexLocal.plugin],
 
-    state:{
-        ...initialstate
-    },
+    state:{ ...initialstate },
 
     mutations: {
         set_CurrentSession: function(state, session){ state.current_session = session },
@@ -53,9 +46,7 @@ export default new Vuex.Store({
         set_User: function(state, user){ state.user = user },
 
         set_Pists: function(state, pists){ state.pists = pists },
-        
-        set_IsMobile(state, value){ state.is_mobile = value },
-        
+
         set_MainAudio: function(state, context){ state.main_audio = context  },  
 
         set_Player: function(state, player){ state.player = player },
@@ -133,7 +124,6 @@ export default new Vuex.Store({
             state.Sessions = state.sessions.filter(session => session.id != sessionid)
         },
 
-
         push_PistPlaylist: function(state, pist){
             state.pist_playlist.push(pist)
         },
@@ -141,15 +131,19 @@ export default new Vuex.Store({
             state.pist_playlist = state.pist_playlist.filter(pist => pist.id != pist_id)
         },
 
-        set_ProfileSettings: function(state, settings){
-            state.profile_settings = settings
+        push_profile_settings: function(state, settings){
+            for(const setting in settings){
+                if(Object.keys(state.profile_settings).includes(setting)){
+                    state.profile_settings[setting] = settings[setting]
+                }
+                else{
+                    state.profile_settings = {
+                        ...state.profile_settings,
+                        [setting]: settings[setting]
+                    }
+                }
+            }
         },
-        push_ProfileSetting: function(state, setting){
-            state.profile_settings.push(setting)
-        },
-        // update_ProfileSetting: function(state, setting){
-        //     //
-        // },
 
         logout: function(state){
             Object.assign(state, initialstate)

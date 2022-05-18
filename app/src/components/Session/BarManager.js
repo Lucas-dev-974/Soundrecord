@@ -10,6 +10,7 @@ export default{
 
     data(){
         return{
+            player: player,
             play: false,
             in_record: false,
             in_play: false,
@@ -44,6 +45,12 @@ export default{
         
         stop_Record: function(){
             
+        },
+
+        track_move: function(){
+            if(player.player.state == 'shift'){
+                player.set_state('select')
+            }else player.set_state('shift')
         }
     }
 }
