@@ -172,3 +172,18 @@
 .time{
   color: white;
 }
+
+.square-btn{
+  border-radius: 0px !important;
+}.square-btn.active{
+  background-color: #ffffff4d;
+}
+
+.selection.segment{
+  background-color: #18181888;
+  height: 90px !important;
+}
+
+.add-pist-btn-pist-container{
+  position: abs;
+}
