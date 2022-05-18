@@ -5,10 +5,7 @@ const bcrypt = require('bcrypt')
 const path = require('path')
 const fs = require('fs')
 const stream = require('stream')
-const { GetPagination, GetPagingDatas, validator }  = require('../utils.js')
-
-const user_rows = models.User.updatable()
-
+const { GetPagination, validator }  = require('../utils.js')
 
 module.exports = {
     get: async function(req, res){
@@ -83,9 +80,14 @@ module.exports = {
     },
 
     picture: async function(req, res){
-        const picture = await models.User.findOne({where: {id: req.user.id}, attributes: ['picture']})
-        const picture_dir = path.resolve(__dirname, '../public/user-') + req.user.id + '/picture/' + picture.dataValues.picture.replace(/ /g, '')
-        console.log(picture_dir);
+        let userid = req.query.userid ?? req.user.id
+
+        let picture_dir
+        if(userid){
+            const picture = await models.User.findOne({where: {id: userid}, attributes: ['picture']})
+            picture_dir = path.resolve(__dirname, '../public/user-') + userid + '/picture/' + picture.dataValues.picture.replace(/ /g, '')
+        }
+        
 
         if(!fs.existsSync(picture_dir)) picture_dir = path.resolve(__dirname, '../public/default_picture/defaultpp.jpg')
 
@@ -99,5 +101,9 @@ module.exports = {
             }
         })
         ps.pipe(res)
+    },
+
+    get_creators: function(req, res){
+        
     }
 }

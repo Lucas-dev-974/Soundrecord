@@ -218,7 +218,7 @@ module.exports = {
             selected: true,
             color: 'green',
             src: '/api/pist/' + validated.validated.importid,
-            gain: 0.5
+            gain: 50
         }).catch(error => { console.log(error) })
         
         return res.status(200).json({

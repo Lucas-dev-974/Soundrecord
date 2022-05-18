@@ -96,7 +96,6 @@ module.exports = {
             console.log(error);
             return res.status(500).json({error: 'Une erreur est survenu, veuillez réesayer plus tard !'})
         }
-        return res.status(200).json()
     },
     
     importIn: function(req, res){
@@ -104,5 +103,9 @@ module.exports = {
             'id': 'int'
         })
     },
+
+    save: function(req, res){
+        
+    }
 
 }

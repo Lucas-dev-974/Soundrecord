@@ -23,7 +23,7 @@ const self = module.exports = {
         let headerAuth = req.headers['authorization']
         let token = module.exports.parseauthorization(headerAuth)
         
-        // Si le token est spécifié dans l'url via http://url...?token=ferjnfiejrn
+        // Si le token est spécifié dans l'url via http://url...?token=<token>
         if(req.query.token) token = req.query.token 
 
         if(token != null){
@@ -67,7 +67,8 @@ const self = module.exports = {
     autorizeRoutes: function(asked_path, asked_method){
         let route = asked_method + '|' + asked_path
         if(publicRoutes.routes.includes(route)){
+            console.log('okokokoko');
             return true
-        } else return false
+        } else console.log('nonnononono');
     }
 }

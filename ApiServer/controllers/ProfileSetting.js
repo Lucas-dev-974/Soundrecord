@@ -1,8 +1,13 @@
 // Default setting: bannerbg - bannercolor - show{profile}: name, email... 
-const { validator } = require('../utils.js')
+const fs = require('fs')
+const path = require('path')
+const stream = require('stream')
 const models = require('../models')
+const { validator } = require('../utils.js')
 const htmlspecialchars = require('htmlspecialchars')
-const res = require('express/lib/response')
+
+require('dotenv').config();
+
 
 const self = module.exports = {
     get: async function(req, res){
@@ -10,10 +15,7 @@ const self = module.exports = {
         if(validated.errors) return res.status(402).json(validated.errors)
 
         const setting = await models.ProfileSettings.findOne({
-            where: {
-                setting_name: validated.setting_name,
-                userid: req.user.id
-            },
+            where: { setting_name: validated.setting_name, userid: req.user.id },
             attributes: { exclude: ['createdAt', 'updatedAt']}
         })
 
@@ -21,81 +23,145 @@ const self = module.exports = {
         else         res.status(200).json(setting)
     },  
 
-    all: async function(req, res){  
-        const user = models.User.findOne({where: {id: req.user.id}}).catch(error => console.log(error))
+    all: async function(req, res, next, userid = null){
+        let user_id
+        if(userid != null) user_id = userid
+        else       user_id = req.user.id
+        
+        const user = models.User.findOne({where: {id: user_id}}).catch(error => console.log(error))
         if(!user)  return res.status(403).json({error: 'L\'utilisateur n\'existe pas'})
 
         const settings = await models.ProfileSettings.findAll({
-            where: {userid: req.user.id},
+            where: {userid: user_id},
             attributes: {exclude: ['createdAt', 'updatedAt']}
         })
-        return res.status(200).json(settings)
+
+        const likes = await models.Liked.findAndCountAll({ where: { model: 'creator', modelid: user_id }})
+
+        _settings = [ ...settings, {setting_name: 'likes', setting_value: likes.count} ]
+
+        if(userid) return _settings
+        return res.status(200).json(_settings)
     },
 
     update: async function(req, res){
         let validated = validator(req.body, { setting_name: 'string', value: 'string' })
         if(validated.errors) return res.status(402).json(validated.errors)
 
+        console.log(validated);
+
         let setting = await models.ProfileSettings.findOne({
-            where: { userid: req.user.id, setting_name: validated.setting_name },
-            // attributes: { exclude: ['createdAt', 'updatedAt']}
+            where: { userid: req.user.id, setting_name: validated.validated.setting_name },
         })  
 
-        console.log(setting);
-        if(!setting) setting = await models.ProfileSettings.create({userid: req.user.id, setting_name: validated.setting_name, setting_value: validated.value})
+        if(!setting) setting = await models.ProfileSettings.create({userid: req.user.id, setting_name: validated.validated.setting_name, setting_value: validated.validated.value})
         else{
-            setting.setting_value = validated.value
+            setting.setting_value = validated.validated.value
             setting = await setting.save()
-            // await setting.save()        
         }
-
-        if(!setting) res.status(404).json({error: 'Aucun paramètre disponible ici'})
-        else         res.status(200).json(setting)
+        res.status(200).json(setting)
     },
 
-    upload: function(req, res){
-        // if(req)
+    upload: async function(req, res){
+        if(!req.Isimage) return res.status(403).json({error: 'Désoler une image est requise !'})
+        let banner_background = await models.ProfileSettings.findOne({
+            where: {
+                setting_name: 'banner-img',
+                userid: req.user.id,
+            }
+        }).catch(error => {
+            console.log(error);
+        })
+
+        if(!banner_background){
+            banner_background = await models.ProfileSettings.create({
+                setting_name: 'banner-img',
+                setting_value: req.filename,
+                userid: req.user.id
+            }).catch(error => {
+                console.log(error);
+            })
+        }else{
+            banner_background.setting_value = req.filename
+            banner_background.save()
+        }
+
+        return res.status(200).json(banner_background.dataValues)
     },
 
     getProfile: async function(req, res){ // Return user infos
-        let userid = req.query.userid ? htmlspecialchars(req.query.userid) : htmlspecialchars(req.user.id)
+        let userid = req.query.userid ? htmlspecialchars(req.query.userid) : req.user.id
         if(!userid || isNaN(userid)) return res.status(403).json({error: 'Aucun identifiant fournie !'})
 
-        let settings = await self.getProfileSettings(userid)
+        let hide_fields = []
+        let settings = await self.all(null, null, null, userid)
         
-        let user, creation, mixed
-        if(settings.show_options){
-            user = await models.User.findOne({
-                where: {id: userid},
-                attributes: settings.show_options.split(',')
+        let like = null
+        // Get Like
+        if(req.user){
+            like = await models.Liked.findAll({
+                where: { userid: req.user.id, model: 'creator', modelid: userid }
+            }).catch(error => {
+                console.log(error);
             })
-            delete settings.show_options
         }
 
-        if(!user) return res.status(403).json({error: 'L\'utilisateur n\'existe pas'})
-
-        return res.status(200).json({
-            user: {...user.dataValues},
-            settings: {...settings}
+        settings.forEach((setting, key) => {
+            if(setting.dataValues){
+                if(setting.dataValues.setting_name === 'hide-fields'){
+                    hide_fields = setting.dataValues.setting_value.split('-')
+                    delete settings[key]
+                }
+                if(setting.dataValues.setting_name === 'banner-img'){
+                    setting.dataValues.setting_value =  'http://localhost:3000/api/profile/banner?userid=' + userid
+                }
+            }
         })
+
+        const user = await models.User.findOne({
+            where: {id: userid},
+            attributes: {exclude: ['password', 'updatedAt', 'createdAt', ...hide_fields]}
+        }).catch(error => console.log(error))
+        
+        return res.status(200).json({
+            creator: user,
+            settings: [...settings],
+            like: like.length
+        })
+        
     },
 
-    getProfileSettings: async function(userid){ 
-        let profile_settings = await models.ProfileSettings.findOne({where: {userid: userid}})
-        if(!profile_settings){
-            return {
-                show_options: "email,name,pseudo",
-            }
-        }else{
-            const result = profile_settings.dataValues.setting_value.split(',')
-            let query = []
-            result.forEach((value, key) => {
-                if(value == 'fb')   result[key] = ('facebook_link')
-                if(value == 'inst') result[key] = ('instagram_link')
-            });
+    banner_image: async function(req, res){
+        let user_id
+        if(req.query.userid) user_id = req.query.userid
+        else user =  req.user.id
+        //Search if client have registered banner image
+        const picture = await models.ProfileSettings.findOne({where: {userid: user_id, setting_name: 'banner-img'}, attributes: ['setting_value']})
 
-            return query
+        if(picture != null){
+            let picture_dir = path.resolve(__dirname, '../public/user-') + user_id + '/banner/' + picture.dataValues.setting_value.replace(/ /g, '')
+            const filereader = fs.createReadStream(picture_dir) 
+            const ps         = new stream.PassThrough() // Handle error during stream
+    
+            stream.pipeline(filereader, ps, (err) => {
+                if (err) {
+                    console.log(err)
+                    return res.status(400).json({error: 'Une erreur est survenue veuillez réesayer plus tard'}); 
+                }
+            })
+            ps.pipe(res)
         }
+    },
 
+    delete_banner: async function(req, res){
+        let banner_img = await models.ProfileSettings.findOne({where: {setting_name: 'banner-img', userid: req.user.id}})
+        
+        const StoragePath = path.resolve(__dirname, '..') + '/public/user-' + req.user.id + '/banner/' + banner_img.dataValues.setting_value
+        
+        if(banner_img) {
+            banner_img.destroy()
+            banner_img.save()
+            return res.status(200).json()
+        }else return res.status(403).json({error: 'une erreur est survenue'})
     }
 }

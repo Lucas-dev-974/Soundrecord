@@ -2,9 +2,9 @@
     "routes": [
         "POST|/api/auth",   
         "PATCH|/api/auth",
-        
-        "GET|/api/profile",
-
-        "GET|/livre"
+        "GET|/api/profile-setting/banner-img",
+        "GET|/api/profile"  ,
+        "GET|/api/picture",
+        "GET|/api/profile/banner"      
     ]
 }

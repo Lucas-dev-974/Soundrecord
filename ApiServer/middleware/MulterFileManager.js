@@ -1,11 +1,12 @@
 const multer = require('multer')
-const path = require('path')
-const fs   = require('fs')
+const path   = require('path')
+const fs     = require('fs')
 
 const StoragePath = path.resolve(__dirname, '..') + '/public/user-'
 
 const storage = multer.diskStorage({
     destination: async  (req, file, cb) => {
+        console.log('path: ', req.path);
         let folderFile // Repository where to import all file for the usere
         switch(req.path){
             case '/pist': // if path of the route is /api/pist/ 
@@ -15,6 +16,11 @@ const storage = multer.diskStorage({
             case '/picture':
                 folderFile = StoragePath + req.user.id + '/picture/'
                 break
+
+            case '/profile-setting/banner-upload':
+                folderFile = StoragePath + req.user.id + '/banner/'
+                break
+
             default:
                 return cb(new Error('Impossible d\'importer'))
         }
@@ -29,10 +35,10 @@ const storage = multer.diskStorage({
     },
 
     filename: (req, file, cb) => {
-        console.log('in file name');
-        let name
-        if( req.path == '/picture') name = file.originalname.replace(/ /g, '')
+        let name 
+        if( req.path == '/picture' || req.path == '/profile/banner-upload') name = file.originalname.replace(/ /g, '')
         else name = req.user.id + '-' + req.fileInfos.date + '-' + file.originalname.replace(/ /g, '')
+        req.filename = name
         cb(null, name)
     },
 })  
@@ -56,6 +62,8 @@ exports.upload = multer({
         }else{
             req.Isaudio = false
             req.Isimage = true
+            req.filename = file
+            req.fileext  = ext
         }
         
         callback(null, true)

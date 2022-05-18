@@ -29,20 +29,26 @@ exports.router = (() => {
     router.route('/user').patch(UserController.update)
     router.route('/user').delete(UserController.delete)
 
+    // Creators
+    router.route('/creators').get(UserController.get_creators)
+
     // User picture
     router.route('/picture').post(MulterFilesManager.upload.single('profile_picture'), UserController.upload)
     router.route('/picture/').get(UserController.picture)
 
     // Profile routes
     router.route('/profile').get(ProfileSetting.getProfile)
-    router.route('/profile/banner-upload').post(MulterFilesManager.upload.single('banner-img'), ProfileSetting.upload)
+    router.route('/profile/banner').get(ProfileSetting.banner_image)
 
+    // Profile Setting
+    router.route('/profile-setting/banner-upload').post(MulterFilesManager.upload.single('banner-img'), ProfileSetting.upload)
+    router.route('/profile-setting/banner-img').delete(ProfileSetting.delete_banner)
     router.route('/profile-setting').get(ProfileSetting.get)
     router.route('/profile-settings').get(ProfileSetting.all)
     router.route('/profile-setting').patch(ProfileSetting.update)
 
     // Sessions routes
-    router.route('/sessions').get(SessionController.all) 
+    router.route('/sessions').get(SessionController.all)
     router.route('/session/:sessionid').get(SessionController.get)
     router.route('/session').post(SessionController.create)
     router.route('/session/:sessionid').delete(SessionController.delete)
@@ -63,12 +69,9 @@ exports.router = (() => {
     router.route('/session_track/:pistid').delete(ImportController.deleteIn)
 
     // Liked routes
-    router.route('/likes').get(Liked.all)
     router.route('/like').get(Liked.get)
-    router.route('/profile/like').post(Liked.ProfileLike)
-    router.route('/creation/like').delete(Liked.CreationLike)
-    
-    
+    router.route('/like').post(Liked.like)
+
     // Search routes
     router.route('/search/sessions').post(Search.SearchSession)
     router.route('/search/pists').post(Search.SearchImport)
