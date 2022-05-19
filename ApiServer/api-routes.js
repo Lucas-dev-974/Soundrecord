@@ -1,18 +1,17 @@
 const express         = require('express')
 
 // Controllers
-const AuthController = require('./controllers/Authentication')
+const AuthController    = require('./controllers/Authentication')
 const SessionController = require('./controllers/Session')
-const ImportController = require('./controllers/Import')
-const PistController = require('./controllers/Import')
-const UserController = require('./controllers/User')
+const AudioController   = require('./controllers/audio')
+const PistController    = require('./controllers/audio')
+const UserController    = require('./controllers/User')
+const ProfileSetting    = require('./controllers/ProfileSetting')
+const Liked             = require('./controllers/Liked')
+const Search            = require('./controllers/Search')
 
 // Middleware
 const MulterFilesManager = require('./middleware/MulterFileManager')
-const Liked = require('./controllers/Liked')
-const ProfileSetting = require('./controllers/ProfileSetting')
-const UnitTestController = require('./controllers/UnitTestController')
-const Search = require('./controllers/Search')
 
 exports.router = (() => {
     let router = express.Router()
@@ -62,11 +61,11 @@ exports.router = (() => {
     router.route('/pist').patch(PistController.update)
 
     // session_track
-    router.route('/where/session_track').get(ImportController.checkWherePistIsImported)
-    router.route('/session_track/:sessionid').get(ImportController.getImported)
-    router.route('/session_track').patch(ImportController.UpdatePist)
-    router.route('/session_track').post(ImportController.importInFromPistID)
-    router.route('/session_track/:pistid').delete(ImportController.deleteIn)
+    router.route('/where/session_track').get(AudioController.checkWherePistIsImported)
+    router.route('/session_track/:sessionid').get(AudioController.getImported)
+    router.route('/session_track').patch(AudioController.UpdatePist)
+    router.route('/session_track').post(AudioController.importInFromPistID)
+    router.route('/session_track/:pistid').delete(AudioController.deleteIn)
 
     // Liked routes
     router.route('/like').get(Liked.get)
