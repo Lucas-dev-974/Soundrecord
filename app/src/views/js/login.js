@@ -15,7 +15,7 @@ export default{
             .then(({data}) => {
                 this.$store.commit('set_Token', data.token)
                 this.$store.commit('set_User', data.user)
-                this.$router.push('profile')
+                window.location.href = '/profile'
 
             }).catch(err => {
                 this.$store.commit('push_Alert', {
