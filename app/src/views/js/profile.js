@@ -86,13 +86,11 @@ export default{
         
         my_settings: function(){
             api.get('/api/profile-settings').then(({data}) => {
-                console.log(data);
                 let _data = Array2Object(data, 'setting_name', 'setting_value')
                 if(_data['banner-img']) _data['banner-img'] = api.defaults.baseURL + '/api/profile/banner?userid=' + this.$store.state.user.id
                 
                 this.banner_img = _data['banner-img']
                 this.$store.commit('push_profile_settings', _data)
-                console.log(_data['banner-img']);
                 if(_data['banner-color']) this.banner_color = _data['banner-color']
                 if(_data['likes'])        this.likes        = _data.likes
                 // if(this.$store.state.profile_settings['banner-color']) this.banner_color = this.$store.state.profile_settings['banner-color']   
