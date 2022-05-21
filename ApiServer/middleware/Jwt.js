@@ -19,6 +19,8 @@ const self = module.exports = {
         else return authorization.replace('Bearer ', '')
     },
 
+    // Check if asked routes is public
+    // If not public check if have token and continue if token is
     isAuthorized: async function(req, res, next){
         let headerAuth = req.headers['authorization']
         let token = module.exports.parseauthorization(headerAuth)
@@ -51,6 +53,7 @@ const self = module.exports = {
         }
     },
 
+    // Check if given token is delivered token
     checkToken: function(token){
         try{
             let jwtToken = jwt.verify(token, JWT_SIGN_SECRET)
@@ -67,8 +70,7 @@ const self = module.exports = {
     autorizeRoutes: function(asked_path, asked_method){
         let route = asked_method + '|' + asked_path
         if(publicRoutes.routes.includes(route)){
-            console.log('okokokoko');
             return true
-        } else console.log('nonnononono');
+        } else return false
     }
 }
