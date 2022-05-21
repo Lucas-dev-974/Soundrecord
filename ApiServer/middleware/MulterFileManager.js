@@ -4,34 +4,41 @@ const fs     = require('fs')
 
 const StoragePath = path.resolve(__dirname, '..') + '/public/user-'
 
-const storage = multer.diskStorage({
-    destination: async  (req, file, cb) => {
-        console.log('path: ', req.path);
-        let folderFile // Repository where to import all file for the usere
-        switch(req.path){
+const file_utils = {
+    get_storage_path(path, userid){
+        let folder_file
+        switch(path){
             case '/pist': // if path of the route is /api/pist/ 
                 // We want to difine where to import the file
-                folderFile = StoragePath + req.user.id + '/imported/'   
+                folder_file = StoragePath + userid + '/imported/'   
                 break
             case '/picture':
-                folderFile = StoragePath + req.user.id + '/picture/'
+                folder_file = StoragePath + userid + '/picture/'
                 break
 
             case '/profile-setting/banner-upload':
-                folderFile = StoragePath + req.user.id + '/banner/'
+                folder_file = StoragePath + userid + '/banner/'
                 break
 
             default:
                 return cb(new Error('Impossible d\'importer'))
         }
 
-        // let us to use the data file in the controller
+        return folder_file
+    }
+}
+
+const storage = multer.diskStorage({
+    destination: async  (req, file, cb) => {
+        // Repository where to import all file for the usere
+        let folder_file = file_utils.get_storage_path(req.path, req.user.id)
+
         req.fileInfos = file    
         req.fileInfos['date'] = Date.now()
 
         // If the folder does'nt exist create one
-        if (!fs.existsSync(folderFile))  fs.mkdirSync(folderFile, { recursive: true })
-        cb(null, folderFile)
+        if (!fs.existsSync(folder_file))  fs.mkdirSync(folder_file, { recursive: true })
+        cb(null, folder_file)
     },
 
     filename: (req, file, cb) => {
