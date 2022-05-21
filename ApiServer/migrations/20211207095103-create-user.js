@@ -32,6 +32,11 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
+      public: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        default: false
+      },
       facebook_link: {
         allowNull: true,
         type: Sequelize.STRING
