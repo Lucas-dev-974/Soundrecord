@@ -4,6 +4,7 @@ const models = require('../models')
 const _validator = require('../validator')
 
 const {returnFields, validator} = require('../utils.js')
+
 const self = module.exports = {
     register: async function(req, res){
         let validated = validator(req.body, {
@@ -14,20 +15,24 @@ const self = module.exports = {
         }) 
         if(validated.failsSize > 0) return res.status(403).json(validated.fails)
         
+        // Search if user email exist in db if exist return warning
         let user = await models.User.findOne({ attributes: ['email'], where: {email: validated.validated.email} })
         if(user)   return res.status(403).json({'error': 'Cet email est déjà enregistrer, veuillez vous connecté !'})
 
         const password = bcrypt.hashSync(validated.validated.password, bcrypt.genSaltSync(8))
-        
+
         // Create user
         user = await models.User.create({ 
             name: validated.validated.name,
             email: validated.validated.email,
             password: password,
-            role: 2
-        }).catch(error => {return res.status(403).json({ error: error })})
-        
+            role: 2,
+            public: false
+        }).catch(error => {return {error: error}})
+        console.log(user);
+        if(user.error) return res.status(403).json('Désolé une erreur est survenue veuillez ré-essayer plus tard ou nous contacter !')
         // Let generate Token for the user
+        console.log(user);
         const token = jwt.generateToken({ 
             id:    user.dataValues.id,
             email: user.dataValues.email,
