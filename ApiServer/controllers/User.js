@@ -6,8 +6,10 @@ const path = require('path')
 const fs = require('fs')
 const stream = require('stream')
 const { GetPagination, validator }  = require('../utils.js')
+const res = require('express/lib/response')
+const jwt = require('../middleware/Jwt.js')
 
-module.exports = {
+const self = module.exports = {
     get: async function(req, res){
         const user = await models.User.findOne({
             where: {id: req.user.id},
@@ -39,8 +41,8 @@ module.exports = {
 
     update: async function(req, res){
         const user = await models.User.findOne({ where: {id: req.user.id } })
-        let validated = validator(req.body, { name: 'string', email: 'string', pseudo: 'string', password: 'string', facebook_link: 'string', instagram_link: 'string' })
-        
+        let validated = validator(req.body, { name: 'string', email: 'string', pseudo: 'string', password: 'string', facebook_link: 'string', instagram_link: 'string', public: 'boolean' })
+        console.log(validated);
         if(validated.validatedSize > 0){
             Object.entries(validated.validated).forEach(async(data, key) => {
                 user.set(data[0], data[1])
@@ -104,7 +106,57 @@ module.exports = {
         ps.pipe(res)
     },
 
-    get_creators: function(req, res){
+    get_creators: async function(req, res){
+        const exclude_fields = { exclude: ['updatedAt', 'createdAt', 'password'] }
+
+        // Get public creators
+        let creators = await models.User.findAndCountAll({
+            where: {public: true},
+            attributes: {...exclude_fields} 
+        }).catch(error => console.log(error)) 
+        creators.rows.forEach((creator, key) => creators.rows[key] = creator.dataValues)
         
+        // Get like's and return response
+        creators = await self.get_likes(creators)
+        return res.status(200).json(creators)
+    },
+
+    get_likes: function(creators){
+        return new Promise((resolve, reject) => {
+            creators.rows.forEach(async (creator, key) => {
+                const likes =  await models.Liked.findAndCountAll({where: {model: 'creator', modelid: creator.id}}).catch(error => console.log(error))
+                creators.rows[key]['likes'] = likes.count
+                if(key+1 == creators.rows.length)  resolve(creators)
+            })            
+        })
+
+    },
+
+    reset_password: async function(req, res){
+        let validated = validator(req.body, {_token_: 'string', password: 'string', password_confirmation: 'string'})
+        if(validated.failsSize > 0) return res.status(403).json({error: 'Une erreur c\'est produite ! Token manquant.'})
+        
+        // Check if password and password confirmation is identic
+        if(validated.validated.password != validated.validated.password_confirmation) return res.status(403).json({error: 'Les mot de passe ne corresponde pas !'})
+        
+        // Check if token is valid and get token data
+        let token = jwt.checkToken(validated.validated._token_)
+        if(token.error) return res.status(403).json(token)
+        
+        let user = await models.User.findOne({where: {email: token.email} }).catch(error => { console.log(error) })
+        
+        if(!user) return res.status(404).json({error: 'Désolé cet email n\'est pas enregistrer dans nos services'})
+        const password = bcrypt.hashSync(validated.validated.password, bcrypt.genSaltSync(8))
+
+        try{
+            user.password = password
+            user.save()
+            return res.status(200).json({ infos: 'Mot de passe modifier' })
+        }catch(error){
+            return res.status(500).json({error: 'Désolé une erreur est survenue !'})
+        }
+
+
+
     }
 }

@@ -99,7 +99,8 @@ module.exports = {
         let pist = await models.Import.create({
             name: path.parse(req.fileInfos.originalname).name.replace(/ /g, ''),
             userID: req.user.id,
-            imported_date: req.fileInfos.date
+            imported_date: req.fileInfos.date,
+            public: false
         }).catch(error => { console.log(error) })
 
         if(validated.failsSize === 0){
@@ -110,7 +111,7 @@ module.exports = {
                 muted: false,
                 color: 'green',
                 src: '/api/pist/' + pist.id,
-                gain: 0.5
+                gain: 0.5,
             }).catch(error => { console.log(error) })
 
             let pistConfig = {

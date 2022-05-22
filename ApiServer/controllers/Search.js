@@ -4,7 +4,7 @@ const {validator} = require('../utils.js')
 const {GetPagination, GetPagingDatas} = require('../utils.js')
 
 
-module.exports = {
+const self = module.exports = {
     SearchSession: async function(req, res){
         const validated = validator(req.body, {query: 'string', size: 'int', page: 'int'})
         const { limit, offset } = GetPagination(validated.validated.page, validated.validated.size);
