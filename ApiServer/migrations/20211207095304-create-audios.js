@@ -48,7 +48,7 @@ const self = module.exports = {
       },
       onDelete: 'cascade',
       onUpdate: 'cascade'
-    }).catc(error => console.log(error))
+    }).catch(error => console.log(error))
   },
 
   down: async (queryInterface, Sequelize) => {
