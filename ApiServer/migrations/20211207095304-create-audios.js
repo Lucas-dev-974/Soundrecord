@@ -1,5 +1,4 @@
 'use strict';
-const models = require('../models/')
 const self = module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Imports', {
@@ -35,13 +34,13 @@ const self = module.exports = {
       }
     });
 
-    self.foreign(queryInterface, DataTypes.INTEGER)
+    self.foreign(queryInterface)
   },
 
-  foreign: async  (queryInterface, Sequelize) => {
+  foreign: async  (queryInterface) => {
     await queryInterface.addConstraint('Imports', {
       fields: ['userID'],
-      type: Sequelize,
+      type: 'integer',
       name: 'fkey_audio_user', // optional
       references: {
         table: 'users',
