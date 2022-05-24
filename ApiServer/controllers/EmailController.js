@@ -2,7 +2,6 @@ const { send_mail } = require('../middleware/Email.js')
 const {validator}   = require('../utils.js')
 const jwt           = require('../middleware/Jwt.js')
 
-const randtoken = require('rand-token')
 module.exports = {
     get_mail: function(req, res){
 
