@@ -1,6 +1,4 @@
 'use strict';
-
-const { DataTypes } = require('sequelize/dist');
 const models = require('../models/')
 const self = module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -43,7 +41,7 @@ const self = module.exports = {
   foreign: async  (queryInterface, Sequelize) => {
     await queryInterface.addConstraint('Imports', {
       fields: ['userID'],
-      type: DataTypes.INTEGER,
+      type: Sequelize.DataTypes.INTEGER,
       name: 'fkey_audio_user', // optional
       references: {
         table: 'users',
