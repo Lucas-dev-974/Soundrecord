@@ -9,7 +9,7 @@
 
                 <v-list  class="app-menu py-0" elevation="10">
                     <v-list-item class="d-flex justify-center text-3 menu-item">Enregistrer</v-list-item>
-                    <v-list-item class="d-flex justify-center text-3 menu-item">Télécharger</v-list-item>
+                    <v-list-item class="d-flex justify-center text-3 menu-item" @click="download">Télécharger</v-list-item>
                 </v-list>
             </v-menu>
             <Menu />

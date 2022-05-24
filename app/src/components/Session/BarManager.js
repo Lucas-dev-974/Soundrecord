@@ -51,6 +51,11 @@ export default{
             if(player.player.state == 'shift'){
                 player.set_state('select')
             }else player.set_state('shift')
+        },
+
+        
+        download: function(){
+            player.download()
         }
     }
 }
