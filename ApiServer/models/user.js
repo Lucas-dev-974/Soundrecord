@@ -8,7 +8,6 @@ module.exports = (sequelize, DataTypes) => {
       models.User.hasMany(models.Import,  { onDelete: 'cascade' })
       models.User.hasMany(models.Session, { onDelete: 'cascade' })
       models.User.hasMany(models.Liked,   { onDelete: 'cascade' })
-      models.User.hasMany(models.Pack,    { onDelete: 'cascade' })
       models.User.hasMany(models.SessionTrack, { onDelete: 'cascade' })
     }
 
@@ -34,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     password: DataTypes.STRING,
     role:     DataTypes.INTEGER,
     picture:  DataTypes.STRING,
+    public:   DataTypes.BOOLEAN,
     facebook_link: DataTypes.STRING,
     instagram_link: DataTypes.STRING
   }, {

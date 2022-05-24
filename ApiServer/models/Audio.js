@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     imported_date: DataTypes.STRING,
     userID:        DataTypes.INTEGER,
     name:          DataTypes.STRING,
+    public:        DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Import',
