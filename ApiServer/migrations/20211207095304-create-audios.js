@@ -9,7 +9,7 @@ const self = module.exports = {
         type: Sequelize.INTEGER
       },
       userID: {
-        type: Sequelize.UUID,
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
       imported_date: {
@@ -35,7 +35,7 @@ const self = module.exports = {
 
     await queryInterface.addConstraint('Imports', {
       fields: ['userID'],
-      type: Sequelize.UUID,
+      type: Sequelize.INTEGER,
       name: 'custom_fkey_audio_user', // optional
       references: {
         table: 'Users',
