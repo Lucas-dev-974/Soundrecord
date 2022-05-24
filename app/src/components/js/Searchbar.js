@@ -2,9 +2,10 @@ import api from '../../services/ApiService.js'
 
 export default {
     props: {
-        add_url:  { required: true },
-        item: { required: true },
-        search_url:   { required: false}
+        add_url:    { required: false },
+        item:       { required: true  },
+        search_url: { required: false },
+        theme:      { required: false }
     },
     
     data(){
@@ -84,10 +85,11 @@ export default {
 
             if(this.item == 'session'){
                 this.total_page = await this.$parent.get_sessions(this.page)
-                console.log(this.total_page);
             }else if(this.item == 'pist'){
                 this.total_page = await this.$parent.get(this.page) 
-                console.log(this.total_page);
+            }else if(this.item == 'creator'){
+                let parent = this.$parent.$parent.$parent;
+                this.total_page = await parent.get_artists(this.page)
             }
         }
     }

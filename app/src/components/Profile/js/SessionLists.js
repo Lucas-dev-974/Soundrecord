@@ -47,7 +47,7 @@ export default{
             if(this.delete_press.sessionid == null){
                 this.delete_press.sessionid = sessionid
                 this.delete_press.press = 1
-                this.$store.commit('push_Alert', {message: 'Confirmer la supression en reclickant', type: 'warning'})
+                this.$store.commit('push_alert', {message: 'Confirmer la supression en reclickant', type: 'warning'})
             }else if(this.delete_press.sessionid == sessionid){
                 api.delete('/api/session/' + sessionid).then(({data}) => {
                     data
@@ -72,7 +72,7 @@ export default{
 
 
             if(!this.session_name){
-                this.$store.commit('push_Alert', {message: 'Veuillez remplir le champs nom pour créer une session', type: 'warning', open: true})
+                this.$store.commit('push_alert', {message: 'Veuillez remplir le champs nom pour créer une session', type: 'warning', open: true})
             }else{
                 api.post('/api/session/', {name: this.session_name})
                 .then(({data}) => {

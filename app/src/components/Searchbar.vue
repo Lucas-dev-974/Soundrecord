@@ -17,7 +17,7 @@
 
             <!-- ------------------------------- ADD ITEM  -->
             <div v-if="item == 'session'" :class="'d-flex ml-3 add_session ' + (on_add ? 'add' : 'disable')">
-                <v-text-field  @keydown.enter="create" @keydown.esc="on_add = false" solo v-model="session_name" hide-details="auto" dense></v-text-field>
+                <v-text-field dark  @keydown.enter="create" @keydown.esc="on_add = false" solo v-model="session_name" hide-details="auto" dense></v-text-field>
                 <v-btn  color="" dark icon>
                     <v-icon small color="red" @click="on_add = false">mdi-close</v-icon>
                 </v-btn>
