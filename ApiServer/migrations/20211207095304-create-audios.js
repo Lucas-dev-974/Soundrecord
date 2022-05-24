@@ -12,6 +12,10 @@ const self = module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         foreignKey: true,
+        references: {
+          model: 'users',
+          key: 'id'
+        }
       },
       imported_date: {
         type: Sequelize.STRING
@@ -34,22 +38,9 @@ const self = module.exports = {
       }
     });
 
-    self.foreign(queryInterface, Sequelize)
   },
 
-  foreign: async  (queryInterface, Sequelize) => {
-    await queryInterface.addConstraint('Imports', {
-      fields: ['id', 'name', 'email'],
-      type: Sequelize.INTEGER,
-      name: 'fkey_audio_user', // optional
-      references: {
-        table: 'users',
-        field: 'id'
-      },
-      onDelete: 'cascade',
-      onUpdate: 'cascade'
-    }).catch(error => console.log(error))
-  },
+
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('Imports');
