@@ -1,5 +1,6 @@
 import  WaveformPlaylist from 'waveform-playlist'
 import store from '../Store/store'
+import {saveAs} from 'file-saver'
 
 class Player{
     constructor(){
@@ -8,6 +9,7 @@ class Player{
         this.volume = this.player ? this.player.masterGain : 0,
         this.track_on_move = false
         this.on_selection  = false
+        this.userMediaStream = null
     }
 
     init_player(){
@@ -32,6 +34,12 @@ class Player{
     load_tracks(pists = null){
         return new Promise((resolve, reject) => {
             this.player.load(pists != null ? pists : store.state.pists).then(() => {
+
+                this.player.initExporter();
+
+                // .then(() => {
+                //     console.log('okok');
+                // })
                 resolve()
             }).catch(() => reject())
         })
@@ -84,6 +92,26 @@ class Player{
         }
         this.player.getEventEmitter().emit('statechange', state)
     }
+
+    set_duration(){
+        console.log(this.player);
+    }
+
+    download(name = 'undefined pist'){
+        this.player.ee.on('audiorenderingfinished', (type, data) => {
+            saveAs(data, name)
+        })
+
+        this.player.getEventEmitter().emit('startaudiorendering', 'wav')
+        saveAs
+    }
+
+    gotStream(stream) {
+        this.userMediaStream = stream;
+        this.player.initRecorder(this.userMediaStream);
+    }
+
+
 }
 
 export const player = new Player()
