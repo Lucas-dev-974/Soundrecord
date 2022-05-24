@@ -2,6 +2,8 @@ const { send_mail } = require('../middleware/Email.js')
 const {validator}   = require('../utils.js')
 const jwt           = require('../middleware/Jwt.js')
 
+require('dotenv').config();
+
 module.exports = {
     get_mail: function(req, res){
 
