@@ -15,7 +15,7 @@ module.exports = {
         allowNull: false,
         foreignKey: true,
         references: {
-          model: models.User,
+          model: 'users',
           key: 'id'
         }
       },
