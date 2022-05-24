@@ -11,7 +11,11 @@ module.exports = {
       userID: {
         type: Sequelize.INTEGER,
         allowNull: true,
-
+        foreignKey: true,
+        references: {
+          model: 'users',
+          key: 'id'
+        },
       },
       imported_date: {
         type: Sequelize.STRING
