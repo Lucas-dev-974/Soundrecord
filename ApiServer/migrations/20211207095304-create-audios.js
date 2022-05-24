@@ -38,6 +38,18 @@ const self = module.exports = {
       }
     });
 
+    await queryInterface.addConstraint('Imports', {
+      fields: ['id', 'name', 'email'],
+      type: Sequelize.UUID,
+      name: 'custom_fkey_audio_user', // optional
+      references: {
+        table: 'Users',
+        field: 'id'
+      },
+      onDelete: 'cascade',
+      onUpdate: 'cascade'
+    });
+
   },
 
 
