@@ -11,11 +11,6 @@ const self = module.exports = {
       userID: {
         type: Sequelize.UUID,
         allowNull: false,
-        foreignKey: true,
-        references: {
-          model: 'users',
-          key: 'id'
-        }
       },
       imported_date: {
         type: Sequelize.STRING
