@@ -1,30 +1,22 @@
-import api from "../../services/ApiService"
+import artists from '../../components/discover/artist.vue'
+import songs from '../../components/discover/song.vue'
 
 export default{
+    name: 'discover',
+    components: { artists, songs },
+
     data() {
         return {
             creators: [],
             packs:    [],
+
+            page: 'artists',
         }
     },
 
     mounted() {
-        this.get_creators()
     },
 
     methods: {
-        get_creators: function(){
-            api.get('/api/creators').then(({data}) => {
-                console.log(data);
-            }).catch(error => {
-                console.log(error);
-            })
-        },
-        
-        get_packs: function(){
-
-        },
-
-
     },
 }

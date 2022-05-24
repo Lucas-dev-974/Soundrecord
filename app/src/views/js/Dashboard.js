@@ -52,7 +52,7 @@ export default {
                     data
                     this.$store.commit('update_User', {  field: 'name', value: this.name })
 
-                    this.$store.commit('push_Alert', {
+                    this.$store.commit('push_alert', {
                         open: true,
                         message: 'Votre nom à bien été modifier',
                         type: 'success'

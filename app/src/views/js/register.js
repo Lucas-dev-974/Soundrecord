@@ -41,7 +41,7 @@ export default{
                 if(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(this.email))
                     this.register()
                 else
-                    this.$store.commit('push_Alert', {type: 'warning', open: true, message: 'Email incorrecte'})
+                    this.$store.commit('push_alert', {type: 'warning', open: true, message: 'Email incorrecte'})
             }
         },
 
@@ -57,7 +57,7 @@ export default{
                 this.$store.commit('set_Token', data.token)
                 window.location.href = '/profile    '
             }).catch(error => {
-                this.$store.commit('push_Alert', {
+                this.$store.commit('push_alert', {
                     type: 'warning',
                     message: error.response.data.errors ?? error.response.data.error
                 })

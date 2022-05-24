@@ -3,10 +3,11 @@ import { Array2Object } from '../../utils.js'
 
 import SessionLists from '../../components/Profile/SessionLists.vue'
 import Bibliotheque from '../../components/Profile/Bibliotheque.vue'
+import MailNotif   from '../../components/MailNotif.vue'
 
 export default{
     components: {
-        SessionLists, Bibliotheque
+        SessionLists, Bibliotheque, MailNotif
     },
 
     data(){
@@ -16,6 +17,8 @@ export default{
             my_profile: true,
             page: 'session',
             overlay: false,
+
+            mail_notif: false,
 
             // User infose
             user_img: api.defaults.baseURL + '/api/picture?userid=',
@@ -27,6 +30,7 @@ export default{
             instagram_link: '',
             likes: 0,
             liked: false,
+            public_profile: false,
 
             // Profile settings
             picture_file: null,
@@ -40,6 +44,10 @@ export default{
     },
 
     watch: {
+        public_profile: function(){
+            this.update_fields('public')
+        },
+        
         picture_file: function(){
             if(!this.overlay)
                 this.update_picture()
@@ -73,13 +81,13 @@ export default{
                     this.name   = data.name
                     this.pseudo = data.pseudo ?? ''
                     this.email  = data.email
-        
+                    
                     this.facebook_link  = data.facebook_link  ?? ''
                     this.instagram_link = data.instagram_link ?? ''
-
+                    this.public_profile  = data.public
                     this.$store.commit('set_User', data)
                 }).catch(() => {
-                    this.$store.commit('push_Alert', {type: 'danger', message: 'Un problème est survenue !'})
+                    this.$store.commit('push_alert', {type: 'danger', message: 'Un problème est survenue !'})
                 })
         },
 
@@ -144,11 +152,15 @@ export default{
             else{
                 if(this.fields.length > 0){
                     let params = {}
-                    this.fields.forEach(field => { params[field] = this[field] });
+                    this.fields.forEach(field => { 
+                        if(field == 'public') 
+                            params[field] = this.public_profile
+                        else
+                            params[field] = this[field] 
+                    })
+                    
                     api.patch('/api/user', params).then(() => {
-                        this.$store.commit('push_Alert', {
-                            type: 'success', message: 'Profile mis à jour'
-                        });
+                        this.$store.commit('push_alert', {type: 'success', message: 'Profile mis à jour'});
                     }).catch(error => {
                         console.log(error);
                     })
