@@ -35,13 +35,13 @@ const self = module.exports = {
       }
     });
 
-    self.foreign(queryInterface, Sequelize)
+    self.foreign(queryInterface, DataTypes.INTEGER)
   },
 
   foreign: async  (queryInterface, Sequelize) => {
     await queryInterface.addConstraint('Imports', {
       fields: ['userID'],
-      type: Sequelize.DataTypes.INTEGER,
+      type: Sequelize,
       name: 'fkey_audio_user', // optional
       references: {
         table: 'users',
