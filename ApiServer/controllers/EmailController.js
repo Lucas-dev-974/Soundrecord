@@ -26,7 +26,7 @@ module.exports = {
         let email = {
             to: validated.validated.email,
             subject: 'Reset password',
-            text: 'Cliquer <a href="http://localhost:8080/authentication?mail_service=' + token + '&type=reset_password">ici</a> pour réinitialisé votre mot de passe'
+            text: 'Cliquer <a href="' + process.env.APP_URL + '/authentication?mail_service=' + token + '&type=reset_password">ici</a> pour réinitialisé votre mot de passe'
         }
         
         // Send email when send return response
