@@ -52,7 +52,7 @@ export default{
         },
 
         checkScreen: function(){
-            this.$store.commit('set_Width', window.screen.width)  
+            this.$store.commit('set_width', window.screen.width)  
         },
     }
 }
