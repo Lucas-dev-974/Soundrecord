@@ -34,7 +34,7 @@ const self = module.exports = {
         const settings = await models.ProfileSettings.findAll({
             where: {userid: user_id},
             attributes: {exclude: ['createdAt', 'updatedAt']}
-        })
+        }).catche(error => console.log(error))
 
         const likes = await models.Liked.findAndCountAll({ where: { model: 'creator', modelid: user_id }})
 
