@@ -98,7 +98,7 @@ class Player{
     }
 
     download(name = 'undefined pist'){
-        this.player.ee.on('audiorenderingfinished', (type, data) => {
+        this.player.ee.on('audiorenderingfinished', (type, data) => {   
             saveAs(data, name)
         })
 
