@@ -10,12 +10,6 @@ const self = module.exports = {
       },
       userID: {
         type: Sequelize.INTEGER,
-        references:{
-          model: 'users',
-          key: 'id'
-        },
-        onDelete: 'cascade', 
-        onUpdate: 'cascade'
       },
       imported_date: {
         type: Sequelize.STRING
@@ -37,6 +31,17 @@ const self = module.exports = {
         type: Sequelize.DATE
       }
     });
+
+    await queryInterface.addConstraint('Imports', {
+      fields: ['userID'],
+      type: 'FOREIGN KEY',
+
+      references: {
+        table: 'users',
+        field: 'id'
+      },
+    });
+
   },
 
 
