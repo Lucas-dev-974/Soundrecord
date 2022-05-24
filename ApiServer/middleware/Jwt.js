@@ -6,8 +6,11 @@ const models = require('../models/')
 const publicRoutes = require('./public-route.json')
 
 const self = module.exports = {
-    generateToken: function(user){
-        return jwt.sign({
+    generateToken: function(user, mailtoken = null){
+        if(mailtoken !== null) return jwt.sign({
+            email: user.email,
+        }, JWT_SIGN_SECRET, {expiresIn: '3h'})
+        else return jwt.sign({
             userID: user.id,
             password: user.password,
             role: user.roleid
@@ -47,6 +50,7 @@ const self = module.exports = {
         }
 
         if(self.autorizeRoutes(req.path, req.method) || !self.checkToken(token).error){
+            console.log('is autorized route');
             return next()
         }else{
             return res.status(401).json({error: 'Vous n\'êtes pas autorisé'})

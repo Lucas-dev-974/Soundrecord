@@ -8,7 +8,7 @@ const JwtMidle  = require('./middleware/Jwt').isAuthorized
 // Server params
 const port        = process.env.SERVER_PORT
 const corsOptions = {
-    origin: '*',
+    origin: process.env.CORS_ORIGIN,
     methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
 } 
 

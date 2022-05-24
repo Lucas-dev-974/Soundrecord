@@ -5,6 +5,10 @@
         "GET|/api/profile-setting/banner-img",
         "GET|/api/profile"  ,
         "GET|/api/picture",
-        "GET|/api/profile/banner"      
+        "GET|/api/profile/banner",      
+
+        "PATCH|/api/user/reset-password",
+        "POST|/api/mail/password-reset",
+        "GET|/api/creators"
     ]
 }

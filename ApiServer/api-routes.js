@@ -12,6 +12,7 @@ const Search            = require('./controllers/Search')
 
 // Middleware
 const MulterFilesManager = require('./middleware/MulterFileManager')
+const EmailController = require('./controllers/EmailController')
 
 exports.router = (() => {
     let router = express.Router()
@@ -27,7 +28,7 @@ exports.router = (() => {
     router.route('/users').get(UserController.all)
     router.route('/user').patch(UserController.update)
     router.route('/user').delete(UserController.delete)
-
+    router.route('/user/reset-password').patch(UserController.reset_password)
     // Creators
     router.route('/creators').get(UserController.get_creators)
 
@@ -76,5 +77,7 @@ exports.router = (() => {
     router.route('/search/pists').post(Search.SearchImport)
     router.route('/search/users').post(Search.SearchUser)
 
+    // Mail routes
+    router.route('/mail/password-reset').post(EmailController.reset_password)
     return router
 })() 
