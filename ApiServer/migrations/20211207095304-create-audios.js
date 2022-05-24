@@ -1,7 +1,7 @@
 'use strict';
 
 const models = require('../models/')
-module.exports = {
+const self = module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Imports', {
       id: {
@@ -14,10 +14,6 @@ module.exports = {
         type: DataTypes.UUID,
         allowNull: false,
         foreignKey: true,
-        references: {
-          model: 'users',
-          key: 'id'
-        }
       },
       imported_date: {
         type: Sequelize.STRING
@@ -39,7 +35,24 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
+
+    self.foreign()
   },
+
+  foreign: () => {
+    queryInterface.addConstraint('Imports', {
+      fields: ['userID'],
+      type: 'foreign key',
+      name: 'fkey_audio_user', // optional
+      references: {
+        table: 'users',
+        field: 'id'
+      },
+      onDelete: 'cascade',
+      onUpdate: 'cascade'
+    });
+  },
+
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('Imports');
   }
