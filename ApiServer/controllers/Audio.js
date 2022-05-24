@@ -59,7 +59,7 @@ module.exports = {
                 'Content-Length': stat.size
             });
             readStream = fs.createReadStream(fileDir);
-        }
+         }
         
         return readStream.pipe(res);
         
@@ -129,17 +129,18 @@ module.exports = {
     delete: async function(req, res){
         let validated = validator.validate(req.params, { pistid: 'int' })
         if(validated.fails.length > 0) return res.status(403).json({errors: validated.fails})
-        console.log('deleting pist');
         try{
             let pist = await models.Import.findOne({ where: {id: validated.validated.pistid} })
             if(!pist) return res.status(400).json({error: 'La pist n\'existe plus !'})
             if(pist.userID !== req.user.id)  return res.status(401).json({error: 'Vous n\'ête pas autorisé à supprimer cet donné !'})
-            await pist.destroy()
-        }catch(error){
-            console.log('okokok');
-            console.log(error);
-        }
 
+            // Destroy entry in database
+            await pist.destroy()
+
+        }catch(error){
+            console.log(error);
+            return res.status(500).json({error: 'Une erreur c\'est produite !'})
+        }
         return res.status(200).json({'infos': 'la pist à bien été supprimé !'})
     },
 
@@ -162,7 +163,7 @@ module.exports = {
         for(let i = 0; i < fields.length; i++){
             if(fieldsPist.includes(fields[i])) {
                 try{
-                    pist.set({ [fields[i]]: datas[i] })
+                    pist.set({ [fields[i]]: datas[i] })// {name: 'pistname'}
                     await pist.save()
                 }catch(error){
                     console.log(error);

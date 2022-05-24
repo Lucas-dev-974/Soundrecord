@@ -1,12 +1,13 @@
 const bcrypt = require('bcrypt')
 const jwt    = require('../middleware/Jwt')
 const models = require('../models')
-const _validator = require('../validator')
 
 const {returnFields, validator} = require('../utils.js')
 
-const self = module.exports = {
+module.exports = {
     register: async function(req, res){
+        // Validate request params required
+        // If one ore more params not given return errors
         let validated = validator(req.body, {
             'email':     'string:required',
             'password':  'string:required',
@@ -29,10 +30,9 @@ const self = module.exports = {
             role: 2,
             public: false
         }).catch(error => {return {error: error}})
-        console.log(user);
         if(user.error) return res.status(403).json('Désolé une erreur est survenue veuillez ré-essayer plus tard ou nous contacter !')
+
         // Let generate Token for the user
-        console.log(user);
         const token = jwt.generateToken({ 
             id:    user.dataValues.id,
             email: user.dataValues.email,

@@ -41,12 +41,23 @@ const self = module.exports = {
 
     update: async function(req, res){
         const user = await models.User.findOne({ where: {id: req.user.id } })
-        let validated = validator(req.body, { name: 'string', email: 'string', pseudo: 'string', password: 'string', facebook_link: 'string', instagram_link: 'string', public: 'boolean' })
+        let validated = validator(req.body, { 
+            name: 'string', 
+            email: 'string', 
+            pseudo: 'string', 
+            password: 'string', 
+            facebook_link: 'string', 
+            instagram_link: 'string', 
+            public: 'boolean' 
+        })
+
         console.log(validated);
         if(validated.validatedSize > 0){
             Object.entries(validated.validated).forEach(async(data, key) => {
+                console.log(data[0], data[1]);
                 user.set(data[0], data[1])
                 await user.save()
+                console.log(user);
             })
         }
         return res.status(200).json(req.body)
