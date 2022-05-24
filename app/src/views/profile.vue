@@ -32,12 +32,23 @@
 
 
             <div class="banner-right-top">
-                <v-btn small icon color="#63D189" @click="update_banner('open_banner_setting')" v-if="on_update" class="pt-2">
+                <v-btn small icon color="#63D189" @click="update_banner('open_banner_setting')" v-if="on_update" class="pt-2 mx-1">
                     <v-icon>mdi-palette</v-icon>   
                 </v-btn>
-                <v-btn v-if="!on_update && my_profile" color="warning" class="mx-2" small icon  @click="update_profile"> <v-icon>mdi-tune-vertical</v-icon> </v-btn>
-                <v-btn v-if="on_update && my_profile" small icon color="white" @click="update_profile"> <v-icon color="">mdi-check-underline</v-icon> </v-btn>
-                <v-btn color="red" class="text-white px-4 mr-2 py-2" x-small  @click="$store.commit('logout')" >Déconnexion</v-btn>
+
+                <v-btn v-if="!on_update && my_profile" color="warning" class="mx-1" small icon  @click="update_profile"> <v-icon>mdi-tune-vertical</v-icon> </v-btn>
+
+                <v-btn v-if="on_update && my_profile" small icon color="white" class="mx-1" @click="update_profile"> <v-icon color="">mdi-check-underline</v-icon> </v-btn>
+
+                <v-btn color="red" class="text-white px-4 mr-2 py-2 mx-1" x-small  @click="$store.commit('logout')" >Déconnexion</v-btn>
+
+                <div v-if="on_update" class="text-white d-flex justify-end pa-4 pr-0">
+                    <div class="d-flex justify-end" style="width: fit-content">
+                        public:
+                        <v-switch  hide-details="true" class="ma-0 pa-0 mt-1 ml-2" x-small dense color="white" v-model="public_profile"></v-switch>
+                    </div>
+
+                </div>
             </div>
             
 
@@ -91,12 +102,15 @@
         </v-card>        
 
         <div class="container w-80 profile-bottom-section ">
+
+            <!-- Page's navigation button's -->
             <div :class="'d-flex mb-4 profile-label-pages ' + ($store.state.WIDTH < 625 ? 'mobile' : 'lgscreen')">
                 <v-btn v-if="my_profile" @click="page = 'session'" color="success" class="mx-2" outlined rounded x-small>Session</v-btn>
                 <v-btn v-else @click="page = 'session'" color="success" class="mx-2" outlined rounded x-small>Creation</v-btn>
                 <v-btn @click="page = 'bibliotheque'" color="success" class="mx-2" outlined rounded x-small>Bibliothèque</v-btn>
                 <!-- <v-btn @click="page = 'packs'" color="success" class="mx-2" outlined rounded x-small>Packs</v-btn> -->
             </div>
+            
             <div v-if="my_profile && page == 'session' ">
                 <SessionLists />
             </div>
@@ -105,7 +119,7 @@
                 <Bibliotheque :mine="my_profile ? true : false" />
             </div>
         </div>
-
+        <MailNotif />
     </div>
 </template>
 
