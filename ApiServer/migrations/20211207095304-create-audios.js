@@ -35,7 +35,7 @@ const self = module.exports = {
 
     await queryInterface.addConstraint('Imports', {
       fields: ['userID'],
-      type: Sequelize.INTEGER,
+      type: 'FOREIGN KEY',
       name: 'custom_fkey_audio_user', // optional
       references: {
         table: 'Users',
