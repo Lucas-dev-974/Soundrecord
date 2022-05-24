@@ -33,16 +33,12 @@ const self = module.exports = {
       }
     });
 
-    await queryInterface.addConstraint('Imports', {
-      fields: ['userID'],
+    await queryInterface.addConstraint('Imports', ['userID'], {
       type: 'FOREIGN KEY',
-      name: 'custom_fkey_audio_user', // optional
       references: {
         table: 'Users',
         field: 'id'
       },
-      onDelete: 'cascade',
-      onUpdate: 'cascade'
     });
 
   },
