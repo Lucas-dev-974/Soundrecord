@@ -1,4 +1,3 @@
-const { Op } = require('sequelize/dist');
 const models = require('../models')
 const {validator} = require('../utils.js')
 const {GetPagination, GetPagingDatas} = require('../utils.js')
@@ -11,7 +10,7 @@ const self = module.exports = {
 
         const sessions = await models.Session.findAndCountAll({
             where: {
-                session_name: { [Op.like]: validated.validated.query + '%'}
+                session_name:  '%' + validated.validated.query + '%'
             }, limit: limit, offset: offset
         }).catch(erro => console.log(erro))
 
@@ -32,8 +31,8 @@ const self = module.exports = {
 
         const search = await models.User.findAndCountAll({
             where: [
-                {name: { [Op.like]: validated.validated.query + '%'}},
-                {email: { [Op.like]: validated.validated.query + '%'}}
+                {name:  '%' + validated.validated.query + '%'},
+                {email: '%' + validated.validated.query + '%'}
             ], limit: limit, offset: offset
         }).catch(erro => console.log(erro))
 
@@ -48,7 +47,7 @@ const self = module.exports = {
 
         const search = await models.Import.findAndCountAll({
             where: {
-                name: { [Op.like]: validated.validated.query + '%'}
+                name: '%' + validated.validated.query + '%'
             }, limit: limit, offset: offset
         }).catch(erro => console.log(erro))
 
