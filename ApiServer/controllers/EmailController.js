@@ -9,18 +9,20 @@ module.exports = {
     },
 
     send_mail: async function(req, res){
-        let mail_send = await send_mail(res, 'lucas.lvn97439@gmail.com', 'TEST DEVELOPMENT', 'Test de développerment des mails <a href="http://localhost:8080/profile?mail_service={TOKEN}&type=reset_password&message=Veuillez renseigné un nouveaux mot de passe"> go here </a>')
-        if(mail_send) return res.status(200).json({infos: 'Mail envoyé'})
+        let validated = validator(req.body, {to: string, subject: 'string', content: 'string'})
+        if(validated.failsSize > 0) return res.status(403).json(validated.fails)
+
+        send_mail(res, validated.validated.to, validated.validated.subject, validated.validated.content)
     },
 
     reset_password: function(req, res){
         let validated = validator(req.body, {email: 'string'})
         if(validated.failsSize > 0) return res.status(403).json({error: validated.fails})
         
-
-        // Generate email token
-        const user = { email: validated.validated.email }
+        // Generate email token to verify for next step
+        const user  = { email: validated.validated.email }
         const token = jwt.generateToken(user, true)
+
         // Build email content
         let email = {
             to: validated.validated.email,
@@ -31,5 +33,4 @@ module.exports = {
         // Send email when send return response
         send_mail(res, email, token)
     },
-
 }
