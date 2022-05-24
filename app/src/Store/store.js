@@ -69,7 +69,7 @@ export default new Vuex.Store({
             }
         },
 
-        set_Width: function(state, width){ state.WIDTH = width },
+        set_width: function(state, width){ state.WIDTH = width },
 
 
         update_User: function(state, data){
@@ -77,11 +77,11 @@ export default new Vuex.Store({
         },
 
         
-        push_Alert: function(state, alert){
+        push_alert: function(state, alert){
             alert.id = state.alerts.length + 1
             state.alerts.push(alert)
         }, 
-        remove_Alert: function(state, id){
+        remove_alert: function(state, id){
             state.alerts = state.alerts.filter(alert => alert.id !== id)
         },
         
