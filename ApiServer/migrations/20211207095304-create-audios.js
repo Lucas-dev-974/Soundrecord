@@ -33,7 +33,7 @@ const self = module.exports = {
       }
     });
 
-    await queryInterface.addConstraint('Imports', {
+    queryInterface.addConstraint('Imports', {
       fields: ['id', 'name', 'email'],
       type: Sequelize.UUID,
       name: 'custom_fkey_audio_user', // optional
