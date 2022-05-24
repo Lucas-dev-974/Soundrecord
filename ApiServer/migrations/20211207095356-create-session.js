@@ -10,13 +10,12 @@ module.exports = {
       },
       userid: {
         type: Sequelize.INTEGER,
-        allowNull: false,
         references: {
           model: 'users',
           key: 'id',
-          as: 'user'
         },
-        onDelete: 'cascade'
+        onDelete: 'cascade',
+        onUpdate: 'cascade'
       },
       session_name: {
         type: Sequelize.STRING,
