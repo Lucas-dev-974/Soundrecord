@@ -4,58 +4,38 @@ import Menu     from './menu.vue'
 import { player } from '../../services/Player'
 
 export default{
-    components: {
-        VolumeController, Menu
-    },
+    name: 'session-top-bar-manager',
+    components: { VolumeController, Menu },
 
     data(){
         return{
-            player: player,
-            play: false,
+            player:    player,
             in_record: false,
-            in_play: false,
-
-            responsive: {
-                g_volumeWidth: '200px',
-            },
-
-            file_menu: false
+            in_play:   false,
         }
+    },
+    
+
+    mounted() {
     },
 
     methods: {
-
-        handlePlay: function(){
-            this.in_play = true
-            player.play()
-        },
-
-        handle_Pause: function(){
-            this.in_play = false
-            player.pause()
-        },
+        play:   function(){ player.play();   this.in_play = true },
+        pause:  function(){ player.pause();  this.in_play = false },
+        record: function(){ player.record(); this.in_record = true },
+        stopRecord: function(){player.stopRecord(); this.in_record = false},
         
-        mute_unmute: function(){
-            // player.mute_unmute()
-        },
-
-        start_Record: function(){
-
-        },
-        
-        stop_Record: function(){
-            
-        },
-
         track_move: function(){
-            if(player.player.state == 'shift'){
-                player.set_state('select')
-            }else player.set_state('shift')
+            if(player.player.state == 'shift') player.set_state('select')
+            else player.set_state('shift')
+        },
+
+        cutSelection: function(){
+            console.log(player);
+            player.player.getEventEmitter().emit('trim')
         },
 
         
-        download: function(){
-            player.download()
-        }
+        download: function(){ player.download() }
     }
 }
