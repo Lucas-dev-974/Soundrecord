@@ -4,21 +4,9 @@ export default{
     data(){
         return {
             text: this.$store.state.current_session.text,
-            Timeline: 0,
-
-            playlist: null,
-            play: null,
-            pause: null, 
-
             show_menu: false,
             x: 0,
             y: 0,
-            items: [
-              { title: 'Click Me' },
-              { title: 'Click Me' },
-              { title: 'Click Me' },
-              { title: 'Click Me 2' },
-            ],
 
             ontrack: null,
             track_on_move: true

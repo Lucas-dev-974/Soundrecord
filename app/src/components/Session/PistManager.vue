@@ -1,6 +1,6 @@
 <template>
     <div style="width: 100%; height: 100%" >
-        <v-card color="#1A1D21" @contextmenu="show" :ripple="false" id="pists-container" style="width: 100%;" @click="on_track">
+        <v-card color="#1A1D21" @contextmenu="show" :ripple="false" id="pists-container" @click="on_track">
                    
         </v-card>
         
