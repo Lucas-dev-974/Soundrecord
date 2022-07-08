@@ -18,8 +18,8 @@ export default{
         login: function(){
             ApiService.post('/api/auth', { email: this.email, password: this.password})
             .then(({data}) => {
-                this.$store.commit('set_Token', data.token)
-                this.$store.commit('set_User', data.user)
+                this.$store.commit('setToken', data.token)
+                this.$store.commit('setUser', data.user)
                 window.location.href = '/profile'
 
             }).catch(err => {

@@ -85,7 +85,7 @@ export default{
                     this.facebook_link  = data.facebook_link  ?? ''
                     this.instagram_link = data.instagram_link ?? ''
                     this.public_profile  = data.public
-                    this.$store.commit('set_User', data)
+                    this.$store.commit('setUser', data)
                 }).catch(() => {
                     this.$store.commit('push_alert', {type: 'danger', message: 'Un problème est survenue !'})
                 })
@@ -98,7 +98,7 @@ export default{
                 if(_data['banner-img']) _data['banner-img'] = api.defaults.baseURL + '/api/profile/banner?userid=' + this.$store.state.user.id
                 
                 this.banner_img = _data['banner-img']
-                this.$store.commit('push_profile_settings', _data)
+                this.$store.commit('pusProfileSettings', _data)
                 if(_data['banner-color']) this.banner_color = _data['banner-color']
                 if(_data['likes'])        this.likes        = _data.likes
                 // if(this.$store.state.profile_settings['banner-color']) this.banner_color = this.$store.state.profile_settings['banner-color']   
@@ -207,7 +207,7 @@ export default{
                 
                 if(this.$store.state.profile_settings['banner-color'] && 
                     this.$store.state.profile_settings['banner-color'] != this.banner_color){
-                        this.$store.commit('push_profile_settings', {'banner-color': this.banner_color})
+                        this.$store.commit('pusProfileSettings', {'banner-color': this.banner_color})
                         api.patch('/api/profile-setting', {setting_name: 'banner-color', value: this.banner_color}).then(({data}) => {
                             console.log(data);
                         }).catch(error => {
@@ -220,7 +220,7 @@ export default{
 
         remove_banner_img: function(){
             this.banner_img = null
-            this.$store.commit('push_profile_settings', {'banner-img': null})
+            this.$store.commit('pusProfileSettings', {'banner-img': null})
             api.delete('/api/profile-setting/banner-img').catch(error => {
                 console.log(error);
             })

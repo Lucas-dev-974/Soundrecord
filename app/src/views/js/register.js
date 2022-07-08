@@ -53,8 +53,8 @@ export default{
                 phone: this.phone,
                 pseudo: this.pseudo
             }).then(({data}) => {
-                this.$store.commit('set_User',  data.user)
-                this.$store.commit('set_Token', data.token)
+                this.$store.commit('setUser',  data.user)
+                this.$store.commit('setToken', data.token)
                 window.location.href = '/profile    '
             }).catch(error => {
                 this.$store.commit('push_alert', {
