@@ -1,7 +1,7 @@
 <template>
     <v-dialog v-model="dialog" width="400">
         <template v-slot:activator="{ on, attrs }">
-            <v-btn color="#282828" v-if="$store.state.WIDTH >= 1002" class="text-green mt-8 " icon elevation="9"  v-bind="attrs" v-on="on">
+            <v-btn color="#282828" v-if="$store.state.width >= 1002" class="text-green mt-8 " icon elevation="9"  v-bind="attrs" v-on="on">
                 <v-icon>mdi-plus</v-icon>
             </v-btn>
             <v-btn color="#282828" v-else small class="text-green mt-8" elevation="9" icon  v-bind="attrs" v-on="on">

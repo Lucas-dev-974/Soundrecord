@@ -17,7 +17,7 @@ export default{
             api.post('/api/session/', {name: this.name})
             .then(({data}) => {
                 this.dialog = false
-                this.$store.commit('append_Session', data)
+                this.$store.commit('appendSession', data)
             }).catch(error => {
                 console.log(error);
             })
