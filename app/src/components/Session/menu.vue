@@ -3,11 +3,11 @@
         <template v-slot:activator="{ on, attrs }">
             <v-menu offset-y :close-on-content-click="false" >
                 <template v-slot:activator="{ on, attrs }">
-                    <a href="#" class="custom-link" v-bind="attrs" v-on="on"> Importer</a>
+                    <a href="#" :class="'custom-link-' + $store.state.theme" v-bind="attrs" v-on="on"> Importer</a>
                 </template>
                 
                 <v-list dark elevation="12" class="py-0">
-                    <v-list-item class="d-flex justify-center text-3 menu-item"  @click="import_Microphone"> Voix/Micro </v-list-item>
+                    <v-list-item class="d-flex justify-center text-3 menu-item"  @click="importMicrophone"> Voix/Micro </v-list-item>
                     <v-list-item class="d-flex justify-center text-3 menu-item" @click="dialog = true">Bibliothèque</v-list-item>
                 </v-list>
             </v-menu>
@@ -29,7 +29,7 @@
                 <!-- Boucle to list pist -->
                 <!-- <Playlist_List /> -->
 
-                <v-simple-table dark  >
+                <v-simple-table dark  height="530px">
                     <template>
                         <thead>
                         <tr>
@@ -38,20 +38,20 @@
                         </tr>
                         </thead>
 
-                        <tbody>
-                        <tr v-for="pist in pists" :key="pist.id">
-                            <td>
-                            <div class="d-flex align-center" style="overflow: hidden; width: 150px">
-                                <div class="text-tanslate-x h-100 d-flex" style="width: fit-content"> {{pist.name}} </div>
-                            </div>
-                            </td>
-                            <td class="text-center">
-                            <v-btn color="success" v-if="$route.name == 'session'" @click="import_PistInSession(pist)"  icon>
-                                <v-icon small>mdi-transfer-down</v-icon>
-                            </v-btn>
-                            <!-- <Delete :whatDelete="'pist'" :id="pist.id" :url="'/api/pist/' + pist.id" :message="'Cette piste est importée dans une ou plusieurs sessions, si vous la supprimez elle serrât supprimer de toutes les sessions'"/> -->
-                            </td>
-                        </tr>
+                        <tbody  v-if="$store.state.biblio.length > 0">
+                            <tr v-for="pist in $store.state.biblio" :key="pist.id">
+                                <td>
+                                <div class="d-flex align-center" style="overflow: hidden; width: 150px">
+                                    <div class="text-tanslate-x h-100 d-flex" style="width: fit-content"> {{pist.name}} </div>
+                                </div>
+                                </td>
+                                <td class="text-center">
+                                <v-btn color="success" v-if="$route.name == 'session'" @click="importPistInSession(pist)"  icon>
+                                    <v-icon small>mdi-transfer-down</v-icon>
+                                </v-btn>
+                                <!-- <Delete :whatDelete="'pist'" :id="pist.id" :url="'/api/pist/' + pist.id" :message="'Cette piste est importée dans une ou plusieurs sessions, si vous la supprimez elle serrât supprimer de toutes les sessions'"/> -->
+                                </td>
+                            </tr>
                         </tbody>
                     </template>
                 </v-simple-table>   
@@ -62,7 +62,7 @@
                 
                 <div class="w-100" style="overflow-x: hidden">
                     <label for="input-file" class="custom-btn-label">Choisir un fichier à importer</label>
-                    <input @change="handle_LocalFile" type="file" id="input-file" class="custom-btn"/>
+                    <input @change="handleFileToUpload" type="file" id="input-file" class="custom-btn"/>
                 </div>
             </v-card-actions>
         </v-card>

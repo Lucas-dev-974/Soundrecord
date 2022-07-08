@@ -4,6 +4,7 @@ import Bibliotheque from '../Profile/Bibliotheque.vue'
 // import got from 'got/dist/source'
 
 export default{
+    name: 'session_menu',
     components: { Bibliotheque },
 
     data(){
@@ -16,74 +17,74 @@ export default{
         }
     },
 
-    async mounted() {
-        await this.get_pists()
+    mounted() {
+        this.getPists()
     },
 
     methods: {
-        get_pists: async function(){
-            await api.get('/api/pists').then(({data}) => {
-                this.pists = [...data.datas]
-            }).catch(error => {
-                console.log(error);
-            })
-        },
-
-        Upload: function(){
-            if(this.localFile !== null){
-
-                // Create form to send file
-                let formData = new FormData()
-                formData.append('audio', this.localFile) // Add file
-                formData.append('sessionid', this.$store.state.current_session.id) // Add the current Session ID
-
-                // Send request with the form data
-                api.post('/api/pist', formData)
-                .then(({data}) => {
-                    this.$store.commit('push_PistPlaylist', data.Import)
-                    this.$store.commit('push_Pist', data.Pist)
-                    // player.addTrack(this.localFile)
-                    console.log(data);
-                    // player.addTrack({
-                    //     src: src,
-                    //     name: toImport.name,
-                    //     api_options: {...toImport}
-                    // })
-                }).catch(error => {
-                    console.log(error);
-                })
+        getPists: async function(){
+            const response = await api.get('/api/pists').catch(error => console.log(error))
+            if(response.status == 200){
+                // Setup all imported pist in local storage biblio
+                this.$store.commit('setBiblio', response.data.datas)
             }
         },
 
-        handle_LocalFile: function(event){
+        Upload: async function(){
+            if(this.localFile !== null){
+
+                // Create form to send file
+                let form_data = new FormData()
+                form_data.append('audio', this.localFile) // Add file
+                form_data.append('sessionid', this.$store.state.current_session.id) // Add the current Session ID
+
+                // Send request with the form data
+                const response = await api.post('/api/pist', form_data).catch(error => console.log(error))
+                if(response.status == 200){
+                    this.$store.commit('pushInBiblio', response.data.import)
+                    player.add_track({
+                        src: response.data.session_track.src + '?token=' + this.$store.state.token,
+                        name: response.data.import.name,
+                        api_options: {
+                            ...response.data.session_track,
+                        }
+                    })
+                }
+            }
+        },
+
+        handleFileToUpload: function(event){
             this.localFile = event.target.files[0]
             this.Upload()
         },
 
-        delete_Pist: function(pistid){   
+        deletePist: function(pistid){   
             api.delete('/api/pist/' + pistid).then(() => {
-                this.$store.commit('remove_PistPlaylist', pistid)
+                this.$store.commit('removeInBiblio', pistid)
             }).catch(error => console.log(error))
         },
 
-        import_Microphone: function(){
-            
+        importMicrophone: function(){
+            player.addMicrophone()
         },
 
-        import_PistInSession: function(pist){
-            let toImport
-            api.post('/api/session_track', {sessionid: this.$store.state.current_session.id, importid: pist.id})
-            .then(async (data) => { 
-                const src = api.defaults.baseURL + data.data.src + '?token=' + this.$store.state.token
-                toImport = data.data 
-                toImport.src = src
+        importPistInSession: async function(pist){
+            const response = await api.post('/api/session_track', {sessionid: this.$store.state.current_session.id, importid: pist.id}).catch(error => console.log(error))
+            if(response.status == 200){
+                const src = api.defaults.baseURL + response.data.src + '?token=' + this.$store.state.token
                 player.add_track({
+                    ...response.data,
                     src: src,
-                    name: toImport.name,
-                    api_options: {...toImport}
+                    api_options: {
+                        id:   response.data.id,
+                        name: response.data.name,
+                        src:  response.data.src,
+                        sessionid: response.data.sessionid,
+                        color:     response.data.color,
+                        importid:  response.data.importid
+                    }
                 })
-            }).catch(error => console.log(error))
-              
+            }
         },
     }
 }
