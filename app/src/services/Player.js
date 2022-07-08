@@ -34,12 +34,7 @@ class Player{
     load_tracks(pists = null){
         return new Promise((resolve, reject) => {
             this.player.load(pists != null ? pists : store.state.pists).then(() => {
-
                 this.player.initExporter();
-
-                // .then(() => {
-                //     console.log('okok');
-                // })
                 resolve()
             }).catch(() => reject())
         })
@@ -66,6 +61,10 @@ class Player{
         else this.player('volumechange', 0, track)
         return !track.api_options.muted
     }
+
+    startRecord(){}
+
+    stopRecord(){}
 
     play(){
         this.player.getEventEmitter().emit('play')
@@ -111,7 +110,51 @@ class Player{
         this.player.initRecorder(this.userMediaStream);
     }
 
+    
+    format_pists(pists){ // To format the selected pist as library is asking
+        if(pists.pist){
+            if(pists.src){
+                return {
+                    src: pists.src,
+                    api_options: { ...pists }
+                }
+            }
+        }else{
+            let formated_pists = []
+            this.imported_pists.forEach(pist => {
+                let pist_ = {
+                    //  Updated the package to match with data app needed, include inside the package intialiser
+                    //  an api_options fields that allow us to put our app data
+                    api_options: {
+                        id: pist.id,
+                        Importid: pist.ImportId,
+                        pistColor: pist.color,
+                        muted:  pist.muted,
+                    },
+                    src: "http://localhost:3000/api/pist/"+ pist.importid +"?token=" + this.$store.state.token,
+                    name: pist.Import.name,
+                    gain: pist.gain,
+                    customClass: 'track-container.' + pist.id,
+                    states: {
+                        select: true,
+                        cursor: false
+                    },
+                }
+                formated_pists.push(pist_)
+            })
+            return formated_pists
+        }
+    }
 
+    async addMicrophone(){
+        navigator.mediaDevices.getUserMedia({audio: true}).then(async stream => {
+            await this.player.initRecorder(stream)
+            this.player.mediaRecorder.start()
+            setInterval(() => {
+                this.player.mediaRecorder.stop()
+            }, 1000)
+        })
+    }
 }
 
 export const player = new Player()
