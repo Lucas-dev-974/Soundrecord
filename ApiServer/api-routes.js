@@ -80,4 +80,4 @@ exports.router = (() => {
     // Mail routes
     router.route('/mail/password-reset').post(EmailController.reset_password)
     return router
-})() 
+})()
