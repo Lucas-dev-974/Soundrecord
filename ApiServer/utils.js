@@ -108,6 +108,31 @@ const self = module.exports = {
         }
 
         return { fails: {...errors}, validated: validated }
+    },
+
+    exclude: function(arr, to_excl){
+        console.log(typeof(arr));
+        if(typeof(arr) == 'array'){
+            if(typeof(to_excl) == 'string'){
+                if(arr.includes(to_excl)) delete arr[to_excl]
+            }else if(typeof(to_excl) == 'array'){
+                to_excl.forEeach(toexcl => {
+                    if(arr.includes(toexcl)) delete arr[to_excl]
+                })
+            }
+        }else if(typeof(arr) == 'object'){
+            console.log(typeof(to_excl));
+            if(typeof(to_excl) == 'string'){
+                if(arr.includes(to_excl)) delete arr[to_excl]
+            }else if(typeof(to_excl) == 'object'){
+                for(const property in arr){
+                    console.log(arr[property]);
+                }
+            }
+        }
+
+
+        return arr
     }
 }
 
