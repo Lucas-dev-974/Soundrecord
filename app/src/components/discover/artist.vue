@@ -1,7 +1,6 @@
 <template>
     <div :class="'discover-songs-artist h-100 '">
-
-        <div class="search-navigation w-100 py-5">
+        <div class="search-navigation w-100 py-5 pt-10">
             <!-- Search -->
             <div class="d-flex justify-space-between" id="discover-artist-search">
                 <h3 class="w-30 text-center text-white" style="align-self: center;">ARTIST</h3>
@@ -15,7 +14,7 @@
             </div>
         </div>
         <!-- Artist's list-->
-        <v-list dark dense rounded class="artist-container-list h-auto mt-6"  style="border-radius: 0 !important;">
+        <v-list color="#252525" dense rounded class="artist-container-list h-auto mt-6"  style="border-radius: 0 !important;">
 
             <!-- Artist's list-->
             <v-list-item-group v-model="art_selected" color="white" >

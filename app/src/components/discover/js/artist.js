@@ -16,18 +16,17 @@ export default{
     },
 
     async mounted() {
-        console.log(api.defaults.baseURL);
         await this.get_artists()
     },
 
     methods: {
         get_artists: async function(page = 0){
-            let response = await api.get('/api/creators?page=' + page + '&token=' + this.$store.state.token ?? '').catch(error => {console.log(error)})
-            if(response.status == 200)
-                this.artists = response.data.rows
-            
-            return this.artists
-            
+            api.get('/api/creators?page=' + page + '&token=' + this.$store.state.token ?? '').then(({data}) => {
+                console.log(data);
+            }).catch(error => {console.log(error)})
+            // console.log(response);
+            // if(response.status == 200) this.artists = response.data.rows
+            // return this.artists
         },
 
         like: function(id){
@@ -37,7 +36,7 @@ export default{
                     if(artist.id == id) artist.liked = data.liked
                 })
             }).catch(error => {
-                console.log(error);
+                console.log(error); 
             })
         },
     },
