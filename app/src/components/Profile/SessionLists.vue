@@ -8,7 +8,7 @@
                     <tr>
                         <th class="text-left">Session</th>
                         <th class="text-center">pistes importé</th>
-                        <th class="text-center">mixage</th>
+                        <th class="text-center">public</th>
                         <th class="text-right">action</th>
                     </tr>
                 </thead>
@@ -17,12 +17,22 @@
                     <tr v-for="session in sessions" :key="session.id" >
                         <td>{{ session.session_name }}</td>
                         <td class="text-center">{{ session.importedIn }}</td>
-                        <td class="text-center">
-                            <a href="http://#">mix/DL</a>
+
+                        <td class="d-flex justify-center align-center">
+                            <v-switch dense color="primary" v-model="session.public" @change="update('public', session.public, session.id)"></v-switch>
                         </td>
+
                         <td class="text-right">
-                            <v-btn color="success" outlined x-small @click="open_session(session.id)">ouvrir</v-btn>
-                            <v-btn x-small icon color="red" @click="delete_session(session.id)"> <v-icon>mdi-close</v-icon>
+                            <v-btn color="success" v-if="session.mixed" x-small icon>
+                                <v-icon>mdi-download</v-icon>
+                            </v-btn>
+
+                            <v-btn icon color="success" x-small @click="openSession(session.id)">
+                                <v-icon>mdi-open-in-new</v-icon>
+                            </v-btn>
+
+                            <v-btn x-small icon color="red" @click="deleteSession(session.id)"> 
+                                <v-icon>mdi-close</v-icon>
                             </v-btn>
                         </td>
                     </tr>

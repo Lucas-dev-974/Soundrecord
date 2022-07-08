@@ -21,11 +21,11 @@ export default{
     },
 
     mounted() {
-        this.get_sessions()
+        this.getSessions()
     },
 
     methods: {
-        get_sessions: async function(page = 0){
+        getSessions: async function(page = 0){
             let response = await  api.get('/api/sessions?page=' + page)
             if(response.status == 200){
                 let totalpages = response.data.totalPages
@@ -36,14 +36,14 @@ export default{
             }
         },
 
-        open_session: function(sessionid){
+        openSession: function(sessionid){
             api.get('/api/session/' + sessionid).then(({data}) => {
-                this.$store.commit('set_CurrentSession', data.session)
+                this.$store.commit('setCurrentSession', data.session)
                 this.$router.push('/session')
             }).catch(error => console.log(error))
         },
 
-        delete_session: function(sessionid){
+        deleteSession: function(sessionid){
             if(this.delete_press.sessionid == null){
                 this.delete_press.sessionid = sessionid
                 this.delete_press.press = 1
@@ -66,26 +66,43 @@ export default{
             }
         },
 
-        create_session: function(name = ''){
-            // console.log(name);
+        createSession: async function(name = ''){
             this.session_name = this.session_name ? this.session_name.replace(/[ ]+/g, "") : name.replace(/[ ]+/g, '')
 
-
+            // If no session name 
             if(!this.session_name){
                 this.$store.commit('push_alert', {message: 'Veuillez remplir le champs nom pour créer une session', type: 'warning', open: true})
             }else{
-                api.post('/api/session/', {name: this.session_name})
-                .then(({data}) => {
-                    console.log(data);
-                    this.sessions.push(data)
-                    this.on_add = false
-                    this.$store.commit('append_Session', data)
-                    
-                }).catch(error => {
-                    console.log(error);
+                // Send request and get data if error return false and push alert
+                const response = await api.post('/api/session/', {name: this.session_name}).catch(error => { 
+                    console.log(error) 
+                    return false
                 })
+                if(response.status == 200){
+                    console.log(response);
+                    this.sessions.push(response.data)
+                    this.on_add = false
+                    this.$store.commit('appendSession', response.data)
+                }
+
+                return true
             }
         },
+
+
+        update(prop, new_val, id){
+            console.log(id);
+            const index = this.sessions.findIndex(object => { return object.id === id });
+            
+            if(this.sessions[index][prop])
+                this.sessions[index][prop] = new_val
+
+            api.patch('/api/session', {id: id, prop: prop, new_val: new_val}).then(({data}) => {
+                console.log(data);
+            }).catch(error => {
+                console.log(error);
+            })
+        }
 
 
     }
