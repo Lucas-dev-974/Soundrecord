@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
   class Import extends Model {
     static associate(models) {
       models.Import.belongsTo(models.User)
-      // models.Import.hasMany(models.SessionTrack)
+      models.Import.hasMany(models.SessionTrack, { onDelete: 'CASCADE' })
     }
   };
 

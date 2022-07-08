@@ -12,7 +12,9 @@ module.exports = (sequelize, DataTypes) => {
   sequelizePaginate.paginate(Session)
   Session.init({
     userid:       DataTypes.INTEGER,
-    session_name: DataTypes.STRING
+    session_name: DataTypes.STRING,
+    public:       DataTypes.BOOLEAN,
+    mixed:        DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Session',
