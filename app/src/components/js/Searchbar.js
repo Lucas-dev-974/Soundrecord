@@ -61,11 +61,9 @@ export default {
     
                     // Send request with the form data
                     api.post(this.add_url, formData).then(({data}) => {
-                        console.log(data);
-                        this.$parent.pists.push({
-                            id: data.id,
-                            name: data.name
-                        })
+                        this.$parent.pists.push({id: data.id, name: data.name})
+                        this.session_name = ''
+                        this.on_add = false
                     }).catch(error => {
                         console.log(error);
                     })
