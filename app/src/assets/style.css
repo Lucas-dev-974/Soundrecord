@@ -4,7 +4,7 @@ html{
 
 .no-radius{ border-radius: 0 !important; }
 
-.bg-red{ background-color: #B02929; }
+.bg-red{ background-color: #ca0000; }
 .bg-dark{ background-color: #1A1D21 !important; }
 
 .text-center{ text-align: center;}
@@ -12,6 +12,8 @@ html{
 .audios-controller{
     height: 80px;
     align-items: center;
+    /* box-shadow: 0px 1px 10px rgb(241, 0, 0) !important; */
+    z-index: 20 !important;
 }.audios-controller-content{
     width: 90%;
     margin: 0 auto 0 auto;
@@ -65,7 +67,7 @@ html{
     }
 }
 .dark{
-    background-color: #1A1D21;
+    background-color: #1a1a1a !important;
     color: white;
 }.dark-1{
     background-color: #1A1D21 !important;
@@ -145,14 +147,14 @@ html{
 
 .h-100{ height: 100% !important;}
 
-.custom-link{
-    color: white !important;
+.custom-link-dark{
+    color: #ffffff !important;
     text-decoration: none;
     font-family: sans-serif,Apple Color Emoji,Segoe UI Emoji;
     font-size: 14px;
 }
 
-.timer{ padding-top: 7px;}
+.timer{ padding-top: 3px;}
 
 #user-card{
     width: 70%;
@@ -207,8 +209,8 @@ html{
 
 .add_session.disable{
     transition: all 1s;
-    width: 0 ;
-    overflow-x: hidden;
+    width: 0px;
+    overflow: hidden;
 }.add_session.add{
     width: 350px;
 }
@@ -315,4 +317,13 @@ input.custom-profile-input{
     font-size: 22px !important;
     font-weight: 1 !important;
     letter-spacing: 3px;
+}
+
+.volume-general{
+    width: 350px;
+}
+
+.v-application--is-ltr .v-input__prepend-outer, .v-slider--horizontal{
+    margin-right: 0px !important;
+    margin-left: 5epx !important;
 }

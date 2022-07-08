@@ -150,6 +150,8 @@
 }
 
 #pists-container{
+  width: 100%;
+  padding-top: 5px;
   height: calc(100vh - 80px) !important;
 }
 .playlist{
@@ -186,4 +188,10 @@
 
 .add-pist-btn-pist-container{
   position: abs;
+}
+
+#discover-container{
+  background-color: #181818;
+}#discover-container .artist-part{
+  background-color: #252525;
 }
