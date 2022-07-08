@@ -16,7 +16,7 @@
                         <td>{{ pist.name }}</td>
                         <td class="text-center">{{ pist.importedIn }}</td>
                         <td class="text-right">
-                            <v-btn x-small icon color="red" @click="delete_pist(pist.id)"> <v-icon>mdi-close</v-icon>
+                            <v-btn x-small icon color="red" @click="deletePist(pist.id)"> <v-icon>mdi-close</v-icon>
                             </v-btn>
                         </td>
                     </tr>
