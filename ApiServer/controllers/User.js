@@ -119,16 +119,17 @@ const self = module.exports = {
 
     get_creators: async function(req, res){
         const exclude_fields = { exclude: ['updatedAt', 'createdAt', 'password'] }
-
+        console.log('okok');
         // Get public creators
         let creators = await models.User.findAndCountAll({
             where: {public: true},
             attributes: {...exclude_fields} 
         }).catch(error => console.log(error)) 
         creators.rows.forEach((creator, key) => creators.rows[key] = creator.dataValues)
-        
+        console.log(creators);
         // Get like's and return response
         creators = await self.get_likes(creators)
+        console.log(creators);
         return res.status(200).json(creators)
     },
 
@@ -154,6 +155,7 @@ const self = module.exports = {
         let token = jwt.checkToken(validated.validated._token_)
         if(token.error) return res.status(403).json(token)
         
+        console.log(token)
         let user = await models.User.findOne({where: {email: token.email} }).catch(error => { console.log(error) })
         
         if(!user) return res.status(404).json({error: 'Désolé cet email n\'est pas enregistrer dans nos services'})

@@ -1,15 +1,15 @@
 const fs = require('fs')
 const path      = require('path')
-const validator = require('../validator')
+const { validator, exclude } = require('../utils.js')
 const models    = require('../models')
 const filesPath = path.resolve(__dirname, '../public/')
 
-
+require('dotenv').config();
 const {GetPagination, GetPagingDatas } = require('../utils.js')
 module.exports = {
     get: async function(req, res){
         // let validated = validator.validate(req.body, { "id": 'int' }) // For postman
-        let validated = validator.validate(req.params, { "id": 'int' })
+        let validated = validator(req.params, { "id": 'int' })
         if(validated.fails.length > 0) return res.status(400).json(validated.fails)
         
         let pist = await models.Import.findOne({
@@ -24,14 +24,13 @@ module.exports = {
 
 
         
-        // Check si le fichié existe si non retourne une erreur
-        if(!fs.existsSync(fileDir)) return res.status(403).json({}) 
-
+        // Check if file exist if not return error
+        if(!fs.existsSync(fileDir)) return res.status(403).json({error: 'file does\'nt exist'}) 
+        // const imageBuffer = fs.readFileSync()
         // ---------------------------------------
-        let stat = fs.statSync(fileDir); 
+        let stat = fs.statSync(fileDir)['size']; 
         let readStream  
         let range  = (req.headers.range) ? req.headers.range : null
-
         if(range !== null){
             let parts = range.replace(/bytes=/, "").split("-");
 
@@ -48,7 +47,7 @@ module.exports = {
     
             res.status(206).header({
                 'Content-Type': 'audio/mpeg',
-                'Content-Length': content_length,
+                 'Content-Length': content_length,
                 'Content-Range': "bytes " + start + "-" + end + "/" + stat.size
             });
             
@@ -59,10 +58,8 @@ module.exports = {
                 'Content-Length': stat.size
             });
             readStream = fs.createReadStream(fileDir);
-         }
-        
+        }  
         return readStream.pipe(res);
-        
     },
 
 
@@ -90,50 +87,58 @@ module.exports = {
         return res.status(200).json(response)
     },  
 
+    /**
+     * @summary Build default audio config to insert in database
+     *          Return default audio config
+     * @param {any} req 
+     * @param {any} res 
+     * @returns 
+     */
     Import: async function(req, res){
         // Check if is autorized, Setting up in MulterMiddleware
         if(!req.AutorizedFile || req.Isaudio == false ) return res.status(403).json({ error: 'Un fichier de type mp3 est attendu !' })
         
-        let validated = validator.validate(req.body, {sessionid: 'int'})              // Check if we have session id
-
+        let validated = validator(req.body, {sessionid: 'int'})              // Check if we have session id
+        
+        // Audio data
         let pist = await models.Import.create({
             name: path.parse(req.fileInfos.originalname).name.replace(/ /g, ''),
             userID: req.user.id,
             imported_date: req.fileInfos.date,
             public: false
         }).catch(error => { console.log(error) })
-
+        
         if(validated.failsSize === 0){
-            let SessionTrack = await models.SessionTrack.create({
+            let session_track = await models.SessionTrack.create({
                 sessionid: validated.validated.sessionid,
-                importid: pist.id,
+                importid: pist.dataValues.id,
                 userid: req.user.id,
                 muted: false,
                 color: 'green',
-                src: '/api/pist/' + pist.id,
+                src: process.env.APP_URL + '/api/pist/' + pist.id,
                 gain: 0.5,
             }).catch(error => { console.log(error) })
-
-            let pistConfig = {
-                SessionTrack: {
-                    name: pist.name,
-                    ...SessionTrack.dataValues
-                }
-            }
-            return res.status(200).json(pistConfig)
+            return res.status(200).json({
+                import: pist.dataValues,
+                session_track: session_track,
+                test: exclude(pist, ['updatedAt', 'createdAt'])
+            })
         }
-        
-        return res.status(200).json(pist)
+
+        return res.status(200).json({
+            src: process.env.APP_URL + '/api/pist/' + pist.id,
+            ...pist.dataValues,
+        })
     },
 
     delete: async function(req, res){
-        let validated = validator.validate(req.params, { pistid: 'int' })
+        let validated = validator(req.params, { pistid: 'int' })
         if(validated.fails.length > 0) return res.status(403).json({errors: validated.fails})
         try{
             let pist = await models.Import.findOne({ where: {id: validated.validated.pistid} })
             if(!pist) return res.status(400).json({error: 'La pist n\'existe plus !'})
             if(pist.userID !== req.user.id)  return res.status(401).json({error: 'Vous n\'ête pas autorisé à supprimer cet donné !'})
-
+            console.log(pist);
             // Destroy entry in database
             await pist.destroy()
 
@@ -145,7 +150,7 @@ module.exports = {
     },
 
     update: async function(req, res){
-        let validated = validator.validate(req.body, { fields: 'string', datas: 'string', pistid: 'int' })
+        let validated = validator(req.body, { fields: 'string', datas: 'string', pistid: 'int' })
         if(validated.fails.length > 0) return res.status(400).json(validated.fails)
 
         let fields = validated.validated.fields.split('|')
@@ -176,7 +181,7 @@ module.exports = {
     },
 
     deleteIn: async function(req, res){
-        let validated = validator.validate(req.params, {pistid: 'int'})
+        let validated = validator(req.params, {pistid: 'int'})
         if(validated.fails.length > 0) return res.status(400).json(validated.fails)
         
         let pistSessionTrack = await models.SessionTrack.findOne({
@@ -190,7 +195,7 @@ module.exports = {
     },
 
     checkWherePistIsImported: async function(){
-        let validated = validator.validate(req.body, {pistid: 'int'})
+        let validated = validator(req.body, {pistid: 'int'})
         if(validated.fails.length > 0) return res.status(400).json(validated.fails)
 
         
@@ -204,7 +209,7 @@ module.exports = {
 
     importInFromPistID: async function(req, res){
         // Get session id and import id
-        let validated = validator.validate(req.body, { sessionid: 'int', importid: 'int'})
+        let validated = validator(req.body, { sessionid: 'int', importid: 'int'})
         if(validated.fails.length > 0) return res.status(400).json(validated.fails)
         
         let Import  = await models.Import.findOne({
@@ -230,7 +235,7 @@ module.exports = {
     },
 
     getImported: async function(req, res){
-        let validated = validator.validate(req.params, {sessionid: 'int'})
+        let validated = validator(req.params, {sessionid: 'int'})
 
         if(validated.fails.length > 0)
             return res.status(400).json(validated.fails)
@@ -255,7 +260,7 @@ module.exports = {
     },
 
     UpdatePist: async function(req, res){
-        let validated = validator.validate(req.body,  {pistid: 'int', field: 'string', value: 'string'})
+        let validated = validator(req.body,  {pistid: 'int', field: 'string', value: 'string'})
         
         if(validated.fails.length > 0) return res.status(400).json(validated.fails)
 

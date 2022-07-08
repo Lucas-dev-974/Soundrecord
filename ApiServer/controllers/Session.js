@@ -69,7 +69,8 @@ module.exports = {
         // let user    = await models.User.findByPk(req.user.id)
         let session = await models.Session.create({
             session_name: validated.validated.name ?? 'Untilted',
-            userid: req.user.id
+            userid: req.user.id,
+            public: false
         }).catch(error => { console.log(error) })
 
         // session.setUser(req.user.id)
@@ -80,16 +81,17 @@ module.exports = {
     },
 
     update: async function(req, res){
-        let validated = validator.validate(req.body, { "id": 'int', 'name': 'string' })
+        let validated = validator.validate(req.body, { id: 'int', prop: 'string', new_val: 'any' })
         if(validated.errors) return res.status(403).json({error: validated.errors});
 
-        let session = await models.Session.findByPk(validated.id)
+        let session = await models.Session.findOne({where: {id: validated.validated.id}})
 
         if(!session) return res.status(400).json({error: 'La session n\'existe pas !'})
         else if(session.userid !== req.user.id) return res.json(402).json({error: 'Vous n\'ête pas autoriser à modifié cet ressource'})
 
         try{
-            session.set({ session_name: validated.name }) 
+            console.log({ [validated.validated.prop]: validated.validated.new_val });
+            session.set({ [validated.validated.prop]: validated.validated.new_val }) 
             await session.save()
             return res.json('tru')
         }catch(error){

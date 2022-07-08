@@ -5,6 +5,7 @@ const models = require('../models')
 const {returnFields, validator} = require('../utils.js')
 
 module.exports = {
+    
     register: async function(req, res){
         // Validate request params required
         // If one ore more params not given return errors
@@ -17,7 +18,14 @@ module.exports = {
         if(validated.failsSize > 0) return res.status(403).json(validated.fails)
         
         // Search if user email exist in db if exist return warning
-        let user = await models.User.findOne({ attributes: ['email'], where: {email: validated.validated.email} })
+        let user = await models.User.findOne({ 
+            attributes: ['email'], 
+            where: {
+                email: validated.validated.email, 
+                pseudo: 'string'
+            } 
+        }).catch(error => console.log(error))
+            
         if(user)   return res.status(403).json({'error': 'Cet email est déjà enregistrer, veuillez vous connecté !'})
 
         const password = bcrypt.hashSync(validated.validated.password, bcrypt.genSaltSync(8))
@@ -26,6 +34,7 @@ module.exports = {
         user = await models.User.create({ 
             name: validated.validated.name,
             email: validated.validated.email,
+            pseudo: validated.validated.pseudo,
             password: password,
             role: 2,
             public: false
