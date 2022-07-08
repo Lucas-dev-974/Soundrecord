@@ -52,9 +52,9 @@
             </div>
             
 
-            <div :class="'w-80 d-flex user-infos-container ' + ($store.state.WIDTH <= 600 ? 'pa-2' : 'container')" style="height: 80%">
+            <div :class="'w-80 d-flex user-infos-container ' + ($store.state.width <= 600 ? 'pa-2' : 'container')" style="height: 80%">
                 <div class="profile-image-container">
-                    <v-img :src="user_img" :width="+ $store.state.WIDTH <= 600 ? 100 : 180" style="border-radius: 15px; transition: all 1s;">
+                    <v-img :src="user_img" :width="+ $store.state.width <= 600 ? 100 : 180" style="border-radius: 15px; transition: all 1s;">
                         <div v-if="on_update" class="p-img-icon-upload">
                             <v-file-input hide-input accept=".png,.jpg"  filled dark dense prepend-icon="mdi-progress-download" v-model="picture_file" meta-picture-profile="user_picture"></v-file-input>
                         </div>
@@ -104,10 +104,10 @@
         <div class="container w-80 profile-bottom-section ">
 
             <!-- Page's navigation button's -->
-            <div :class="'d-flex mb-4 profile-label-pages ' + ($store.state.WIDTH < 625 ? 'mobile' : 'lgscreen')">
-                <v-btn v-if="my_profile" @click="page = 'session'" color="success" class="mx-2" outlined rounded x-small>Session</v-btn>
-                <v-btn v-else @click="page = 'session'" color="success" class="mx-2" outlined rounded x-small>Creation</v-btn>
-                <v-btn @click="page = 'bibliotheque'" color="success" class="mx-2" outlined rounded x-small>Bibliothèque</v-btn>
+            <div :class="'d-flex mb-4 profile-label-pages ' + ($store.state.width < 625 ? 'mobile' : 'lgscreen')">
+                <v-btn v-if="my_profile" @click="page = 'session'" color="success" :class="'mx-2 vbtn-' + $store.state.theme"  rounded x-small>Session</v-btn>
+                <v-btn v-else @click="page = 'session'"            color="success" class="mx-2"  rounded x-small>Creation</v-btn>
+                <v-btn        @click="page = 'bibliotheque'"       color="success" class="mx-2"  rounded x-small>Bibliothèque</v-btn>
                 <!-- <v-btn @click="page = 'packs'" color="success" class="mx-2" outlined rounded x-small>Packs</v-btn> -->
             </div>
             
