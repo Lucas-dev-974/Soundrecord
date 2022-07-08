@@ -21,11 +21,11 @@ export default{
                 this.dialog = false
                 switch(this.whatDelete){
                     case 'session':
-                        this.$store.commit('remove_Session', this.id)
+                        this.$store.commit('removeSession', this.id)
                         break
                     
                     case 'pist':
-                        this.$store.commit('remove_PistPlaylist', this.id)
+                        this.$store.commit('removeInBiblio', this.id)
                         break
                 }
                 
