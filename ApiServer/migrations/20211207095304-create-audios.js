@@ -13,7 +13,8 @@ const self = module.exports = {
         allowNull: false,
         references:{
           model: 'users',
-          key: 'id'
+          key: 'id',
+          onDelete: 'CASCADE'
         }
       },
       imported_date: {

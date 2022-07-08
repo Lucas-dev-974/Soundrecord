@@ -25,6 +25,15 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
+      public: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        default: false
+      },
+      mixed: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

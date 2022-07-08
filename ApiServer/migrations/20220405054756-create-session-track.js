@@ -20,7 +20,9 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'imports', key: 'id'
-        }
+        },
+        onDelete: 'cascade',
+        onUpdate: 'cascade'
       },
       userid: {
         type: Sequelize.INTEGER,
