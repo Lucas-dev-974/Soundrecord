@@ -5,13 +5,11 @@ import { player } from '../../services/Player';
 // import { player } from '../../services/Player'
 
 export default {
-    components: {
-        VolumeController
-    },
+    name: 'sidebar-pist-item',
+    components: { VolumeController },
 
-    props: {
-        pist: { required: true } // pist in player ( manage the player track)
-    },
+    // pist in player ( manage the player track) 
+    props: { pist: { required: true } },
 
     data(){
         return {
@@ -22,13 +20,8 @@ export default {
         }
     },
 
-    watch: {
-        volume: function(val){
-            val
-        }
-    },
-
     mounted(){
+
         // Muted button if the track is muted so button is gray else is green
         this.selectBtn = document.getElementById('select-btn-' + this.pist.api_options.id)
         if(this.pist.muted) this.selectBtn.style.backgroundColor = 'green'
@@ -36,15 +29,15 @@ export default {
     },
 
     methods: {
-        deleteImportedPist: function(){
+        deleteImportedPist: async function(){
             let url = `/api/session_track/${this.pist.api_options.id}`
             
-            api.delete(url)
-                .then( async () => {
-                    this.$store.commit('remove_Pist', this.pist.api_options.id)
-                    this.pist.ee.emit('removeTrack', this.pist)
-                    // console.log('pist removed')
-                }).catch(error => console.log(error))
+            const response = await api.delete(url).catch(error => console.log(error))
+            if(response.status == 200){
+                // this.$store.commit('remove_pist', this.pist.api_options.id)
+                this.pist.ee.emit('removeTrack', this.pist)
+            }
+
         },
 
         DeselectSelect: function(){
