@@ -54,7 +54,6 @@
     "last 2 versions",
     "not dead"
   ],
-
   "rules": {
     "no-unused-vars": "off"
   }
