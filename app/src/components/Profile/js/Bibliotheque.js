@@ -35,7 +35,7 @@ export default {
 
         },
 
-        delete_pist: function(id){
+        deletePist: function(id){
             api.delete('/api/pist/' + id).then(() => {
                 this.pists = this.pists.filter(pist => pist.id != id)
             }).catch(error => {
