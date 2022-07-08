@@ -2,17 +2,17 @@ import Vuex from 'vuex'
 import VuePersist from 'vuex-persist'
 import Vue from 'vue'
 
-import ApiService from '../services/ApiService.js'
+import {profile_settings} from './profile'
+import {sessions, current_session} from './sessions'
+
 
 Vue.use(Vuex)
-const vuexLocal = new VuePersist({
-    storage: window.localStorage
-})
+const vuexLocal = new VuePersist({ storage: window.localStorage })
 
 let initialstate = {
-    current_session: null,
-    pist_playlist: [], // Bibliotheque
-    sessions:      [], // all sessions created by user 
+    current_session: current_session,
+    biblio: [], // Bibliotheque
+    sessions:      sessions, // all sessions created by user 
     pists:         [], // all pist for the current session
 
     user:  null,
@@ -20,13 +20,10 @@ let initialstate = {
     alerts: [],
 
     main_theme: 'bg-dark',
-    WIDTH: null,
+    width: null,
 
-    profile_settings: {
-        'banner-img': null,
-        'banner-color': null,
-        'show': [],
-    }
+    profile_settings: {...profile_settings},
+    theme: 'dark'
 }
 
 export default new Vuex.Store({
@@ -35,83 +32,33 @@ export default new Vuex.Store({
     state:{ ...initialstate },
 
     mutations: {
-        set_CurrentSession: function(state, session){ state.current_session = session },
+        setCurrentSession: function(state, session){ state.current_session = session },
         
-        set_Sessions: function(state, data){ state.sessions = data },
+        setSessions: function(state, data){ state.sessions = data },
         
-        set_PistPlaylist: function(state, playlist){ state.pist_playlist = playlist },
+        setPistPlaylist: function(state, playlist){ state.biblio = playlist },
 
-        set_Token: function(state, token){ state.token = token },
+        setToken: function(state, token){ state.token = token },
 
-        set_User: function(state, user){ state.user = user },
+        setUser: function(state, user){ state.user = user },
 
-        set_Pists: function(state, pists){ state.pists = pists },
+        setWidth: function(state, width){ state.width = width },
 
-        set_MainAudio: function(state, context){ state.main_audio = context  },  
-
-        set_Player: function(state, player){ state.player = player },
-        
-        set_PlayerCurrentTime: function(state, time){ state.player_currentTime = time},
-
-        set_PlayerGlobalVolume: function(state, volume){ state.player_g_volume = volume},
-        
-        set_PistParams: function(state, data){
-            if(typeof(data.field) == 'string'){
-                state.pists.forEach(pist => {
-                    if(pist.id == data.pistid){
-                        if(typeof(data.value) == 'string' && data.value.includes('||')){
-                            console.log('split data');
-                        }
-                        state[data.field] = data.value
-                    }
-                })
-
-            }
-        },
-
-        set_width: function(state, width){ state.WIDTH = width },
-
-
-        update_User: function(state, data){
+        updateUser: function(state, data){
             if(Object.keys(state.user).includes(data.field)){ state.user[data.field] = data.value }
         },
 
-        
         push_alert: function(state, alert){
             alert.id = state.alerts.length + 1
             state.alerts.push(alert)
-        }, 
+        },
+
         remove_alert: function(state, id){
             state.alerts = state.alerts.filter(alert => alert.id !== id)
-        },
-        
+        },    
 
-        push_Pist: function(state, pist){
-            state.pists.push(pist)
-        },
-        update_Pist: function(state, data){
-            state.pists.forEach((pist, key) => {
-                if(pist.id == data.pistid){
-                    state.pists[key][data.field] = data.value
-                    
-                    ApiService.patch('/api/session_track', {
-                        pistid: data.pistid,
-                        field: data.field,
-                        value: `${data.value}`
-                    }).catch(error => {
-                        console.log(error);
-                    })
-                }
-            });
-        },
-
-        remove_Pist: function(state, pistid){
-            state.pists = state.pists.filter(session_track => session_track.id != pistid)
-        },
-        
-
-        append_Session: function(state, session){ state.sessions.push(session) },
-        update_Session: function(state, data){
+        appendSession: function(state, session){ state.sessions.push(session) },
+        updateSession: function(state, data){
             state.sessions.forEach((session, key) => {
                 if(session.id == data.sessionid){
                     if(session.includes(data.field)){
@@ -120,18 +67,21 @@ export default new Vuex.Store({
                 }
             })
         },
-        remove_Session: function(state, sessionid){
+        removeSession: function(state, sessionid){
             state.Sessions = state.sessions.filter(session => session.id != sessionid)
         },
 
-        push_PistPlaylist: function(state, pist){
-            state.pist_playlist.push(pist)
+        setBiblio: function(state, pists){
+            state.biblio = pists
         },
-        remove_PistPlaylist: function(state, pist_id){
-            state.pist_playlist = state.pist_playlist.filter(pist => pist.id != pist_id)
+        pushInBiblio: function(state, pist){
+            state.biblio.push(pist)
+        },
+        removeInBiblio: function(state, pist_id){
+            state.biblio = state.biblio.filter(pist => pist.id != pist_id)
         },
 
-        push_profile_settings: function(state, settings){
+        pusProfileSettings: function(state, settings){
             for(const setting in settings){
                 if(Object.keys(state.profile_settings).includes(setting)){
                     state.profile_settings[setting] = settings[setting]
@@ -144,6 +94,9 @@ export default new Vuex.Store({
                 }
             }
         },
+        updateProfileSettings: function(state, data){
+            if(profile_settings.includes(data.field)) state.profile_settings[data.field] = data.value
+         },
 
         logout: function(state){
             Object.assign(state, initialstate)
