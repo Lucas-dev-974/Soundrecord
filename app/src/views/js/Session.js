@@ -4,6 +4,7 @@ import PistContainer  from '../../components/Session/PistManager.vue'
 
 import api        from '../../services/ApiService'
 import { player } from '../../services/Player'
+import { smanager } from '../../services/AudioManager/player_'
 
 export default{
     components: {
@@ -17,22 +18,25 @@ export default{
             audio_output: []
         }
     },
-    
+        
     async mounted(){  
+        smanager.initPlayer()
+        smanager.test()
+        // smanager.test()
         if (navigator.mediaDevices || navigator.mediaDevices.enumerateDevices) {
             // List microphones.
             let output = await navigator.mediaDevices.enumerateDevices()
             this.audio_output = output
         }
-    
-        this.init_session()
+        this.initSession()
+        smanager.historyBackward()
     },
     
     methods: {
-        init_session: async function(){
+        initSession: function(){
             if(this.$store.state.current_session){
-                await this.load_imported_pist()
-                await player.init_player()
+                player.init_player()
+                this.load_imported_pist()
             }else this.$router.push('profile')
         },
 
@@ -48,30 +52,34 @@ export default{
             }).catch(error => { console.log(error); })
         },
 
-        format_pists: function(){ // To format the selected pist as library is asking
-            let formated_pists = []
-            this.imported_pists.forEach(pist => {
-                let pist_ = {
-                    // Updated the package to match with data app needed, include inside the package intialiser
-                    //  an api_options fields that allow us to put our app data
-                    api_options: {
-                        id: pist.id,
-                        Importid: pist.ImportId,
-                        pistColor: pist.color,
-                        muted:  pist.muted,
-                    },
-                    src: "http://localhost:3000/api/pist/"+ pist.importid +"?token=" + this.$store.state.token,
-                    name: pist.Import.name,
-                    gain: pist.gain,
-                    customClass: 'track-container.' + pist.id,
-                    states: {
-                        select: true,
-                        cursor: false
-                    },
-                }
-                formated_pists.push(pist_)
-            })
-            return formated_pists
+        format_pists: function(pist = null){ // To format the selected pist as library is asking
+            if(pist != null){
+                console.log(pist);
+            }else{
+                let formated_pists = []
+                this.imported_pists.forEach(pist => {
+                    let pist_ = {
+                        //  Updated the package to match with data app needed, include inside the package intialiser
+                        //  an api_options fields that allow us to put our app data
+                        api_options: {
+                            id: pist.id,
+                            Importid: pist.ImportId,
+                            pistColor: pist.color,
+                            muted:  pist.muted,
+                        },
+                        src: "http://localhost:3000/api/pist/"+ pist.importid +"?token=" + this.$store.state.token,
+                        name: pist.Import.name,
+                        gain: pist.gain,
+                        customClass: 'track-container.' + pist.id,
+                        states: {
+                            select: true,
+                            cursor: false
+                        },
+                    }
+                    formated_pists.push(pist_)
+                })
+                return formated_pists
+            }
         },
 
         save: function(){
