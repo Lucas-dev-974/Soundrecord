@@ -4,11 +4,11 @@
             Enregistrement
         </v-card-title>
         <v-container fluid class="pa-8">
-            <v-text-field ref="email" required :rules="email_rule"  v-model="email" label="Email"></v-text-field>
-            <v-text-field ref="name" required :rules="[() => !!name || 'Ce champs est requis']" v-model="name" label="Nom prénom"></v-text-field>
-            <v-text-field ref="pseudo" required :rules="[() => !!pseudo || 'Ce champs est requis']" v-model="pseudo" label="Pseudo"></v-text-field>
-            <v-text-field ref="phone" v-model="phone" label="Téléphone"></v-text-field>
-            <v-text-field ref="password" required :rules="[() => !!password || 'Ce champs est requis']" type="password"  v-model="password" label="Mot de passe"></v-text-field>
+            <v-text-field ref="email"  name="email"  required :rules="email_rule"  v-model="email" label="Email"></v-text-field>
+            <v-text-field ref="name"   name="name"   required :rules="[() => !!name || 'Ce champs est requis']" v-model="name" label="Nom prénom"></v-text-field>
+            <v-text-field ref="pseudo" name="pseudo" required :rules="[() => !!pseudo || 'Ce champs est requis']" v-model="pseudo" label="Pseudo"></v-text-field>
+            <v-text-field ref="phone"  name="phone"  v-model="phone" label="Téléphone"></v-text-field>
+            <v-text-field ref="password" name="password" required :rules="[() => !!password || 'Ce champs est requis']" type="password"  v-model="password" label="Mot de passe"></v-text-field>
         </v-container>
 
         <v-card-actions class="d-flex justify-space-around">
