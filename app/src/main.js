@@ -21,7 +21,7 @@ Vue.use(AudioVisual)
  // If data is not used bypass warning
 Vue.config.productionTip = true
 
-window.addEventListener('resize', () => { store.commit('set_width', window.innerWidth) })  
+window.addEventListener('resize', () => { store.commit('setWidth', window.innerwidth) })  
 
 new Vue({
   vuetify,
