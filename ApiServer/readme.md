@@ -7,6 +7,7 @@
 
     npm install
     Install sequelize CLI: npm install --save-dev sequelize-cli
+    npm i
 
     sequelize db:migrate
     - npm start 
