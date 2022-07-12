@@ -4,7 +4,6 @@ import PistContainer  from '../../components/Session/PistManager.vue'
 
 import api        from '../../services/ApiService'
 import { player } from '../../services/Player'
-import { smanager } from '../../services/AudioManager/player_'
 
 export default{
     components: {
@@ -20,16 +19,12 @@ export default{
     },
         
     async mounted(){  
-        smanager.initPlayer()
-        smanager.test()
-        // smanager.test()
         if (navigator.mediaDevices || navigator.mediaDevices.enumerateDevices) {
             // List microphones.
             let output = await navigator.mediaDevices.enumerateDevices()
             this.audio_output = output
         }
         this.initSession()
-        smanager.historyBackward()
     },
     
     methods: {
