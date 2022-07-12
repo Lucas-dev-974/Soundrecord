@@ -28,11 +28,20 @@ const file_utils = {
     }
 }
 
+/**
+ * @summary Storage fonction allow to define where to save file in fonction of req.path
+ */
 const storage = multer.diskStorage({
+
+    /**
+     * @summary Destination function allow to define the folder of the file 
+     * @param {Request} req 
+     * @param {File} file 
+     * @param {Function} cb 
+     */
     destination: async  (req, file, cb) => {
         // Repository where to import all file for the usere
         let folder_file = file_utils.get_storage_path(req.path, req.user.id)
-
         
         req.fileInfos         = file    
         req.fileInfos['date'] = Date.now()
@@ -42,6 +51,12 @@ const storage = multer.diskStorage({
         cb(null, folder_file)
     },
 
+    /**
+     * @summary This function allow to define the name of the file in fonction of req.path
+     * @param {Request} req 
+     * @param {File} file 
+     * @param {Function} cb 
+     */
     filename: (req, file, cb) => {
         let name 
         if(req.path = '/profile-setting/banner-upload'){
@@ -58,7 +73,12 @@ const storage = multer.diskStorage({
 })  
 
 exports.upload = multer({
-    // Upload only if file is
+    /**
+     * @summary This fontion allow to filter the file via it extension
+     * @param {Request}  req 
+     * @param {File}     file 
+     * @param {Function} callback 
+     */
     fileFilter: function(req, file, callback){
         let ext = path.extname(file.originalname)
         let extensions = ['.mp3', '.jpeg', '.png', '.jpg', '.wav']
