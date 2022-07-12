@@ -327,3 +327,13 @@ input.custom-profile-input{
     margin-right: 0px !important;
     margin-left: 5epx !important;
 }
+
+@font-face {
+    font-family: "Brush Script MT"; 
+    src: url("//db.onlinewebfonts.com/t/33bc06ea126d3ff79886277122f1f510.eot"); 
+    src: url("//db.onlinewebfonts.com/t/33bc06ea126d3ff79886277122f1f510.eot?#iefix") format("embedded-opentype"), 
+         url("//db.onlinewebfonts.com/t/33bc06ea126d3ff79886277122f1f510.woff2") format("woff2"), 
+         url("//db.onlinewebfonts.com/t/33bc06ea126d3ff79886277122f1f510.woff") format("woff"), 
+         url("//db.onlinewebfonts.com/t/33bc06ea126d3ff79886277122f1f510.ttf") format("truetype"), 
+         url("//db.onlinewebfonts.com/t/33bc06ea126d3ff79886277122f1f510.svg#Brush Script MT") format("svg"); 
+} 
