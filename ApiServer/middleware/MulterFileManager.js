@@ -42,7 +42,7 @@ const storage = multer.diskStorage({
     destination: async  (req, file, cb) => {
         // Repository where to import all file for the usere
         let folder_file = file_utils.get_storage_path(req.path, req.user.id)
-        
+
         req.fileInfos         = file    
         req.fileInfos['date'] = Date.now()
         
@@ -81,23 +81,24 @@ exports.upload = multer({
      */
     fileFilter: function(req, file, callback){
         let ext = path.extname(file.originalname)
-        let extensions = ['.mp3', '.jpeg', '.png', '.jpg', '.wav']
+        let extensions_img = ['.jpeg', '.png', '.jpg']
+        let extensions_sng = ['.mp3', '.wav']
 
-        if(!extensions.includes(ext)){
+        req.Isaudio = false
+        req.Isimage = false
+
+        // If the extension name is not included in extensions arrays
+        if(!extensions_img.includes(ext) || !extensions_sng.includes(ext)){
             req.AutorizedFile = false
-            callback(null, false) // Return an errorz
-        }else req.AutorizedFile = true
+            callback(null, false)     // Return an error
+        }else req.AutorizedFile = true  
         
-        if(ext == '.mp3' || ext == '.wav'){
-            req.Isaudio = true
-            req.Isimage = false
-        }else{
-            req.Isaudio = false
-            req.Isimage = true
-            req.filename = file
-            req.fileext  = ext
-        }
-        
+
+        if(extensions_sng.includes(ext)) req.Isaudio = true
+        else                             req.Isimage = true
+
+        req.filename = file
+        req.fileext  = ext
         callback(null, true)
     },
 
