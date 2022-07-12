@@ -1,5 +1,6 @@
 # SoundRecord
 ## Setup and Start
+    - require node v14.19.0
     - npm install
     - npm run serve
 
