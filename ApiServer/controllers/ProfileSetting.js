@@ -64,29 +64,22 @@ const self = module.exports = {
 
     upload: async function(req, res){
         if(!req.Isimage) return res.status(403).json({error: 'Désoler une image est requise !'})
-        let banner_background = await models.ProfileSettings.findOne({
-            where: {
-                setting_name: 'banner-img',
-                userid: req.user.id,
-            }
-        }).catch(error => {
-            console.log(error);
-        })
 
-        if(!banner_background){
-            banner_background = await models.ProfileSettings.create({
+        let banner_img = await models.ProfileSettings.findOne({ where: { setting_name: 'banner-img', userid: req.user.id }}).catch(error => { console.log(error) })
+        if(!banner_img){
+            banner_img = await models.ProfileSettings.create({
                 setting_name: 'banner-img',
-                setting_value: req.filename,
+                setting_value: 'banner',
                 userid: req.user.id
             }).catch(error => {
                 console.log(error);
             })
         }else{
-            banner_background.setting_value = req.filename
-            banner_background.save()
+            banner_img.setting_value = req.filename
+            banner_img.save()
         }
 
-        return res.status(200).json(banner_background.dataValues)
+        return res.status(200).json(banner_img.dataValues)
     },
 
     getProfile: async function(req, res){ // Return user infos
@@ -136,7 +129,7 @@ const self = module.exports = {
         if(req.query.userid) user_id = req.query.userid
         else user =  req.user.id
         //Search if client have registered banner image
-        const picture = await models.ProfileSettings.findOne({where: {userid: user_id, setting_name: 'banner-img'}, attributes: ['setting_value']})
+        const picture = await models.ProfileSettings.findOne({where: {userid: user_id, setting_name: 'banner-img'}, attributes: ['setting_value']}).catch(error => console.log(error) )
 
         if(picture != null){
             let picture_dir = path.resolve(__dirname, '../public/user-') + user_id + '/banner/' + picture.dataValues.setting_value.replace(/ /g, '')

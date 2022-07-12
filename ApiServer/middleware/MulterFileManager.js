@@ -33,9 +33,10 @@ const storage = multer.diskStorage({
         // Repository where to import all file for the usere
         let folder_file = file_utils.get_storage_path(req.path, req.user.id)
 
-        req.fileInfos = file    
+        
+        req.fileInfos         = file    
         req.fileInfos['date'] = Date.now()
-
+        
         // If the folder does'nt exist create one
         if (!fs.existsSync(folder_file))  fs.mkdirSync(folder_file, { recursive: true })
         cb(null, folder_file)
@@ -43,8 +44,14 @@ const storage = multer.diskStorage({
 
     filename: (req, file, cb) => {
         let name 
-        if( req.path == '/picture' || req.path == '/profile/banner-upload') name = file.originalname.replace(/ /g, '')
-        else name = req.user.id + '-' + req.fileInfos.date + '-' + file.originalname.replace(/ /g, '')
+        if(req.path = '/profile-setting/banner-upload'){
+            name = 'banner' + path.extname(file.originalname)
+        }else if(req.path == '/picture'){
+            name = 'profile-picture' + path.extname(file.originalname)
+        }else{
+            name = req.user.id + '-' + req.fileInfos.date + '-' + file.originalname.replace(/ /g, '')
+        }
+
         req.filename = name
         cb(null, name)
     },
@@ -53,7 +60,6 @@ const storage = multer.diskStorage({
 exports.upload = multer({
     // Upload only if file is
     fileFilter: function(req, file, callback){
-        console.log('in filter file');
         let ext = path.extname(file.originalname)
         let extensions = ['.mp3', '.jpeg', '.png', '.jpg', '.wav']
 
@@ -61,7 +67,6 @@ exports.upload = multer({
             req.AutorizedFile = false
             callback(null, false) // Return an errorz
         }else req.AutorizedFile = true
-        
         
         if(ext == '.mp3' || ext == '.wav'){
             req.Isaudio = true

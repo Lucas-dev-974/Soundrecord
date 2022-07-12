@@ -3,6 +3,7 @@
         <v-card-title primary-title  class="text-center d-flex justify-center bg-dark text-white">
             Enregistrement
         </v-card-title>
+        
         <v-container fluid class="pa-8">
             <v-text-field ref="email"  name="email"  required :rules="email_rule"  v-model="email" label="Email"></v-text-field>
             <v-text-field ref="name"   name="name"   required :rules="[() => !!name || 'Ce champs est requis']" v-model="name" label="Nom prénom"></v-text-field>

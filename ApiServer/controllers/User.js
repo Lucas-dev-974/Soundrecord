@@ -98,7 +98,8 @@ const self = module.exports = {
         let picture_dir
         if(userid){
             const picture = await models.User.findOne({where: {id: userid}, attributes: ['picture']})
-            if(picture .picture!= null)
+            console.log(picture);
+            if(picture.picture != null)
                 picture_dir = path.resolve(__dirname, '../public/user-') + userid + '/picture/' + picture.dataValues.picture.replace(/ /g, '')
         }
         
