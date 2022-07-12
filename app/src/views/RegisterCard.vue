@@ -18,5 +18,4 @@
     </v-card>
 </template> 
 
-<script src='./js/Register.js'>
-</script>
+<script src='./js/register.js'>

@@ -18,8 +18,6 @@
 
         <MailNotif />
     </form>
-
 </template>
 
-
-import MailNotif1 from '../components/MailNotif.vue.js';<script src='./js/Login.js' />
+<script src="./js/login.js"/>
