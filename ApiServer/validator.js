@@ -1,71 +1,80 @@
 const htmlspecialchars = require('htmlspecialchars')
 
-module.exports = {
-    validate: function(body, params){
-        let result = {
-            fails: [],
-            validated: {}
-        }
+module.exports = self = {
 
+    /**
+     * @summary Lets check if an given array of object correspond to params data type requirement
+     * @param {array} body
+     * @param {array} params 
+     * @returns { validated:object, validatedSize:integer, fails:object}
+     */
+    validate: function(body, params){
+        let result = { fails: [], validated: {}, validatedSize: 0 };
+        
+        // Boocle on object entries of params
         for(const [key, value] of Object.entries(params)){
-            let _params = value.split(':')
-            if(_params.length > 1){
+            if(value){
                 if(!body[key]){
-                    // console.log(key);
                     result = { 
                         fails: {...result.fails,  [key]: 'Le champ ' + key + ' dois être renseigner !'},
                         validated: {...result.validated}
-                    }                    
-                    
+                    };                    
                 }else{
-                    // console.log('key:', key);
-                    let _result = this.checkType(body, key, _params[0])
+                    let _result = self.checkType(body, key, value);
                     result = {
                         fails:     {...result.fails, ..._result.fails },
                         validated: {...result.validated, ..._result.validated}
-                    }
-                }
+                    };
+                };
 
             }else if(body[key]){
-                let _result = this.checkType(body, key, _params[0])
+                let _result = self.checkType(body, key, value)
                 result = {
                     fails:     {...result.fails, ..._result.fails },
                     validated: {...result.validated, ..._result.validated}
-                }
-            }
-        }
-
-        return result
+                };
+            };
+        };
+        
+        result.validatedSize = Object.entries(result.validated).length
+        return result;
     },
 
+    /**
+     * 
+     * @param {Array} body 
+     * @param {Array} key 
+     * @param {*} value 
+     * @returns 
+     */
     checkType: function(body, key, value){
-        let errors = {}
-        let validated = {}
+        let errors = [];
+        let validated = [];
 
         switch(value){
             case 'string':
-                if(typeof(body[key]) !==  'string'){
-                    error[key] = 'Le champs ' + key + ' doit être une chaine de charactère'
-                }else validated[key] = htmlspecialchars(body[key])
-                break
+                if(typeof(body[key]) !== 'string') errors.push({[value]: 'Le champs ' + key + ' doit être une chaine de charactère'});
+                else                             validated[key] = htmlspecialchars(body[key]);
+                break;
 
             case 'int':
-                try{
-                    body[key] = parseInt(body[key])
-                }catch(err){
-                    console.log(err);
-                }
-                if(Number.isInteger(body[key])) validated[key] = body[key]
-                else errors[key] = 'Le champ ' + key + ' doit être un nombre'
-                break
+                
+                if(Number.isInteger(body[key])) validated[key] = body[key];
+                else errors.push({[value]: 'Le champ ' + key + ' doit être un nombre'});
+                break;
 
             case 'decimal':
-                break
-
+                if(Number(body[key]) === n && n % 1 !== 0) validated[key] = body[key];
+                else errors.push({[value]: 'Le champ ' + key + ' doit être un décimal'});
+                break;
+            
+            case 'boolean':
+                if(typeof(body[key]) === boolean) validated[key] = body[key];
+                else errors.push({[value]: 'Le champ ' + key + ' doit être un boolean'});
+                break;
             default: 
-                errors.push({
-                    [value]: 'type non reconnue !'
-                })
+                errors.push({[value]: 'type non reconnue !'});
+                break;
         }
 
 
