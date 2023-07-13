@@ -4,7 +4,7 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     const bcrypt = require('bcrypt')
 
-    return queryInterface.bulkInsert('users', [
+    return queryInterface.bulkInsert('Users', [
       {
         name: 'Lucas', email: 'lucas.lvn97439@gmail.com', password: bcrypt.hashSync('systemroot97439', bcrypt.genSaltSync(8)), role: 1, createdAt: new Date(), updatedAt: new Date()
       },
@@ -18,6 +18,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('users',{}, null)
+    return queryInterface.bulkDelete('Users',{}, null)
   }
 };

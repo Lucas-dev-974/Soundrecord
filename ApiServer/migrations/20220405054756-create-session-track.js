@@ -12,23 +12,27 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'sessions', key: 'id', onDelete: 'cascade'
+          model: 'Sessions', 
+          key: 'id', 
+          onDelete: 'cascade'
         }
       },
       importid: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'imports', key: 'id'
+          model: 'Audios', 
+          key: 'id',
+          onDelete: 'cascade'
         },
-        onDelete: 'cascade',
-        onUpdate: 'cascade'
       },
       userid: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users', key: 'id', onDelete: 'cascade'
+          model: 'Users', 
+          key: 'id', 
+          onDelete: 'cascade'
         }
       },
       gain: {

@@ -3,8 +3,7 @@ const express         = require('express')
 // Controllers
 const AuthController    = require('./controllers/Authentication')
 const SessionController = require('./controllers/Session')
-const AudioController   = require('./controllers/audio')
-const PistController    = require('./controllers/audio')
+const AudioController   = require('./controllers/Audio')
 const UserController    = require('./controllers/User')
 const ProfileSetting    = require('./controllers/ProfileSetting')
 const Liked             = require('./controllers/Liked')
@@ -55,11 +54,12 @@ exports.router = (() => {
     router.route('/session').patch(SessionController.update)
 
     // Pists routes
-    router.route('/pists').get(PistController.all)
-    router.route('/pist/:id').get(PistController.get)
-    router.route('/pist').post(MulterFilesManager.upload.single('audio'), PistController.Import)
-    router.route('/pist/:pistid').delete(PistController.delete)
-    router.route('/pist').patch(PistController.update)
+
+    // router.route('/pists').get(PistController.all)
+    // router.route('/pist/:id').get(PistController.get)
+    // router.route('/pist').post(MulterFilesManager.upload.single('audio'), PistController.Import)
+    // router.route('/pist/:pistid').delete(PistController.delete)
+    // router.route('/pist').patch(PistController.update)
 
     // session_track
     router.route('/where/session_track').get(AudioController.checkWherePistIsImported)

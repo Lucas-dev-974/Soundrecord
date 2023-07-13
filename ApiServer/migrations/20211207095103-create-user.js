@@ -35,7 +35,7 @@ module.exports = {
       public: {
         allowNull: false,
         type: Sequelize.BOOLEAN,
-        default: false
+        defaultValue: false
       },
       facebook_link: {
         allowNull: true,

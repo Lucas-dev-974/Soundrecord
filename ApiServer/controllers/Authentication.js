@@ -55,9 +55,10 @@ module.exports = {
     },
 
     login: async function(req, res){
+        console.log('test', req.body.email);
         let validated = validator(req.body, {
-            'email': 'string:required',
-            'password': 'string:required'
+            'email': 'string',
+            'password': 'string'
         })
         
         if(Object.entries(validated.fails).length > 0) return res.status(403).json({error: validated})

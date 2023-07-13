@@ -1,7 +1,7 @@
 'use strict';
 const self = module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Imports', {
+    await queryInterface.createTable('Audios', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,7 +12,7 @@ const self = module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references:{
-          model: 'users',
+          model: 'Users',
           key: 'id',
           onDelete: 'CASCADE'
         }
@@ -26,7 +26,7 @@ const self = module.exports = {
       public: {
         allowNull: false,
         type: Sequelize.BOOLEAN,
-        default: false
+        defaultValue: false
       },
       createdAt: {
         allowNull: false,
@@ -42,6 +42,6 @@ const self = module.exports = {
 
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Imports');
+    await queryInterface.dropTable('Audios');
   }
 };

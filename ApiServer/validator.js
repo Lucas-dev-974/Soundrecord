@@ -44,36 +44,38 @@ module.exports = self = {
      * 
      * @param {Array} body 
      * @param {Array} key 
-     * @param {*} value 
+     * @param {*} type 
      * @returns 
      */
-    checkType: function(body, key, value){
+    checkType: function(body, key, type){
         let errors = [];
         let validated = [];
 
-        switch(value){
+        console.log('in CheckType:', body, key, type);
+        
+        switch(type){
             case 'string':
-                if(typeof(body[key]) !== 'string') errors.push({[value]: 'Le champs ' + key + ' doit être une chaine de charactère'});
+                if(typeof(body[key]) !== 'string') errors.push({[type]: 'Le champs ' + key + ' doit être une chaine de charactère'});
                 else                             validated[key] = htmlspecialchars(body[key]);
                 break;
 
             case 'int':
                 
                 if(Number.isInteger(body[key])) validated[key] = body[key];
-                else errors.push({[value]: 'Le champ ' + key + ' doit être un nombre'});
+                else errors.push({[type]: 'Le champ ' + key + ' doit être un nombre'});
                 break;
 
             case 'decimal':
                 if(Number(body[key]) === n && n % 1 !== 0) validated[key] = body[key];
-                else errors.push({[value]: 'Le champ ' + key + ' doit être un décimal'});
+                else errors.push({[type]: 'Le champ ' + key + ' doit être un décimal'});
                 break;
             
             case 'boolean':
                 if(typeof(body[key]) === boolean) validated[key] = body[key];
-                else errors.push({[value]: 'Le champ ' + key + ' doit être un boolean'});
+                else errors.push({[type]: 'Le champ ' + key + ' doit être un boolean'});
                 break;
             default: 
-                errors.push({[value]: 'type non reconnue !'});
+                errors.push({[type]: 'type non reconnue !'});
                 break;
         }
 
