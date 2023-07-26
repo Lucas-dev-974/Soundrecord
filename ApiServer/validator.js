@@ -3,86 +3,121 @@ const htmlspecialchars = require('htmlspecialchars')
 module.exports = self = {
 
     /**
-     * @summary Lets check if an given array of object correspond to params data type requirement
-     * @param {array} body
-     * @param {array} params 
-     * @returns { validated:object, validatedSize:integer, fails:object}
+     * Validates if the given array of objects corresponds to the data type requirements specified in params.
+     * @param {object} body - The data object to validate.
+     * @param {object} params - The parameter object specifying the data type requirements for each field.
+     * @returns {object} - An object with validation results containing validated data, validation errors, and the size of validated data.
      */
-    validate: function(body, params){
-        let result = { fails: [], validated: {}, validatedSize: 0 };
-        
-        // Boocle on object entries of params
-        for(const [key, value] of Object.entries(params)){
-            if(value){
-                if(!body[key]){
-                    result = { 
-                        fails: {...result.fails,  [key]: 'Le champ ' + key + ' dois être renseigner !'},
-                        validated: {...result.validated}
-                    };                    
-                }else{
-                    let _result = self.checkType(body, key, value);
-                    result = {
-                        fails:     {...result.fails, ..._result.fails },
-                        validated: {...result.validated, ..._result.validated}
-                    };
-                };
+    // validate: function(body, params){
+    //     let result = { fails: {}, validated: {}, validatedSize: 0 };
 
-            }else if(body[key]){
-                let _result = self.checkType(body, key, value)
-                result = {
-                    fails:     {...result.fails, ..._result.fails },
-                    validated: {...result.validated, ..._result.validated}
-                };
-            };
-        };
-        
-        result.validatedSize = Object.entries(result.validated).length
+    //     // Loop through the object entries of params
+    //     for (const [key, rule] of Object.entries(params)) {
+    //         if (rule) {
+    //             // Check if the field is required
+    //             if (!body[key]) {
+    //                 result.fails[key] = `Le champ ${key} doit être renseigné !`;
+    //             } else {
+    //                 // Validate the field based on the specified data type rule
+    //                 let _result = self.checkType(body, key, rule);
+    //                 result.fails = { ...result.fails, ..._result.fails };
+    //                 result.validated = { ...result.validated, ..._result.validated };
+    //             }
+    //         } else if (body[key]) {
+    //             // Validate the field if it is present and no data type rule is specified
+    //             let _result = self.checkType(body, key, rule);
+    //             result.fails = { ...result.fails, ..._result.fails };
+    //             result.validated = { ...result.validated, ..._result.validated };
+    //         }
+    //     }
+
+    //     result.validatedSize = Object.keys(result.validated).length;
+    //     return result;
+    // },
+
+    validate: function(body, params){
+        let result = { fails: {}, validated: {}, validatedSize: 0 };
+
+        // Loop through the object entries of params
+        for (const [key, rule] of Object.entries(params)) {
+            if (body[key] || rule) {
+                // Check if the field is required
+                if (!body[key] && rule) {
+                    result.fails[key] = `Le champ ${key} doit être renseigné !`;
+                } else {
+                    // Validate the field based on the specified data type rule
+                    let _result = self.checkType(body, key, rule);
+                    result.fails = { ...result.fails, ..._result.fails };
+                    result.validated = { ...result.validated, ..._result.validated };
+                }
+            }
+        }
+
+        result.validatedSize = Object.keys(result.validated).length;
         return result;
     },
 
+
     /**
-     * 
-     * @param {Array} body 
-     * @param {Array} key 
-     * @param {*} type 
-     * @returns 
+     * Checks the data type of a specific field in the body object based on the specified rules.
+     * @param {object} body - The data object to validate.
+     * @param {string} key - The key of the field to validate.
+     * @param {string} rules - The data type rules for the field (e.g., 'string|required' or 'int').
+     * @returns {object} - An object with validation results containing validated data and validation errors.
      */
-    checkType: function(body, key, type){
+    checkType: function (body, key, rules) {
         let errors = [];
-        let validated = [];
+        let validated = {};
 
-        console.log('in CheckType:', body, key, type);
-        
-        switch(type){
-            case 'string':
-                if(typeof(body[key]) !== 'string') errors.push({[type]: 'Le champs ' + key + ' doit être une chaine de charactère'});
-                else                             validated[key] = htmlspecialchars(body[key]);
-                break;
+        const [type, isRequired] = this.getRules(rules.split("|"));
 
-            case 'int':
-                
-                if(Number.isInteger(body[key])) validated[key] = body[key];
-                else errors.push({[type]: 'Le champ ' + key + ' doit être un nombre'});
-                break;
+        // Check if the field is required
+        if (isRequired && !body[key]) {
+            errors.push({ [key]: `Le champ ${key} doit être renseigné !` });
+        } else if (body[key] !== undefined) {
+            // Validate the field based on the specified data type rule
+            switch (type) {
+                case 'string':
+                    if (typeof body[key] !== 'string') errors.push({ [key]: `Le champ ${key} doit être une chaîne de caractères` });
+                    else validated[key] = htmlspecialchars(body[key]);
+                    break;
 
-            case 'decimal':
-                if(Number(body[key]) === n && n % 1 !== 0) validated[key] = body[key];
-                else errors.push({[type]: 'Le champ ' + key + ' doit être un décimal'});
-                break;
-            
-            case 'boolean':
-                if(typeof(body[key]) === boolean) validated[key] = body[key];
-                else errors.push({[type]: 'Le champ ' + key + ' doit être un boolean'});
-                break;
-            default: 
-                errors.push({[type]: 'type non reconnue !'});
-                break;
+                case 'int':
+                    if (Number.isInteger(Number(body[key]))) validated[key] = body[key];
+                    else errors.push({ [key]: `Le champ ${key} doit être un nombre entier` });
+                    break;
+
+                case 'decimal':
+                    const n = parseFloat(body[key]);
+                    if (!isNaN(n) && n % 1 !== 0) validated[key] = n;
+                    else errors.push({ [key]: `Le champ ${key} doit être un nombre décimal` });
+                    break;
+
+                case 'boolean':
+                    if (typeof body[key] === 'boolean') validated[key] = body[key];
+                    else errors.push({ [key]: `Le champ ${key} doit être un boolean` });
+                    break;
+
+                default:
+                    errors.push({ [key]: 'Type non reconnu !' });
+                    break;
+            }
         }
-
 
         return {
-            fails: {...errors},
-            validated: validated
-        }
+            fails: Object.fromEntries(errors.map((item) => Object.entries(item)[0])),
+            validated,
+        };
+    },
+
+    /**
+     * Parses the rules array to get the data type and required status for a field.
+     * @param {array} rulesArr - The array containing data type rules for the field.
+     * @returns {array} - An array containing the data type and required status.
+     */
+    getRules: function (rulesArr) {
+        const type = rulesArr.find(rule => ['string', 'int', 'decimal', 'boolean'].includes(rule));
+        const isRequired = rulesArr.includes('required');
+        return [type, isRequired];
     }
-}
+};
