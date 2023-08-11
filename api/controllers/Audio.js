@@ -2,7 +2,6 @@ const fs = require("fs");
 const path = require("path");
 const { validator, exclude } = require("../utils.js");
 const models = require("../models");
-const filesPath = path.resolve(__dirname, "../public/");
 
 require("dotenv").config();
 const { GetPagination, GetPagingDatas } = require("../utils.js");
@@ -52,7 +51,6 @@ module.exports = {
       sessions.rows[key].dataValues.importedIn = imports.count;
     }
 
-    const response = GetPagingDatas(audios, page, limit);
     return res.status(200).json(audios);
   },
 
