@@ -1,0 +1,224 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <title>Ajouter des bruitages à une piste audio</title>
+</head>
+<body>
+  <audio id="main-audio" src="./instru.wav" controls></audio>
+
+  <script>
+    // Script JavaScript pour manipuler l'audio
+
+        // Vérifier la compatibilité de l'API Web Audio
+        window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
+        if (!window.AudioContext) {
+            alert("Désolé, mais l'API Web Audio n'est pas supportée par votre navigateur.");
+        }
+
+        // Fonction principale
+        async function addSoundEffects() {
+            try {
+                const context = new AudioContext();
+                const audioElement = document.getElementById('main-audio');
+                const audioSource = context.createMediaElementSource(audioElement);
+
+                // Charger le bruitage
+                const noiseBuffer = await fetch('https://cdn.pixabay.com/download/audio/2023/02/25/audio_77ac904ad7.mp3?filename=rain-ambient-cinematic-140566.mp3&g-recaptcha-response=03AAYGu2SGQC4vvGBnoMHQviAd432iNCNaHMb7-UUM3YmfmqhvpvWS7okeSahTaR0o5PBOvbRLF7imzDomgYAXabRbF6ZKeRuix-jRS8y2VZs9R_GSidme8AYgDJyoOGQWIuKpp3Byo2kLCVk2C1ttXNH3xFOnEnMYY3EzjT2-RlANLD5DfZZWLP81FTW6EvbnXBDEYDbsmw8xzI9xlNFF16bLsnIYzGauT7agjmgIRG-NkcMd6L4R8t5MKEm3jJQfEks59HyKM1Y_Xe_cWtsHjAiJ8avvWrjR6zOOw30d5SQJfPdOXMaDuVaZ9BMobslD5yQXe7vkGtvkWFYocFQi5by4QOo3b647sBQ8tEnlsjPcn1-Da4rJUf1JeNX5dFXXuRS6Ns2OCFvDwa_WLXZxV-0_w6Mosuu33sG3pgvsxAclePTKNvNvq5k5Yp9B0L36KDZZGPDPKXPWHimr7Sj0RIZD0XOeyAU_u09uG2hUKzzmo1rKUvtME5Xpi4f1QxiGT4NHPjaAETmhZEyt7mITPZc4K3xq5GMwUA&remote_template=1')
+                  .then(response => response.arrayBuffer())
+                  .then(buffer => context.decodeAudioData(buffer));
+
+                const noiseSource = context.createBufferSource();
+                noiseSource.buffer = noiseBuffer;
+
+                // Créer un nœud de mixage
+                const noiseGain = context.createGain();
+                noiseGain.gain.value = 0.5; // Ajustez le volume du bruitage ici
+
+                // Connecter les nœuds audio
+                audioSource.connect(context.destination);
+                noiseSource.connect(noiseGain);
+                noiseGain.connect(context.destination);
+
+                // Jouer l'audio
+                audioElement.play(); // Joue la piste audio principale
+                noiseSource.start(); // Joue le bruitage
+
+                // Enregistrer la piste audio combinée
+                // const recordedStream = await recorder.stream.getAudioTracks()[0].requestAudio();
+                // const recordedSource = new Audio();
+                // recordedSource.srcObject = new MediaStream([recordedStream]);
+                // recordedSource.controls = true;
+                // document.body.appendChild(recordedSource);
+
+            } catch (error) {
+                console.error("Une erreur s'est produite lors du chargement des fichiers audio :", error);
+            }
+        }
+
+        // Appeler la fonction pour ajouter les bruitages lorsque la page est chargée
+        window.addEventListener('load', addSoundEffects);   
+  
+    
+  </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Assemblage de bruitages avec une piste audio (avec délai)</title>
+</head>
+<body>
+  <audio id="main-audio" src="" controls></audio>
+  <button id="add-sound-effects">jouer</button>
+  <button id="pause">Pause</button>
+  <script>
+    // const audioContext = new AudioContext();
+
+    // // Création de la piste principale vide
+    // const mainDuration = 180; // Durée de la piste principale en secondes
+    // const mainBuffer = audioContext.createBuffer(2, audioContext.sampleRate * mainDuration, audioContext.sampleRate);
+
+    // // Fonction pour ajouter une piste audio à la piste principale à un moment spécifique
+    // function addAudioToMainTrack(audioBuffer, startTime) {
+    //   const sourceNode = audioContext.createBufferSource();
+    //   sourceNode.buffer = audioBuffer;
+    //   sourceNode.connect(audioContext.destination);
+    //   sourceNode.start(startTime);
+    // }
+
+    // fetchAudio('https://cdn.pixabay.com/download/audio/2023/02/25/audio_77ac904ad7.mp3?filename=rain-ambient-cinematic-140566.mp3&g-recaptcha-response=03AAYGu2SGQC4vvGBnoMHQviAd432iNCNaHMb7-UUM3YmfmqhvpvWS7okeSahTaR0o5PBOvbRLF7imzDomgYAXabRbF6ZKeRuix-jRS8y2VZs9R_GSidme8AYgDJyoOGQWIuKpp3Byo2kLCVk2C1ttXNH3xFOnEnMYY3EzjT2-RlANLD5DfZZWLP81FTW6EvbnXBDEYDbsmw8xzI9xlNFF16bLsnIYzGauT7agjmgIRG-NkcMd6L4R8t5MKEm3jJQfEks59HyKM1Y_Xe_cWtsHjAiJ8avvWrjR6zOOw30d5SQJfPdOXMaDuVaZ9BMobslD5yQXe7vkGtvkWFYocFQi5by4QOo3b647sBQ8tEnlsjPcn1-Da4rJUf1JeNX5dFXXuRS6Ns2OCFvDwa_WLXZxV-0_w6Mosuu33sG3pgvsxAclePTKNvNvq5k5Yp9B0L36KDZZGPDPKXPWHimr7Sj0RIZD0XOeyAU_u09uG2hUKzzmo1rKUvtME5Xpi4f1QxiGT4NHPjaAETmhZEyt7mITPZc4K3xq5GMwUA&remote_template=1')
+    // fetchAudio('https://cdn.pixabay.com/download/audio/2023/04/02/audio_f58339f5b6.mp3?filename=mysterious-144734.mp3&g-recaptcha-response=03AAYGu2TjdjkYYITvVqqOaUrLD5ObsqlP-pkq98ldwQVhqXAFFLQliiPbVUTTY0fYkq3AwRPc0o_BGGB5ErJLmB7cPQyORk6MaEZW43STDU7u4ArfLLomkjFwUMCAlrGJGRoiCrQSx5GfZkpOzJnf0Rollbi0f21TyneP1HdgCMPxXwjSutDmXR7AgzaHc0FxxylKUEAGkBLgcuTJdkze_2KsDQNePt8jvyvjc5i-uG7r2taRBlcoxPpQ7Qal6EcREXfU_0lKvGYWm3J5385M1I_Nbdlyg4gruHMa07r0CYnd5vbkhX-Ie5HvyPjzUE6KJqO-zAls0UC3lzG4r1xLTngDjcQ2Lw3h-VbTn0KGrzRwVFOuWxTuVNqe8c7Jvd2Ee7Uhp696T6UZ2wT4WGKhETR01GF8ozooNuVupoGg3CcDBA6PVD1eN51dXNG8S8mvzt7-FjHWcER7HZsiffyfQUWwz9FVSVom0fO9zPap8wPdvpMsLvEwlcpwbdJCrUScF59AqiPOPerd79-rkOxBRPYUNF2Hv2s5mg&remote_template=1')
+    
+    // function fetchAudio(url){
+    //   // Charger la piste audio "a"
+    //   fetch(url)
+    //     .then(response => response.arrayBuffer())
+    //     .then(buffer => audioContext.decodeAudioData(buffer))
+    //     .then(audioBuffer => {
+    //       const startTime = 2; // Temps de démarrage de la piste "a" dans la piste principale (en secondes)
+    //       console.log(audioBuffer);
+    //       addAudioToMainTrack(audioBuffer, startTime);
+          
+    //     });      
+    // }
+    // const mainSource = audioContext.createBufferSource();
+    // mainSource.buffer = mainBuffer;
+    // mainSource.connect(audioContext.destination);
+
+    
+    // function isAudioPaused() {
+    //   return audioContext.state === 'suspended';
+    // }
+    
+    // function playMainTrack() {
+    //   if(isAudioPaused()){
+    //     audioContext.resume()
+    //   }else{
+    //     mainSource.start(0);
+    //   }
+    // } 
+
+    
+  class SoundTrackManager {
+    constructor() {
+      this.audioContext = new AudioContext();
+      this.mainBuffer = null;
+      this.tracks = [];
+    }
+
+    async setupMainTrack(duration) {
+      this.mainBuffer = this.audioContext.createBuffer(2, this.audioContext.sampleRate * duration, this.audioContext.sampleRate);
+    }
+
+    async addTrack(audioBuffer, startTime) {
+      const track = {
+        buffer: audioBuffer,
+        startTime: startTime
+      };
+      this.tracks.push(track);
+    }
+
+    removeTrack(index) {
+      if (index >= 0 && index < this.tracks.length) {
+        this.tracks.splice(index, 1);
+      }
+    }
+
+    setTrackStartTime(index, startTime) {
+      if (index >= 0 && index < this.tracks.length) {
+        this.tracks[index].startTime = startTime;
+      }
+    }
+
+    play() {
+      const mainSource = this.audioContext.createBufferSource();
+      mainSource.buffer = this.mainBuffer;
+      mainSource.connect(this.audioContext.destination);
+      mainSource.start(0);
+
+      this.tracks.forEach((track) => {
+        const trackSource = this.audioContext.createBufferSource();
+        trackSource.buffer = track.buffer;
+        trackSource.connect(this.audioContext.destination);
+        trackSource.start(this.audioContext.currentTime + track.startTime);
+      });
+    }
+
+    pause() {
+      this.audioContext.suspend();
+    }
+
+    resume() {
+      this.audioContext.resume();
+    }
+
+    isAudioPaused(){
+      return this.audioContext.state === 'suspended';
+    }
+
+    audioContext(){
+      return this.audioContext
+    }
+  }
+  
+  const soundtrack = new SoundTrackManager();
+
+  // Configuration de la piste principale
+  soundtrack.setupMainTrack(180);
+
+  // Chargement et ajout d'une piste audio
+  fetch('https://cdn.pixabay.com/download/audio/2023/02/25/audio_77ac904ad7.mp3?filename=rain-ambient-cinematic-140566.mp3&g-recaptcha-response=03AAYGu2SGQC4vvGBnoMHQviAd432iNCNaHMb7-UUM3YmfmqhvpvWS7okeSahTaR0o5PBOvbRLF7imzDomgYAXabRbF6ZKeRuix-jRS8y2VZs9R_GSidme8AYgDJyoOGQWIuKpp3Byo2kLCVk2C1ttXNH3xFOnEnMYY3EzjT2-RlANLD5DfZZWLP81FTW6EvbnXBDEYDbsmw8xzI9xlNFF16bLsnIYzGauT7agjmgIRG-NkcMd6L4R8t5MKEm3jJQfEks59HyKM1Y_Xe_cWtsHjAiJ8avvWrjR6zOOw30d5SQJfPdOXMaDuVaZ9BMobslD5yQXe7vkGtvkWFYocFQi5by4QOo3b647sBQ8tEnlsjPcn1-Da4rJUf1JeNX5dFXXuRS6Ns2OCFvDwa_WLXZxV-0_w6Mosuu33sG3pgvsxAclePTKNvNvq5k5Yp9B0L36KDZZGPDPKXPWHimr7Sj0RIZD0XOeyAU_u09uG2hUKzzmo1rKUvtME5Xpi4f1QxiGT4NHPjaAETmhZEyt7mITPZc4K3xq5GMwUA&remote_template=1')
+    .then(response => response.arrayBuffer())
+    .then(buffer => soundtrack.audioContext.decodeAudioData(buffer))
+    .then(audioBuffer => {
+      soundtrack.addTrack(audioBuffer, 1); // Ajout de la piste "a" à 20 secondes dans la piste principale
+    });
+
+  // Suppression d'une piste audio
+  // soundtrack.removeTrack(0); // Suppression de la première piste audio
+
+  // Modification du temps de démarrage d'une piste audio
+  soundtrack.setTrackStartTime(0, 1); // Changement du temps de démarrage de la première piste audio à 30 secondes
+
+
+  function playMainTrack() {
+    console.log(soundtrack.isAudioPaused());
+    
+    if(soundtrack.isAudioPaused()){
+      soundtrack.resume();
+    }else{
+      soundtrack.play();
+    }
+  } 
+
+  document.addEventListener('DOMContentLoaded', () => {
+      const button = document.getElementById('add-sound-effects')
+      const pause = document.getElementById('pause')
+      button.addEventListener("click", () => playMainTrack())
+      pause.addEventListener('click', () => soundtrack.pause())
+    })
+  </script>
+</body>
+</html>

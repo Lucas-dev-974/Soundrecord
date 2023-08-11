@@ -69,7 +69,7 @@ export default{
         },
 
         importPistInSession: async function(pist){
-            const response = await api.post('/api/session_track', {sessionid: this.$store.state.current_session.id, importid: pist.id}).catch(error => console.log(error))
+            const response = await api.post('/api/session_track', {sessionid: this.$store.state.current_session.id, audioid: pist.id}).catch(error => console.log(error))
             if(response.status == 200){
                 const src = api.defaults.baseURL + response.data.src + '?token=' + this.$store.state.token
                 player.add_track({
@@ -81,7 +81,7 @@ export default{
                         src:  response.data.src,
                         sessionid: response.data.sessionid,
                         color:     response.data.color,
-                        importid:  response.data.importid
+                        audioid:  response.data.audioid
                     }
                 })
             }

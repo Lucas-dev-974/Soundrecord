@@ -5,5 +5,5 @@ module.exports = {
         userid: null,
         name:   '',
         sesssion_tracks: []
-    } 
+    },
 }

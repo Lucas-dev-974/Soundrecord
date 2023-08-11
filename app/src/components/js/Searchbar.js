@@ -51,7 +51,7 @@ export default {
 
         create: function(){
             if(this.item == 'session'){
-                this.$parent.create_session(this.session_name)
+                this.$parent.createSession(this.session_name)
             }else if(this.item == 'pist'){
                 if(this.file !== null){
 

@@ -5,7 +5,7 @@ import VueRouter from 'vue-router';
 import Session from './views/Session.vue'
 import Auth from './views/Auth.vue'
 import Profile   from './views/profile.vue'
-import Discover from  './views/Discover.vue'
+import Discover from  './views/discover/Discover.vue'
 
 Vue.use(VueRouter);
 

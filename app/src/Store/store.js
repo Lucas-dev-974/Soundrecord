@@ -5,17 +5,18 @@ import Vue from 'vue'
 import {profile_settings} from './profile'
 import {sessions, current_session} from './sessions'
 
-
 Vue.use(Vuex)
 const vuexLocal = new VuePersist({ storage: window.localStorage })
 
 let initialstate = {
     current_session: current_session,
+    sessions: sessions, // all sessions created by user 
+    audios: [], // Last audios retrieved from api server
     biblio: [], // Bibliotheque
-    sessions:      sessions, // all sessions created by user 
-    pists:         [], // all pist for the current session
 
     user:  null,
+
+    // TODO: Use cookie insteand of store the token in the local storage
     token: null,
     alerts: [],
 

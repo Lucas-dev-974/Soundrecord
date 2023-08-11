@@ -5,8 +5,8 @@
 .user-card-input {
   font-size: 16px !important;
   color: black !important;
-
-}.user-card-link{
+}
+.user-card-link {
   font-size: 10px;
   text-decoration: none;
   color: rgb(226, 47, 47) !important;
@@ -14,120 +14,123 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
-#dash-container{
+#dash-container {
   width: 70%;
   flex-wrap: wrap;
-}#sessions_container{
+}
+#sessions_container {
   width: 60%;
-}#registered_audios{
+}
+#registered_audios {
   width: 40%;
 }
 
-.title-custom{
+.title-custom {
   font-size: 24px;
-}.table-header{
+}
+.table-header {
   font-size: 14px !important;
 }
 
-@media (max-width: 350px){
-  #sessions_container{
+@media (max-width: 350px) {
+  #sessions_container {
     margin: 0 !important;
   }
-  .title-custom{
+  .title-custom {
     font-size: 20px !important;
-  }.table-header{
+  }
+  .table-header {
     font-size: 11px !important;
   }
 }
 
-@media (max-width: 390px){
-  #dashboard-logout button{
-    transition: all 0.5s ;
+@media (max-width: 390px) {
+  #dashboard-logout button {
+    transition: all 0.5s;
     transform: translateY(35px);
     position: absolute;
     right: 15px;
-  }.user-card-input{
+  }
+  .user-card-input {
     font-size: 14px !important;
   }
 }
 
-@media (max-width: 630px){
-  #sessions_container{
+@media (max-width: 630px) {
+  #sessions_container {
     width: 100%;
-  }#registered_audios{
+  }
+  #registered_audios {
     width: 100%;
   }
 
-  .profile-bottom-section.w-80{
+  .profile-bottom-section.w-80 {
     width: 100%;
     margin: 0 !important;
     padding: 0 !important;
   }
-  .user-bar-bottom.w-80.container{
+  .user-bar-bottom.w-80.container {
     width: 100%;
   }
 }
 
-
-@media (max-width: 1000px){
-  #dash-container{
+@media (max-width: 1000px) {
+  #dash-container {
     width: 90%;
   }
 }
 
-
-#audioContainer{
+#audioContainer {
   height: 165px;
   background-color: red;
   display: grid;
 }
-.pist-content{
+.pist-content {
   display: grid;
   background-color: transparent;
 }
 
-
-
-.pists-container-inline{
+.pists-container-inline {
   height: 90px;
   background-color: transparent;
   border-top: 1px solid gray;
   border-bottom: 1px solid gray;
 }
 
-
-
-.text-tanslate-x{
+.text-tanslate-x {
   transition: all 3s;
   align-items: center;
-  
-}.text-tanslate-x:hover{
+}
+.text-tanslate-x:hover {
   transform: translateX(-50%);
 }
 
-
 /*# sourceMappingURL=style-dashboard.css.map */
 
-.playlist-time-scale{
+.playlist-time-scale {
   height: 48px;
-}.track-container, .channel canvas{
+}
+.track-container,
+.channel canvas {
   height: 90px !important;
   background-color: white;
-}.waveLine .waveform{
-  height: 100% ;
-}.waveLine .waveform .channel canvas{
-  height: 90px ;
+}
+.waveLine .waveform {
+  height: 100%;
+}
+.waveLine .waveform .channel canvas {
+  height: 90px;
 }
 
-
 .custom-btn {
-	width: 0.1px;
-	height: 0.1px;
-	opacity: 0;
-	overflow: hidden;
-	position: absolute;
-	z-index: -1;
-}.custom-btn-label{
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+.custom-btn-label {
   width: 100%;
   text-align: center;
   background-color: transparent;
@@ -139,59 +142,53 @@
   font-size: 14px;
   text-transform: uppercase;
   color: #63d189;
-  
 }
 
-#bar-manager-btns button{
+#bar-manager-btns button {
   padding: 9px !important;
   border-radius: 15%;
   transition: all 0.6s;
   border: 0 0 0 0;
 }
 
-#pists-container{
+#pists-container {
   width: 100%;
   padding-top: 5px;
   height: calc(100vh - 80px) !important;
 }
-.playlist{
+.playlist {
   height: 100%;
 }
-.playlist-tracks{
+.playlist-tracks {
   height: calc(100vh - 128px) !important;
-  background-color: #1A1D21 !important;
-  scrollbar-color: red  #1A1D21;
+  background-color: #1a1d21 !important;
+  scrollbar-color: red #1a1d21;
   scrollbar-width: thin;
 }
 
-.channel.selected canvas{
+.channel.selected canvas {
   border: 1px solid red;
-  
+
   border-left: 0;
   border-right: 0;
 }
 
-.time{
+.time {
   color: white;
 }
 
-.square-btn{
+.square-btn {
   border-radius: 0px !important;
-}.square-btn.active{
+}
+.square-btn.active {
   background-color: #ffffff4d;
 }
 
-.selection.segment{
+.selection.segment {
   background-color: #18181888;
   height: 90px !important;
 }
 
-.add-pist-btn-pist-container{
+.add-pist-btn-pist-container {
   position: abs;
-}
-
-#discover-container{
-  background-color: #181818;
-}#discover-container .artist-part{
-  background-color: #252525;
 }

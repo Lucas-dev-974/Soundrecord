@@ -1,6 +1,6 @@
 <template>
-    <div class="">
-        <v-overlay :value="overlay" z-index="15" color="black">
+  <div class="">
+    <!-- <v-overlay :value="overlay" z-index="15" color="black">
           <v-card v-click-outside="close" width="400" height="auto">
             <v-card-title primary-title>
               {{ title }}
@@ -17,8 +17,8 @@
               <v-btn class="py-0 my-0" color="success" small outlined block @click="reset_password">Suivant</v-btn>
             </v-card-actions>
           </v-card>
-        </v-overlay>
-    </div>
+        </v-overlay> -->
+  </div>
 </template>
 
 <script src="./js/MailNotice.js" />

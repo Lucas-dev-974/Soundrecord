@@ -127,11 +127,11 @@ class Player{
                     //  an api_options fields that allow us to put our app data
                     api_options: {
                         id: pist.id,
-                        Importid: pist.ImportId,
+                        audioid: pist.audioid,
                         pistColor: pist.color,
                         muted:  pist.muted,
                     },
-                    src: "http://localhost:3000/api/pist/"+ pist.importid +"?token=" + this.$store.state.token,
+                    src: "http://localhost:3000/api/pist/"+ pist.audioid +"?token=" + this.$store.state.token,
                     name: pist.Import.name,
                     gain: pist.gain,
                     customClass: 'track-container.' + pist.id,
