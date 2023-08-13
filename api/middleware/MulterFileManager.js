@@ -2,13 +2,9 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-const StoragePath = path.resolve(__dirname, "..") + "/public/user-";
-
-const file_utils = {
-  get_storage_path(path, userid) {
-    return StoragePath + userid + "/";
-  },
-};
+const StoragePath = (userID) =>
+  path.resolve(__dirname, "..") + "/public/user-" + userID + "/";
+exports.StoragePath = (userID) => StoragePath(userID);
 
 /**
  * @summary Storage fonction allow to define where to save file in fonction of req.path
@@ -22,7 +18,7 @@ const storage = multer.diskStorage({
    */
   destination: async (req, file, cb) => {
     // Location to import all file for the user
-    let folder_file = file_utils.get_storage_path(req.path, req.user.id);
+    let folder_file = StoragePath(req.user.id);
     req.folder_file = folder_file;
 
     req.fileInfos = file;
@@ -35,16 +31,20 @@ const storage = multer.diskStorage({
   },
 
   /**
-   * @summary This function allow to define the name of the file in fonction of req.path
+   * @summary in this i define:
+   *  - "filename" for the database (req.filename)
+   *  - "filePath" for check file integrity (req.filePath)
+   *  - ""
    * @param {Request} req
    * @param {File} file
    * @param {Function} cb
    */
   filename: (req, file, cb) => {
-    const name = req.fileInfos.date + "-" + file.originalname.replace(/ /g, "");
+    const name = file.originalname.replace(/ /g, "");
     req.filename = name;
-    req.filePath = req.folder_file + name;
-    cb(null, name);
+    req.filePath = req.folder_file + req.fileInfos.date + "-" + name;
+    req.fileSrc = "user-" + req.user.id + "/" + name;
+    cb(null, req.fileInfos.date + "-" + name);
   },
 });
 
@@ -64,6 +64,7 @@ exports.upload = multer({
     req.Isimage = false;
     req.AutorizedFile = false;
 
+    console.log(extensions_img.includes(ext), extensions_sng.includes(ext));
     // If the extension name is not included in extensions arrays
     if (extensions_img.includes(ext) || extensions_sng.includes(ext)) {
       req.AutorizedFile = true;

@@ -9,6 +9,8 @@
 
         "PATCH|/api/user/reset-password",
         "POST|/api/mail/password-reset",
-        "GET|/api/creators"
+        "GET|/api/creators",
+        "GET|/api/store",
+        "GET|/api/audio"
     ]
 }

@@ -5,7 +5,7 @@ const token = window.localStorage.getItem("vuex")
   : null;
 
 const config = {
-  baseURL: "http://localhost:3000",
+  baseURL: "http://localhost:3000/api",
   headers: {
     Authorization: "Bearer " + token,
   },

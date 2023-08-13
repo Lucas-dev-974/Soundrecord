@@ -68,13 +68,15 @@ module.exports = {
     });
   },
 
-  login: async function (req, res) {
-    console.log("test", req.body.email);
-
-    let validated = validator(req.body, {
-      email: "string|required",
-      password: "string|required",
-    });
+  login: async function (req, res, next) {
+    let validated = validator(
+      req.body,
+      {
+        email: "string|required",
+        password: "string|required",
+      },
+      res
+    );
 
     if (Object.entries(validated.fails).length > 0)
       return res.status(403).json({ error: validated });
@@ -99,6 +101,7 @@ module.exports = {
     //     user:  returnFields(user.dataValues, models.User.visible()),
     //     token: jwt.generateToken(user)
     // })
+    
     bcrypt.compare(
       validated.validated.password,
       user.password,

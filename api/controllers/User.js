@@ -1,4 +1,3 @@
-const _validator = require("../validator");
 const models = require("../models");
 const bcrypt = require("bcrypt");
 
@@ -6,7 +5,6 @@ const path = require("path");
 const fs = require("fs");
 const stream = require("stream");
 const { GetPagination, validator } = require("../utils.js");
-const res = require("express/lib/response");
 const jwt = require("../middleware/Jwt.js");
 
 const self = (module.exports = {
@@ -34,7 +32,7 @@ const self = (module.exports = {
         offset: offset,
       });
 
-      return res.status(200).json(response);
+      return res.status(200).json(users);
     }
 
     if (!users) return res.status(200).json(users);
@@ -42,8 +40,8 @@ const self = (module.exports = {
   },
 
   update: async function (req, res) {
-    const user = await models.User.findOne({ where: { id: req.user.id } });
-    let validated = validator(req.body, {
+    const user = await models.User.findOne({ where: { id: req.params.id } });
+    const validated = validator(req.body, {
       name: "string",
       email: "string",
       pseudo: "string",
@@ -53,7 +51,6 @@ const self = (module.exports = {
       public: "boolean",
     });
 
-    console.log(validated);
     if (validated.validatedSize > 0) {
       Object.entries(validated.validated).forEach(async (data, key) => {
         console.log(data[0], data[1]);
@@ -169,14 +166,14 @@ const self = (module.exports = {
 
   reset_password: async function (req, res) {
     let validated = validator(req.body, {
-      _token_: "string",
-      password: "string",
-      password_confirmation: "string",
+      _token_: "string|required",
+      password: "string|required",
+      password_confirmation: "string|required",
     });
-    if (validated.failsSize > 0)
-      return res
-        .status(403)
-        .json({ error: "Une erreur c'est produite ! Token manquant." });
+
+    if (Object.keys(validated.fails).length > 0) {
+      return res.status(403).json(validated.fails);
+    }
 
     // Check if password and password confirmation is identic
     if (

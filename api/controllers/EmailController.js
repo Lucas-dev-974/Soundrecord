@@ -9,9 +9,9 @@ module.exports = {
 
   send_mail: async function (req, res) {
     let validated = validator(req.body, {
-      to: string,
-      subject: "string",
-      content: "string",
+      to: "string|required",
+      subject: "string|required",
+      content: "string|required",
     });
     if (validated.failsSize > 0) return res.status(403).json(validated.fails);
 
@@ -24,8 +24,9 @@ module.exports = {
   },
 
   reset_password: function (req, res) {
-    let validated = validator(req.body, { email: "string" });
-    if (validated.failsSize > 0)
+    let validated = validator(req.body, { email: "string|required" });
+    console.log(validated);
+    if (Object.keys(validated.fails).length > 0)
       return res.status(403).json({ error: validated.fails });
 
     // Generate email token to verify for next step

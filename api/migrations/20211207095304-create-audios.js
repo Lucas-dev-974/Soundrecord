@@ -1,5 +1,5 @@
 "use strict";
-const self = (module.exports = {
+module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("Audios", {
       id: {
@@ -14,8 +14,9 @@ const self = (module.exports = {
         references: {
           model: "Users",
           key: "id",
-          onDelete: "CASCADE",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       imported_date: {
         type: Sequelize.STRING,
@@ -45,4 +46,4 @@ const self = (module.exports = {
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable("Audios");
   },
-});
+};

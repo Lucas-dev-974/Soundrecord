@@ -4,7 +4,10 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Audio extends Model {
     static associate(models) {
-      models.Audio.belongsTo(models.User);
+      models.Audio.belongsTo(models.User, {
+        foreignKey: "userID",
+        as: "User",
+      });
       models.Audio.hasMany(models.SessionTrack, { onDelete: "CASCADE" });
     }
   }
@@ -16,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
       public: DataTypes.BOOLEAN,
       name: DataTypes.STRING,
       src: DataTypes.STRING,
-      // TODO: add src: source file the link to the audio
     },
     {
       sequelize,

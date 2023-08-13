@@ -2,6 +2,9 @@ html {
   overflow-y: hidden;
 }
 
+input {
+  outline: none;
+}
 .no-radius {
   border-radius: 0 !important;
 }

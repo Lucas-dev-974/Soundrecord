@@ -1,24 +1,25 @@
-const fs = require('fs');
-const wav = require('wav');
-const NodeID3 = require('node-id3');
+const fs = require("fs");
+const wav = require("wav");
+const NodeID3 = require("node-id3");
 
 const validateWav = (req, res, next) => {
-  if (req.Isaudio && req.fileext === '.wav') {
+  if (req.Isaudio && req.fileext === ".wav") {
     const filePath = req.filePath;
-
+    console.log(filePath);
     fs.readFile(filePath, (err, data) => {
       if (err) {
         req.fileIntegrity = false;
         return next();
       }
-
+      console.log(req.fileIntegrity);
       try {
         const reader = new wav.Reader();
-        reader.on('error', (err) => {
+        reader.on("error", (err) => {
           req.fileIntegrity = false;
         });
-        reader.on('format', (format) => {});
+        reader.on("format", (format) => {});
         reader.end(data);
+        req.fileIntegrity = true;
       } catch (error) {
         req.fileIntegrity = false;
       }
@@ -26,13 +27,12 @@ const validateWav = (req, res, next) => {
       next();
     });
   } else {
-    req.fileIntegrity = false;
     next();
   }
 };
 
 const validateMp3 = (req, res, next) => {
-  if (req.Isaudio && req.fileext === '.mp3') {
+  if (req.Isaudio && req.fileext === ".mp3") {
     const filePath = req.filePath;
 
     fs.readFile(filePath, (err, data) => {
@@ -51,7 +51,8 @@ const validateMp3 = (req, res, next) => {
       next();
     });
   } else {
-    req.fileIntegrity = false;
+    req.fileIntegrity = req.fileIntegrity ?? false;
+    console.log("file integrity:", req.fileIntegrity);
     next();
   }
 };
