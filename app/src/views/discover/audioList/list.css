@@ -1,0 +1,26 @@
+.grid {
+  display: grid;
+  grid-gap: 0.75rem;
+}
+
+.grid-x-6 {
+  grid-template-columns: repeat(6, calc((100% / 6) - 4px));
+}
+.audio-collection {
+  width: 100%;
+  list-style-type: none;
+  padding: 0 !important;
+}
+
+/* Phone */
+@media screen and (max-width: 600px) {
+  .grid-x-6 {
+    grid-template-columns: repeat(2, calc((100% / 2) - 4px));
+  }
+}
+
+@media screen and (min-width: 600px) and (max-width: 800px) {
+  .grid-x-6 {
+    grid-template-columns: repeat(4, calc((100% / 4) - 4px));
+  }
+}

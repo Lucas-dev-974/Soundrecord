@@ -61,4 +61,4 @@ export default {
 }
 </script>
 <!-- TODO: Veille dans layout on check le Token utilisateur pour vérifier  la validité, 
-      si non valide alors on retourne l'utilisateur sur la login  -->
+      si non valide alors on retourne l'utilisateur sur la page Discover  -->

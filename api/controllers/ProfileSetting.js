@@ -11,7 +11,8 @@ require("dotenv").config();
 const self = (module.exports = {
   get: async function (req, res) {
     let validated = validator(req.body, { setting_name: "string" });
-    if (validated.errors) return res.status(402).json(validated.errors);
+    if (validated.errors != undefined)
+      return res.status(402).json(validated.errors);
 
     const setting = await models.ProfileSettings.findOne({
       where: { setting_name: validated.setting_name, userid: req.user.id },
@@ -24,23 +25,21 @@ const self = (module.exports = {
   },
 
   all: async function (req, res, next, userid = null) {
-    let user_id;
-    if (userid != null) user_id = userid;
-    else user_id = req.user.id;
+    const userID = req.user.id;
 
-    const user = models.User.findOne({ where: { id: user_id } }).catch(
-      (error) => console.log(error)
+    const user = models.User.findOne({ where: { id: userID } }).catch((error) =>
+      console.log(error)
     );
     if (!user)
       return res.status(403).json({ error: "L'utilisateur n'existe pas" });
 
     const settings = await models.ProfileSettings.findAll({
-      where: { userid: user_id },
+      where: { userid: userID },
       attributes: { exclude: ["createdAt", "updatedAt"] },
     }).catch((error) => console.log(error));
 
     const likes = await models.Like.findAll({
-      where: { model: "creator", modelid: user_id },
+      where: { model: "creator", modelid: userID },
     });
 
     _settings = [
@@ -57,25 +56,25 @@ const self = (module.exports = {
       setting_name: "string",
       value: "string",
     });
-    if (validated.errors) return res.status(402).json(validated.errors);
 
-    console.log(validated);
+    if (validated.errors != undefined)
+      return res.status(400).json(validated.errors);
 
     let setting = await models.ProfileSettings.findOne({
       where: {
         userid: req.user.id,
-        setting_name: validated.validated.setting_name,
+        setting_name: validated.setting_name,
       },
     });
 
     if (!setting)
       setting = await models.ProfileSettings.create({
         userid: req.user.id,
-        setting_name: validated.validated.setting_name,
-        setting_value: validated.validated.value,
+        setting_name: validated.setting_name,
+        setting_value: validated.value,
       });
     else {
-      setting.setting_value = validated.validated.value;
+      setting.setting_value = validated.value;
       setting = await setting.save();
     }
     res.status(200).json(setting);
@@ -155,37 +154,39 @@ const self = (module.exports = {
     });
   },
 
-  banner_image: async function (req, res) {
-    let user_id;
-    if (req.query.userid) user_id = req.query.userid;
-    else user = req.user.id;
-    //Search if client have registered banner image
-    const picture = await models.ProfileSettings.findOne({
-      where: { userid: user_id, setting_name: "banner-img" },
-      attributes: ["setting_value"],
-    }).catch((error) => console.log(error));
+  //TODO: review this method
+  // banner_image: async function (req, res) {
+  //   let user_id;
+  //   if (req.query.userid) user_id = req.query.userid;
+  //   else user = req.user.id;
+  //   //Search if client have registered banner image
+  //   const picture = await models.ProfileSettings.findOne({
+  //     where: { userid: user_id, setting_name: "banner-img" },
+  //     attributes: ["setting_value"],
+  //   }).catch((error) => console.log(error));
 
-    if (picture != null) {
-      let picture_dir =
-        path.resolve(__dirname, "../public/user-") +
-        user_id +
-        "/banner/" +
-        picture.dataValues.setting_value.replace(/ /g, "");
-      const filereader = fs.createReadStream(picture_dir);
-      const ps = new stream.PassThrough(); // Handle error during stream
+  //   if (picture != null) {
+  //     let picture_dir =
+  //       path.resolve(__dirname, "../public/user-") +
+  //       user_id +
+  //       "/banner/" +
+  //       picture.dataValues.setting_value.replace(/ /g, "");
+  //     const filereader = fs.createReadStream(picture_dir);
+  //     const ps = new stream.PassThrough(); // Handle error during stream
 
-      stream.pipeline(filereader, ps, (err) => {
-        if (err) {
-          console.log(err);
-          return res.status(400).json({
-            error: "Une erreur est survenue veuillez réesayer plus tard",
-          });
-        }
-      });
-      ps.pipe(res);
-    }
-  },
+  //     stream.pipeline(filereader, ps, (err) => {
+  //       if (err) {
+  //         console.log(err);
+  //         return res.status(400).json({
+  //           error: "Une erreur est survenue veuillez réesayer plus tard",
+  //         });
+  //       }
+  //     });
+  //     ps.pipe(res);
+  //   }
+  // },
 
+  // TODO: review this to
   delete_banner: async function (req, res) {
     let banner_img = await models.ProfileSettings.findOne({
       where: { setting_name: "banner-img", userid: req.user.id },

@@ -15,27 +15,22 @@ module.exports = {
     });
     if (validated.failsSize > 0) return res.status(403).json(validated.fails);
 
-    send_mail(
-      res,
-      validated.validated.to,
-      validated.validated.subject,
-      validated.validated.content
-    );
+    send_mail(res, validated.to, validated.subject, validated.content);
   },
 
   reset_password: function (req, res) {
     let validated = validator(req.body, { email: "string|required" });
-    console.log(validated);
-    if (Object.keys(validated.fails).length > 0)
-      return res.status(403).json({ error: validated.fails });
+
+    if (validated.errors != undefined)
+      return res.status(400).json(validated.errors);
 
     // Generate email token to verify for next step
-    const user = { email: validated.validated.email };
+    const user = { email: validated.email };
     const token = jwt.generateToken(user, true);
 
     // Build email content
     let email = {
-      to: validated.validated.email,
+      to: validated.email,
       subject: "Reset password",
       text:
         'Cliquer <a href="http://localhost:8080/authentication?mail_service=' +

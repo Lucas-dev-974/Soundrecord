@@ -1,5 +1,44 @@
 #app-content {
-  width: 80%;
+  width: 50%;
   margin: 0 auto;
-  height: calc(100vh - 64px);
+  min-height: calc(100vh - 64px);
+  /* height: ; */
+  padding-top: 15px;
+}
+
+/* Phone */
+@media screen and (max-width: 600px) {
+  #app-content {
+    width: 95%;
+  }
+}
+
+@media screen and (min-width: 600px) and (max-width: 800px) {
+  #app-content {
+    width: 85%;
+  }
+}
+
+@media screen and (min-width: 800px) and (max-width: 1200px) {
+  #app-content {
+    width: 75%;
+  }
+}
+
+@media screen and (min-width: 1200px) and (max-width: 1400px) {
+  #app-content {
+    width: 70%;
+  }
+}
+
+@media screen and (min-width: 1400px) and(max-width: 1700px) {
+  #app-content {
+    width: 60%;
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  #app-content {
+    width: 50%;
+  }
 }

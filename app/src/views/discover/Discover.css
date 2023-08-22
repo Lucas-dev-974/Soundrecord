@@ -1,16 +1,7 @@
 .audio-list-container {
   width: 100%;
   display: flex;
+  justify-content: space-around;
   flex-wrap: wrap;
-}
-
-.audio-list-item {
-  align-items: center;
-  display: flex;
-  width: 100%;
-  color: white;
-  gap: 10px;
-  padding: 5px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.209);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.209);
+  gap: 5px;
 }

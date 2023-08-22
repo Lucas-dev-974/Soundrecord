@@ -4,8 +4,12 @@ const fs = require("fs");
 
 const StoragePath = (userID) =>
   path.resolve(__dirname, "..") + "/public/user-" + userID + "/";
-exports.StoragePath = (userID) => StoragePath(userID);
 
+const DefaultStoragePath = () =>
+  path.resolve(__dirname, "..") + "/public/default/";
+
+exports.StoragePath = (userID) => StoragePath(userID);
+exports.DefaultStoragePath = DefaultStoragePath;
 /**
  * @summary Storage fonction allow to define where to save file in fonction of req.path
  */

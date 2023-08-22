@@ -14,6 +14,7 @@ const MulterFilesManager = require("./middleware/MulterFileManager");
 const EmailController = require("./controllers/EmailController");
 const CheckFileIntegrity = require("./middleware/CheckFileIntegrity");
 const { checkAutority } = require("./middleware/Administration");
+const MediasControlller = require("./controllers/MediasControlller");
 
 exports.router = (() => {
   let router = express.Router();
@@ -95,6 +96,8 @@ exports.router = (() => {
   router.route("/audio/:id").delete(AudioController.delete);
   router.route("/audio").patch(AudioController.update);
 
+  // Medias routes
+  router.route("/medias/audio/:id").get(MediasControlller.get);
   // session_track
   // router
   //   .route("/where/session_track")
@@ -112,6 +115,7 @@ exports.router = (() => {
   // router.route("/search/sessions").post(Search.SearchSession);
   // router.route("/search/pists").post(Search.SearchImport);
   // router.route("/search/users").post(Search.SearchUser);
+  router.route("/search/audio").post(Search.SearchAudio);
 
   // Mail routes
   // router.route("/mail/password-reset").post(EmailController.reset_password);

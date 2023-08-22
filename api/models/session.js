@@ -24,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
       session_name: DataTypes.STRING,
       public: DataTypes.BOOLEAN,
       mixed: DataTypes.STRING,
-      // TODO: add audio relation, audio can be null | audio is issued of session mix | maybe can i save multiple audio ?
     },
     {
       sequelize,

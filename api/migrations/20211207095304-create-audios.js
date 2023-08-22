@@ -27,6 +27,9 @@ module.exports = {
       src: {
         type: Sequelize.STRING,
       },
+      imagesrc: {
+        type: Sequelize.STRING,
+      },
       public: {
         allowNull: false,
         type: Sequelize.BOOLEAN,

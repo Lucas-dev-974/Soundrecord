@@ -13,11 +13,13 @@ export default {
     };
   },
 
-  mounted() {},
+  mounted() {
+    this.$watch("$data.searchKeywords", this.search);
+  },
 
   methods: {
-    onSearchInput: (e) => {
-      console.log(e.target.value);
+    search: async function () {
+      this.$emit("searchData", this.searchKeywords);
     },
   },
 };

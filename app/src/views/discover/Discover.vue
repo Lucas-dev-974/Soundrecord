@@ -1,13 +1,12 @@
 <template>
     <section>
-        <Searchbar :placeholder="'Search'" />
-        <div class="audio-list-container">
-            <div v-for="audio in audios.datas" :key="audio.id" class="audio-list-item">
-                {{ audio.name }}
-                <button @click="play(audio.src)">play</button>
-            </div>
-            <Paging :totalItems="audios.totalItems" :currentPage="audios.currentPage" @changePage="onPageChange" />
+        <div class="my-5">
+            <Searchbar :placeholder="'Search'" @searchData="searchAudio" />
         </div>
+        <div class="audio-list-container" v-if="dataLoaded">
+            <AudioList :audios="audios.datas" />
+        </div>
+        <Paging :totalItems="audios.totalItems" :currentPage="audios.currentPage" @changePage="onPageChange" />
     </section>
 </template>
 

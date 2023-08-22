@@ -1,7 +1,7 @@
 const htmlspecialchars = require("htmlspecialchars");
 const { validate } = require("./validator.js");
 
-const self = (module.exports = {
+module.exports = {
   /**
    * @summary Get only fields specified in the fields on obj
    * @param {object} obj
@@ -36,9 +36,8 @@ const self = (module.exports = {
    * @param {integer} size
    * @returns limit and offset
    */
-  GetPagination: function (page = 0, size = 10) {
-    page = page - 1;
-    const limit = size ? +size : 3;
+  GetPagination: function (page, size) {
+    const limit = size;
     const offset = page ? page * limit : 0;
     return { limit, offset };
   },
@@ -51,7 +50,6 @@ const self = (module.exports = {
    * @returns datas of asked page
    */
   GetPagingDatas: function (data, page, limit) {
-    console.log(data);
     const { count: totalItems, rows: datas } = data;
     const currentPage = page ? +page : 0;
     const totalPages = Math.ceil(totalItems / limit);
@@ -85,4 +83,4 @@ const self = (module.exports = {
     }
     return arr;
   },
-});
+};

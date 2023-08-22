@@ -1,46 +1,51 @@
 import ApiStore from "../../apis/api.store";
-import artists from "../../components/discover/artist.vue";
-import songs from "../../components/discover/song.vue";
 import Searchbar from "./searchbar/Searchbar.vue";
 import SimpleAudioPlayer from "../../services/SimpleAudioPlayer";
 import Paging from "./paging/Paging.vue";
 import "./Discover.css";
+import AudioList from "./audioList/list.vue";
 
 export default {
   name: "discover",
-  components: { artists, songs, Searchbar, Paging },
+  components: { AudioList, Searchbar, Paging },
 
   data() {
     return {
       audios: [],
       page: "artists",
       searchKeyword: "",
+      currentPageList: 0,
+      dataLoaded: false,
     };
   },
 
   async mounted() {
     await this.getAudios();
+    this.dataLoaded = true;
     const srcList = this.audios.datas.map((audio) => audio.src);
     SimpleAudioPlayer.setAudioList(srcList);
   },
 
   methods: {
     onPageChange: function (page) {
-      console.log(page);
-      this.audios.currentPage = page;
+      this.audios.currentPageList = page;
+      this.getAudios();
     },
 
     getAudios: async function () {
-      this.audios = await ApiStore.all(this.currentPage);
-      console.log(this.audios);
+      this.audios = await ApiStore.all(this.currentPageList);
     },
 
     play: async function () {
       await SimpleAudioPlayer.play();
     },
 
-    pause: function () {
-      SimpleAudioPlayer.pause();
+    searchAudio: async function (keywords) {
+      console.log(keywords);
+      if (keywords == "") this.getAudios();
+      else {
+        this.audios = await ApiStore.search(keywords);
+      }
     },
   },
 };

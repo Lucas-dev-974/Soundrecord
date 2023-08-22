@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
   Categorie.init(
     {
       name: DataTypes.STRING,
-      // TODO add type to define type of the category, audio categorie | track categorie
     },
     {
       sequelize,

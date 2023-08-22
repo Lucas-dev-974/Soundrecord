@@ -1,12 +1,11 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const { errorHandler } = require("./middleware/ErrorHandler");
 const { publicPath } = require("./middleware/PublicPath");
+const { checkPagingParams } = require("./middleware/Paging");
 
 const router = require("./api-routes").router;
 const JwtMidle = require("./middleware/Jwt").isAuthorized;
-
 // Server params
 const port = process.env.SERVER_PORT;
 const corsOptions = {
@@ -18,12 +17,12 @@ const corsOptions = {
 const server = express();
 
 // Setup Middleware
-
 server.use(cors(corsOptions));
 server.use(JwtMidle);
 server.use(publicPath);
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
+server.use(checkPagingParams);
 
 // Handle Api Routes
 server.use("/api/", router);

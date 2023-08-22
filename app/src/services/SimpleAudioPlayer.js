@@ -4,6 +4,8 @@ class SimplePlayerAudio {
     this.currentIndex = 0;
     this.audioElement = new Audio();
     this.audioElement.onended = () => this.handleAudioEnd();
+
+    this.currentAudio = {};
   }
 
   async fetchAudioBuffer(audioUrl) {
@@ -17,27 +19,26 @@ class SimplePlayerAudio {
     }
   }
 
-  async play(url = null) {
-    if (url != null) {
-      await this.fetchAudioBuffer(url);
-    }
+  async createAudioBlobUrl(audioBuffer) {
+    if (audioBuffer) {
+      const audioBlob = new Blob([audioBuffer], { type: "audio/mpeg" });
+      const audioUrlObject = URL.createObjectURL(audioBlob);
 
-    if (this.audioList[this.currentIndex]) {
+      this.audioElement.src = audioUrlObject;
+      this.audioElement.play();
+    }
+  }
+  async play(url = null) {
+    if (url != null && url != this.audioList[this.currentIndex]) {
+      await this.fetchAudioBuffer(url);
+    } else if (this.audioList[this.currentIndex]) {
       const audioUrl = this.audioList[this.currentIndex];
+      const audioBuffer = await this.fetchAudioBuffer(audioUrl);
+      await this.createAudioBlobUrl(audioBuffer);
 
       if (this.paused) {
         this.audioElement.play();
         this.paused = false;
-      } else {
-        const audioBuffer = await this.fetchAudioBuffer(audioUrl);
-
-        if (audioBuffer) {
-          const audioBlob = new Blob([audioBuffer], { type: "audio/mpeg" });
-          const audioUrlObject = URL.createObjectURL(audioBlob);
-
-          this.audioElement.src = audioUrlObject;
-          this.audioElement.play();
-        }
       }
     }
   }

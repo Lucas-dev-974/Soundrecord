@@ -24,9 +24,11 @@ module.exports = self = {
         }
       }
     }
+
     result.validatedSize = Object.keys(result.validated).length;
-    result.failsSize = Object.keys(result.fails).length;
-    return result;
+    const failsSize = Object.keys(result.fails).length;
+
+    return failsSize > 0 ? { errors: result.fails } : result.validated;
   },
 
   /**
@@ -43,7 +45,7 @@ module.exports = self = {
     const [type, isRequired] = this.getRules(rules.split("|"));
 
     // Check if the field is required
-    if (isRequired && !body[key]) {
+    if (isRequired && !body[key]) {e
       errors.push({ [key]: `Le champ ${key} doit être renseigné !` });
     } else if (body[key] !== undefined) {
       // Validate the field based on the specified data type rule

@@ -16,9 +16,13 @@ export default {
     },
   },
 
+  mounted() {
+    console.log(this.totalItems, this.itemsPerPage, this.currentPage);
+  },
+
   methods: {
     changePage(page) {
-      if (page >= 1 && page <= this.totalPages) {
+      if (page >= 0 && page <= this.totalPages) {
         this.$emit("changePage", page);
       }
     },

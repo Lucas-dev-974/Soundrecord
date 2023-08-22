@@ -15,14 +15,14 @@ module.exports = {
       pseudo: "string|required",
     });
 
-    if (Object.keys(validated.fails).length > 0)
-      return res.status(403).json(validated.fails);
+    if (validated.errors != undefined)
+      return res.status(400).json(validated.errors);
 
     // Search if user email exist in db if exist return warning
     let user = await models.User.findOne({
       attributes: ["email"],
       where: {
-        email: validated.validated.email,
+        email: validated.email,
         pseudo: "string",
       },
     }).catch((error) => console.log(error));
@@ -32,16 +32,13 @@ module.exports = {
         error: "Cet email est déjà enregistrer, veuillez vous connecté !",
       });
 
-    const password = bcrypt.hashSync(
-      validated.validated.password,
-      bcrypt.genSaltSync(8)
-    );
+    const password = bcrypt.hashSync(validated.password, bcrypt.genSaltSync(8));
 
     // Create user
     user = await models.User.create({
-      name: validated.validated.name,
-      email: validated.validated.email,
-      pseudo: validated.validated.pseudo,
+      name: validated.name,
+      email: validated.email,
+      pseudo: validated.pseudo,
       password: password,
       role: 2,
       public: false,
@@ -78,11 +75,11 @@ module.exports = {
       res
     );
 
-    if (Object.entries(validated.fails).length > 0)
-      return res.status(403).json({ error: validated });
+    if (validated.errors != undefined)
+      return res.status(400).json(validated.errors);
 
     let user = await models.User.findOne({
-      where: { email: validated.validated.email },
+      where: { email: validated.email },
     });
 
     if (!user)
@@ -90,10 +87,7 @@ module.exports = {
         .status(403)
         .json({ errors: "Email ou mot de passe incorrecte" });
 
-    let comparation = bcrypt.compareSync(
-      validated.validated.password,
-      user.password
-    );
+    let comparation = bcrypt.compareSync(validated.password, user.password);
     if (!comparation)
       return res.status(401).json({ error: "Identifiant incorrect" });
 
@@ -101,28 +95,24 @@ module.exports = {
     //     user:  returnFields(user.dataValues, models.User.visible()),
     //     token: jwt.generateToken(user)
     // })
-    
-    bcrypt.compare(
-      validated.validated.password,
-      user.password,
-      (err, resBycrypt) => {
-        if (resBycrypt)
-          return res.status(200).json({
-            user: returnFields(user.dataValues, [
-              "email",
-              "id",
-              "name",
-              "picture",
-              "roleid",
-            ]),
-            token: jwt.generateToken(user),
-          });
-        else
-          return res
-            .status(403)
-            .json({ error: "Email ou mot de passe incorrecte" });
-      }
-    );
+
+    bcrypt.compare(validated.password, user.password, (err, resBycrypt) => {
+      if (resBycrypt)
+        return res.status(200).json({
+          user: returnFields(user.dataValues, [
+            "email",
+            "id",
+            "name",
+            "picture",
+            "roleid",
+          ]),
+          token: jwt.generateToken(user),
+        });
+      else
+        return res
+          .status(403)
+          .json({ error: "Email ou mot de passe incorrecte" });
+    });
   },
 
   checkToken: function (req, res) {

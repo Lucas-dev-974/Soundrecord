@@ -1,5 +1,4 @@
 const fs = require("fs");
-const path = require("path");
 const { validator, exclude } = require("../utils.js");
 const models = require("../models");
 
@@ -11,12 +10,20 @@ module.exports = {
   get: async function (req, res) {
     let validated = validator(req.params, { id: "int|required" });
 
-    if (validated.fails.length > 0)
-      return res.status(400).json(validated.fails);
+    if (validated.errors != undefined)
+      return res.status(400).json(validated.errors);
 
     const audio = await models.Audio.findOne({
-      where: { id: validated.validated.id },
-      attributes: ["id", "userID", "name", "imported_date", "src", "public"],
+      where: { id: validated.id },
+      attributes: [
+        "id",
+        "userID",
+        "name",
+        "imported_date",
+        "src",
+        "public",
+        "imagesrc",
+      ],
       // include: [{ model: models.User, as: "User" }],
     });
 
@@ -55,7 +62,7 @@ module.exports = {
   library: async function (req, res) {
     let audios = await models.Audio.findAll({
       where: { userID: req.user.id },
-      attributes: ["id", "userID", "name", "src", "public"],
+      attributes: ["id", "userID", "name", "src", "public", "imagesrc"],
     }).catch((error) => console.log(error));
 
     if (audios === undefined) return res.status(200).json({ audios: [] });
@@ -70,20 +77,17 @@ module.exports = {
    * @returns
    */
   store: async function (req, res) {
-    let { page, size } = req.query;
-
-    if (!size) size = 5;
-    const { limit, offset } = GetPagination(page, size);
+    const { limit, offset } = GetPagination(req.page, req.size);
 
     let audios = await models.Audio.findAndCountAll({
       where: { public: true },
-      attributes: ["id", "userID", "name", "src"],
+      attributes: ["id", "userID", "name", "src", "imagesrc"],
       limit: limit,
       offset: offset,
     }).catch((error) => console.log(error));
 
     if (audios === undefined) return res.status(200).json({ audios: [] });
-    const response = GetPagingDatas(audios, page, limit);
+    const response = GetPagingDatas(audios, req.page, limit);
     return res.status(200).json(response);
   },
 
@@ -95,7 +99,6 @@ module.exports = {
    * @returns
    */
   Import: async function (req, res) {
-    console.log(req.AutorizedFile, req.Isaudio, req.fileIntegrity);
     // Check if is autorized, Setting up in MulterMiddleware
     if (!req.AutorizedFile || !req.Isaudio || !req.fileIntegrity)
       return res
@@ -118,6 +121,7 @@ module.exports = {
         userID: req.user.id,
         public: false,
         src: process.env.APP_URL + "/api/audio/" + lastid,
+        imagesrc: process.env.APP_URL + "/api/medias/audio/default",
         // User: req.user,
       }
       // { include: models.User }
@@ -128,9 +132,9 @@ module.exports = {
       });
     });
 
-    if (validated.failsSize === 0) {
+    if (validated.sessionid) {
       let session_track = await models.SessionTrack.create({
-        sessionid: validated.validated.sessionid,
+        sessionid: validated.sessionid,
         audioid: audio.dataValues.id,
         userid: req.user.id,
         muted: false,
@@ -147,28 +151,26 @@ module.exports = {
       });
     }
 
-    return res.status(200).json({
-      src: process.env.APP_URL + "/api/pist/" + audio.id,
-      ...audio.dataValues,
-    });
+    return res.status(200).json(audio);
+    // if (validated.errors != undefined)
+    //   return res.status(400).json(validated.errors);
   },
 
   update: async function (req, res) {
-    console.log("okok updates");
     let validated = validator(req.body, {
       fields: "string",
       datas: "string",
       id: "int|required",
     });
 
-    if (validated.failsSize > 0) return res.status(400).json(validated.fails);
+    if (validated.errors != undefined)
+      return res.status(400).json(validated.errors);
 
-    let fields = validated.validated.fields.split("|");
-    let datas = validated.validated.datas.split("|");
+    let fields = validated.fields.split("|");
+    let datas = validated.datas.split("|");
     let fieldsPist = ["name", "public"];
     let audio = await models.Audio.findOne({
-      where: { id: validated.validated.id },
-      // attributes: fieldsPist,
+      where: { id: validated.id },
     });
 
     console.log(audio);
@@ -205,7 +207,7 @@ module.exports = {
     try {
       // Find the audio entry by ID
       let pist = await models.Audio.findOne({
-        where: { id: validated.validated.id },
+        where: { id: validated.id },
       });
 
       // If the entry doesn't exist, return an error response
@@ -231,11 +233,11 @@ module.exports = {
   deleteIn: async function (req, res) {
     // Get Para
     let validated = validator(req.params, { pistid: "int" });
-    if (validated.fails.length > 0)
+    if (validated.errors != undefined)
       return res.status(400).json(validated.fails);
 
     let pistSessionTrack = await models.SessionTrack.findOne({
-      where: { id: validated.validated.pistid },
+      where: { id: validated.pistid },
     });
 
     pistSessionTrack.destroy();
@@ -246,11 +248,11 @@ module.exports = {
 
   checkWherePistIsImported: async function () {
     let validated = validator(req.body, { pistid: "int" });
-    if (validated.fails.length > 0)
+    if (validated.errors != undefined)
       return res.status(400).json(validated.fails);
 
     let SessionTrackSession = models.SessionTrack.findAll({
-      where: { pistid: validated.validated.pistid },
+      where: { pistid: validated.pistid },
     });
 
     return res.status(200).json(SessionTrackSession);
@@ -259,21 +261,21 @@ module.exports = {
   importInFromPistID: async function (req, res) {
     // Get session id and import id
     let validated = validator(req.body, { sessionid: "int", audioid: "int" });
-    if (validated.fails.length > 0)
+    if (validated.errors != undefined)
       return res.status(400).json(validated.fails);
 
     let Import = await models.Import.findOne({
-      where: { userid: req.user.id, id: validated.validated.audioid },
+      where: { userid: req.user.id, id: validated.audioid },
       attributes: ["id", "userID", "name", "imported_date"],
     }).catch((error) => console.log(error));
 
     let importIn = await models.SessionTrack.create({
-      sessionid: validated.validated.sessionid,
-      audioid: validated.validated.audioid,
+      sessionid: validated.sessionid,
+      audioid: validated.audioid,
       userid: req.user.id,
       selected: true,
       color: "green",
-      src: "/api/pist/" + validated.validated.audioid,
+      src: "/api/pist/" + validated.audioid,
       gain: 50,
     }).catch((error) => {
       console.log(error);
@@ -288,11 +290,11 @@ module.exports = {
   getImported: async function (req, res) {
     let validated = validator(req.params, { sessionid: "int" });
 
-    if (validated.fails.length > 0)
+    if (validated.errors != undefined)
       return res.status(400).json(validated.fails);
 
     let session = await models.Session.findOne({
-      where: { id: validated.validated.sessionid },
+      where: { id: validated.sessionid },
       include: [
         {
           model: models.SessionTrack,
@@ -321,18 +323,18 @@ module.exports = {
       value: "string",
     });
 
-    if (validated.fails.length > 0)
+    if (validated.errors != undefined)
       return res.status(400).json(validated.fails);
 
     let pist = await models.SessionTrack.findOne({
-      where: { id: validated.validated.pistid },
+      where: { id: validated.pistid },
     });
 
     let updatable = Object.keys(pist.dataValues);
 
-    if (!updatable.includes(validated.validated.field))
+    if (!updatable.includes(validated.field))
       return res.status(400).json({ error: "" });
-    pist[validated.validated.field] = validated.validated.value;
+    pist[validated.field] = validated.value;
     pist.save();
 
     return res.status(200).json();
