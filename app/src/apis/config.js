@@ -5,10 +5,21 @@ const token = window.localStorage.getItem("vuex")
   : null;
 
 const config = {
-  baseURL: "http://localhost:3000/api",
-  headers: {
-    Authorization: "Bearer " + token,
-  },
-};
+    baseURL: "http://localhost:3000/api",
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  };
 
+const header = {
+  method: null,
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  },
+  Authorization: 'Bearer '+ token,
+  body: null
+}
+
+// export default Api
 export default axios.create(config);

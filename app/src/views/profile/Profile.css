@@ -1,4 +1,14 @@
-.profile-head {
+#profile-head {
   width: 100%;
-  display: flex;
+}
+
+#profile-tab{
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  color: white;
+}
+
+/* ? gap-1 = 3px */
+.gap-5{
+  gap: 15px;
 }

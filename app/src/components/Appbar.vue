@@ -6,8 +6,8 @@
         <a class="navlink" href="/discover" v-else>Discover</a>
       </div>
 
-      <h1 @click="$router.push('discover')" style="font-family: Brush Script MT; cursor: pointer;">Sound<span
-          style="color: #EE1B1B;">Record</span></h1>
+      <h1 @click="$router.push('discover')" id="soundrecord-title">
+        Sound<span style="color: #EE1B1B;">Record</span></h1>
 
       <div class="navbar-side-left"></div>
     </div>

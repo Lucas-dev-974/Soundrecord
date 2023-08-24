@@ -1,8 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200;0,300;0,400;0,500;0,600;1,200;1,300;1,400;1,500;1,600&display=swap');
 html {
   overflow-y: auto;
   overflow-x: hidden;
 }
 
+*{
+  font-family: "Mulish";
+}
 /* width */
 ::-webkit-scrollbar {
   width: 5px;
@@ -421,6 +425,11 @@ input.custom-profile-input:disabled {
   position: absolute;
   bottom: 10px;
   right: 15px;
+}
+
+#soundrecord-title, #soundrecord-title > span{
+  font-family: "Brush Script MT" !important; 
+  cursor: pointer;
 }
 
 .navbar-side-left,

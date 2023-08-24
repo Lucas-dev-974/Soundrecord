@@ -1,0 +1,10 @@
+
+.volume-slider {
+    width: 200px;
+    margin: 50px auto;
+  }
+  
+  input[type="range"] {
+    width: 100%;
+  }
+  

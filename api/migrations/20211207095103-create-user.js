@@ -13,12 +13,13 @@ module.exports = {
         type: Sequelize.STRING,
       },
       name: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.STRING,
       },
       pseudo: {
-        allowNull: true,
+        allowNull: false,
         type: Sequelize.STRING,
+        unique: true
       },
       password: {
         allowNull: false,

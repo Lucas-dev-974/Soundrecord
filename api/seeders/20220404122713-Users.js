@@ -6,7 +6,7 @@ module.exports = {
 
     return queryInterface.bulkInsert("Users", [
       {
-        name: "Lucas",
+        pseudo: "Lucas",
         email: "lucas.lvn97439@gmail.com",
         password: bcrypt.hashSync("systemroot97439", bcrypt.genSaltSync(8)),
         role: 1,
@@ -14,7 +14,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        name: "Jordan",
+        pseudo: "Jordan",
         email: "jordan.gvl@gmail.com",
         password: bcrypt.hashSync("jordanpassword123", bcrypt.genSaltSync(8)),
         role: 2,
@@ -22,7 +22,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        name: "Cris",
+        pseudo: "Cris",
         email: "cris.toran@gmail.com",
         password: bcrypt.hashSync("crispassword123", bcrypt.genSaltSync(8)),
         role: 3,

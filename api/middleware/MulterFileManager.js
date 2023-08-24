@@ -62,7 +62,7 @@ exports.upload = multer({
   fileFilter: function (req, file, callback) {
     let ext = path.extname(file.originalname);
     let extensions_img = [".jpeg", ".png", ".jpg"];
-    let extensions_sng = [".mp3", ".wav"];
+    let extensions_sng = [".mp3", ".wav", ".m4a"];
 
     req.Isaudio = false;
     req.Isimage = false;

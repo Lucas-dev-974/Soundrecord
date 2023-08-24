@@ -1,4 +1,4 @@
-module.exports = {
+export default  {
     sessions: [],
     current_session: {
         id:     null,

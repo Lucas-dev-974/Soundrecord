@@ -7,6 +7,7 @@
             <AudioList :audios="audios.datas" />
         </div>
         <Paging :totalItems="audios.totalItems" :currentPage="audios.currentPage" @changePage="onPageChange" />
+        <SimpleAudioPlayerComponent />
     </section>
 </template>
 

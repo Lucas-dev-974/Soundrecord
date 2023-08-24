@@ -35,12 +35,6 @@ const router = new VueRouter({
       name: "session",
       component: Session,
     },
-
-    {
-      path: "/discover",
-      name: "discorver",
-      component: Discover,
-    },
   ],
 });
 

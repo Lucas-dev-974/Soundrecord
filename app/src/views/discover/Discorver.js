@@ -1,13 +1,14 @@
 import ApiStore from "../../apis/api.store";
 import Searchbar from "./searchbar/Searchbar.vue";
 import SimpleAudioPlayer from "../../services/SimpleAudioPlayer";
+import SimpleAudioPlayerComponent from "../simple-player/SimplePlayer.vue";
 import Paging from "./paging/Paging.vue";
 import "./Discover.css";
 import AudioList from "./audioList/list.vue";
 
 export default {
   name: "discover",
-  components: { AudioList, Searchbar, Paging },
+  components: { AudioList, Searchbar, Paging, SimpleAudioPlayerComponent },
 
   data() {
     return {

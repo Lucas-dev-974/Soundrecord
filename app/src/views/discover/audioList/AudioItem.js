@@ -9,11 +9,18 @@ export default {
   },
 
   async mounted() {
-    const img = document.getElementsByClassName("img-" + this.audio.id)[0];
-    console.log(img);
-    img.setAttribute("src", this.audio.imagesrc);
-    // img.src = this.audio.imagesrc;
-    img.style.background = "url('" + this.audio.imagesrc + "')";
+    const img = document.getElementById("img-" + this.audio.id);
+    img.addEventListener('click', this.play)
+    const audioItemcontainer = document.getElementById('audio-container')
+    const title = document.getElementById('audio-title')
+
+    audioItemcontainer.addEventListener('mouseover', () => {
+      title.classList.add("scrollingText")
+    })
+
+    audioItemcontainer.addEventListener('mouseover', () => {
+      title.classList.remove("scrollingText")
+    })
   },
 
   // TODO: add like method

@@ -1,13 +1,14 @@
-.audio-container {
+#audio-container {
   /* height: 150px; */
   border-radius: 7px;
-
+  font-size: 14px;
   flex-wrap: wrap;
   align-content: space-between;
   /* min-width: 200px;
   max-width: 400px; */
   color: white;
   /* width: 25%; */
+  overflow: hidden;
 }
 
 .audio-image {
@@ -15,28 +16,59 @@
   left: 0;
   width: 100%;
   height: 60%;
+  object-fit: cover;
+  overflow: hidden;
 }
 
-.audio-title {
-  width: 100%;
-  height: fit-content;
+.audio-image:hover{
+  filter: blur(1px);
+}
+
+#audio-title {
   margin: 0 !important;
-  z-index: 1;
+  height: fit-content;
   display: contents;
+  width: 100%;
+  z-index: 1;
 }
 
-.audio-action {
-  justify-content: end;
-  width: 100%;
+.audio-footer{
+  justify-content: space-between;
+  display: flex;
+}
+.audio-action { 
   height: fit-content;
   display: flex;
+  gap: 5px;
 }
 
 .audio-action-item {
   cursor: pointer;
   color: aliceblue;
+  width: 12px;
+  font-size: 12px;
 }
 
 .theme--light.v-icon {
   color: inherit;
+}
+
+.scrollingTextContainer {
+  width: 300px; /* Largeur fixe pour la div de défilement */
+  overflow: hidden; /* Cache le contenu dépassant de la div */
+  white-space: nowrap; /* Empêche le texte de passer à la ligne */
+}
+
+.scrollingText {
+  display: inline-block; /* Permet au texte de dépasser horizontalement */
+  animation: scrollText 10s linear infinite; /* Animation de défilement */
+}
+
+@keyframes scrollText {
+  0% {
+    transform: translateX(100%); /* Commence en dehors de la div à droite */
+  }
+  100% {
+    transform: translateX(-100%); /* Se termine en dehors de la div à gauche */
+  }
 }

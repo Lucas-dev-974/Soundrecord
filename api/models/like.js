@@ -11,10 +11,11 @@ module.exports = (sequelize, DataTypes) => {
       // models.Liked.belongsTo(models.User)
     }
   }
+  // TODO: Create one liked-profile & liked-audio models and migrations 
   Liked.init(
     {
       userid: DataTypes.INTEGER,
-      model: DataTypes.STRING,
+      model: DataTypes.STRING,// ? audio, profile
       modelid: DataTypes.INTEGER,
     },
     {

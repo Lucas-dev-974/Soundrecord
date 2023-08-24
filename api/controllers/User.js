@@ -9,12 +9,27 @@ const jwt = require("../middleware/Jwt.js");
 
 const self = (module.exports = {
   get: async function (req, res) {
-    const user = await models.User.findOne({
-      where: { id: req.user.id },
-      attributes: { exclude: ["updatedAt", "createdAt", "password"] },
-    });
+    let user;
+    if(!req.user){
+      const validated = validator(req.params, {
+        pseudo: 'string|required'
+      })
+      if(validated.errors){
+        return res.status(403).json(validated.errors)
+      }
 
-    if (!user) return res.status(200).json(user);
+      user = await models.User.findOne({where: {
+        pseudo: validated.pseudo
+      }})
+
+    }else{
+      user = await models.User.findOne({
+        where: { id: req.user.id },
+        attributes: { exclude: ["updatedAt", "createdAt", "password"] },
+      });
+    }
+    console.log("user:", user);
+    if (!user) return res.status(404).json("L'utilisateur n'existe pas !");
     return res.status(200).json(user);
   },
 

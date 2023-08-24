@@ -1,3 +1,4 @@
+console.log("ok");
 if (!window.localStorage.getItem("vuex"))
   window.localStorage.setItem("vuex", "{}");
 
@@ -5,7 +6,7 @@ import Vue from "vue";
 import vuetify from "./plugins/vuetify";
 import AudioVisual from "vue-audio-visual";
 import store from "./Store/store";
-import Router from "./router";
+import router from "./router";
 import Layout from "./layout.vue";
 
 import "./assets/style.css";
@@ -19,10 +20,9 @@ Vue.config.productionTip = true;
 window.addEventListener("resize", () => {
   store.commit("setWidth", window.innerwidth);
 });
-
 new Vue({
   vuetify,
   store: store,
-  router: Router,
+  router,
   render: (h) => h(Layout),
 }).$mount("#app");

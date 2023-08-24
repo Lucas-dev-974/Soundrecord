@@ -16,9 +16,6 @@ export default {
     },
   },
 
-  mounted() {
-    console.log(this.totalItems, this.itemsPerPage, this.currentPage);
-  },
 
   methods: {
     changePage(page) {

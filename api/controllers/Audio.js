@@ -6,6 +6,23 @@ require("dotenv").config();
 const { GetPagination, GetPagingDatas } = require("../utils.js");
 const { StoragePath } = require("../middleware/MulterFileManager.js");
 
+function calculateTimePassed(dateString) {
+  const pastDate = new Date(dateString);
+  const now = new Date();
+
+  const timeDiff = now - pastDate;
+
+  const minutes = Math.floor(timeDiff / (1000 * 60));
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  return {
+    days: days,
+    hours: hours % 24,
+    minutes: minutes % 60
+  };
+}
+
 module.exports = {
   get: async function (req, res) {
     let validated = validator(req.params, { id: "int|required" });
@@ -60,16 +77,23 @@ module.exports = {
    * @param {Response} res
    */
   library: async function (req, res) {
-    let audios = await models.Audio.findAll({
+    const audios = await models.Audio.findAll({
       where: { userID: req.user.id },
       attributes: ["id", "userID", "name", "src", "public", "imagesrc"],
     }).catch((error) => console.log(error));
 
+    audios.map(audio => {
+      const user = models.User.findOne({where: {id: audio.userID}})
+      audio.creator = {
+        pseudo: user.pseudo
+      }
+    })
     if (audios === undefined) return res.status(200).json({ audios: [] });
 
     return res.status(200).json(audios);
   },
 
+  
   /**
    * Store will return all public song
    * @param {Request} req
@@ -81,11 +105,21 @@ module.exports = {
 
     let audios = await models.Audio.findAndCountAll({
       where: { public: true },
-      attributes: ["id", "userID", "name", "src", "imagesrc"],
+      attributes: ["id", "userID", "name", "src", "imagesrc", "createdAt"],
       limit: limit,
       offset: offset,
     }).catch((error) => console.log(error));
 
+    for(const audio of audios.rows){
+      const user = await models.User.findOne({where: {id: audio.dataValues.userID}})
+      audio.dataValues.creator = {
+        pseudo: user.pseudo
+      }
+      audio.dataValues.likes = 0,
+      audio.dataValues.release = calculateTimePassed(audio.dataValues.createdAt)
+    }
+
+    
     if (audios === undefined) return res.status(200).json({ audios: [] });
     const response = GetPagingDatas(audios, req.page, limit);
     return res.status(200).json(response);
@@ -119,7 +153,7 @@ module.exports = {
         name: req.filename,
         imported_date: req.fileInfos.date,
         userID: req.user.id,
-        public: false,
+        public: true,
         src: process.env.APP_URL + "/api/audio/" + lastid,
         imagesrc: process.env.APP_URL + "/api/medias/audio/default",
         // User: req.user,

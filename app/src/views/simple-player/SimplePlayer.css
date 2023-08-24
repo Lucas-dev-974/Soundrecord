@@ -1,0 +1,65 @@
+#simple-player-container{
+    position: fixed;
+    bottom: 10px;
+    left: 0;
+    width: 100vw;
+    height: 30px;
+}
+
+.sp-content {
+  display: flex;
+  width: 50%;
+  margin: 0 auto;
+  background-color: aliceblue;
+  align-items: center;
+}
+/* Phone */
+@media screen and (max-width: 600px) {
+  .sp-content {
+    width: 95%;
+  }
+}
+
+@media screen and (min-width: 600px) and (max-width: 800px) {
+  .sp-content {
+    width: 85%;
+  }
+}
+
+@media screen and (min-width: 800px) and (max-width: 1200px) {
+  .sp-content {
+    width: 75%;
+  }
+}
+
+@media screen and (min-width: 1200px) and (max-width: 1400px) {
+  .sp-content {
+    width: 70%;
+  }
+}
+
+@media screen and (min-width: 1400px) and(max-width: 1700px) {
+  .sp-content {
+    width: 60%;
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  .sp-content {
+    width: 50%;
+  }
+}
+
+
+
+#progressBar {
+  width: 300px;
+  height: 10px;
+  background-color: red;
+}
+
+#spl-progress {
+  height: 100%;
+  width: 0;
+  background-color: green;
+}

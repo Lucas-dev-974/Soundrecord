@@ -26,7 +26,7 @@ exports.router = (() => {
 
   // Users route
   router.route("/users").get(checkAutority, UserController.all);
-  router.route("/user/:id").get(checkAutority, UserController.get);
+  router.route("/user/:pseudo").get(checkAutority, UserController.get);
   router.route("/user").get(checkAutority, UserController.get);
   router.route("/user/:id").patch(checkAutority, UserController.update);
   router.route("/user").delete(checkAutority, UserController.delete);

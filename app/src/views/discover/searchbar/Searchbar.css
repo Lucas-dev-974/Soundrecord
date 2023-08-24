@@ -5,13 +5,13 @@
 }
 
 .searchbar {
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.815);
   border-radius: 4px;
   border: none;
   padding: 2px 3px;
-  width: 93%;
+  width: 100%;
 }
-
+  
 .searchbar:focus {
   box-shadow: 0px 5px 10px gray;
   transition-duration: 400ms;

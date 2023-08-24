@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     profile_settings: {
         'banner-img': null,
         'banner-color': null,

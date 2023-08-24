@@ -1,7 +1,8 @@
-import api from "./config";
+import api, { Api } from "./config";
 
 class ApiStore {
   async all(page) {
+    
     const response = await api.get("/store?page=" + page).catch((error) => {
       console.log(error);
     });

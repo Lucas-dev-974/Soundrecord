@@ -41,14 +41,13 @@ export default {
         this.checkScreen()
         this.is_loggedIn()
         window.onresize = this.checkScreen
-
-        if (this.$route.name == 'homme') this.appClass = 'bg-dark'
     },
 
+    // TODO when on public page dont return to login page
     methods: {
         is_loggedIn: function () {
             ApiService.get('/api/auth/').catch(() => {
-                if (this.$route.name !== 'authentication') {
+                if (this.$route.name !== 'authentication' && this.$route.name !== 'home' && this.$route.name !== 'profile') {
                     this.$router.push('authentication')
                 }
             })
@@ -60,5 +59,6 @@ export default {
     }
 }
 </script>
+
 <!-- TODO: Veille dans layout on check le Token utilisateur pour vérifier  la validité, 
-      si non valide alors on retourne l'utilisateur sur la page Discover  -->
+    ?  si non valide alors on retourne l'utilisateur sur la page Discover  -->
