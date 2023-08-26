@@ -7,14 +7,13 @@ module.exports = self = {
    * @param {object} params - The parameter object specifying the data type requirements for each field.
    * @returns {object} - An object with validation results containing validated data, validation errors, and the size of validated data.
    */
-  validate: function (body, params, res) {
+  validate: function (body, params) {
     let result = { fails: {}, validated: {}, validatedSize: 0 };
-
     // Loop through the object entries of params
     for (const [key, rule] of Object.entries(params)) {
       if (body[key] || rule) {
         // Check if the field is required
-        if (!body[key] && rule) {
+        if (!body[key] && rule.includes('required')) {
           result.fails[key] = `Le champ ${key} doit être renseigné !`;
         } else {
           // Validate the field based on the specified data type rule

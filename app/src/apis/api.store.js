@@ -1,4 +1,4 @@
-import api, { Api } from "./config";
+import api from "./config";
 
 class ApiStore {
   async all(page) {

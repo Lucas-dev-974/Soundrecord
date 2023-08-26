@@ -23,7 +23,7 @@
     "nodemailer": "^6.7.5",
     "nodemon": "^2.0.19",
     "pg": "^8.11.1",
-    "sequelize": "^6.12.0-beta.1",
+    "sequelize": "^5.22.5",
     "sequelize-paginate": "^1.1.6",
     "wav": "^1.0.2"
   },

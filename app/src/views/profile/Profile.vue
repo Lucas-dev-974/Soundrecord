@@ -9,7 +9,7 @@
                 <p>Titres</p>
                 <p>Tracks</p>
                 <p>Favories</p>
-                <p>Mure de music</p>
+                <p>Mur de music</p>
 
                 <p>Sessions</p>
             </div>

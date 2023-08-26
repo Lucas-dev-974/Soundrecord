@@ -1,9 +1,8 @@
 "use strict";
-
-const { log } = require("console");
 const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
+const Playlist = require("./playlist");
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
 const config = require(__dirname + "/../config/config.json")[env];
@@ -32,12 +31,12 @@ fs.readdirSync(__dirname)
       sequelize,
       Sequelize.DataTypes
     );
+    
     db[model.name] = model;
   });
 
 // TODO: This code generate an colume ModelId if model have association
 // Object.keys(db).forEach(modelName => {
-//   console.log(db[modelName].associate);
 //   if (db[modelName].associate) {
 //     db[modelName].associate(db);
 //   }

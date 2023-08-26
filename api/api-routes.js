@@ -8,6 +8,7 @@ const UserController = require("./controllers/User");
 const ProfileSetting = require("./controllers/ProfileSetting");
 const Liked = require("./controllers/Liked");
 const Search = require("./controllers/Search");
+const Playlist = require('./controllers/Playlist')
 
 // Middleware
 const MulterFilesManager = require("./middleware/MulterFileManager");
@@ -15,6 +16,7 @@ const EmailController = require("./controllers/EmailController");
 const CheckFileIntegrity = require("./middleware/CheckFileIntegrity");
 const { checkAutority } = require("./middleware/Administration");
 const MediasControlller = require("./controllers/MediasControlller");
+const Comment = require("./controllers/Comment");
 
 exports.router = (() => {
   let router = express.Router();
@@ -33,6 +35,20 @@ exports.router = (() => {
   router
     .route("/user/reset-password")
     .put(checkAutority, UserController.reset_password);
+
+  router.route('/playlists').get(Playlist.all)
+  router.route('/playlist/:id').get(Playlist.one)
+  router.route('/playlist').post(Playlist.add)
+  router.route('/playlist/:id').delete(Playlist.remove)
+  router.route('/playlist/add-audio').post(Playlist.addAudio)
+  router.route('/playlist/rm-audio').delete(Playlist.removeAudio)
+
+  router.route("/comments/:audioid").get(Comment.getAudioComments);
+  router.route("/comment").post(Comment.post);
+  router.route("/comment").patch(Comment.edit);
+  router.route("/comment/:commentid").delete(Comment.remove);
+
+  router.route("/signal/comment").post(Comment.signal);
   // Creators
   router.route("/creators").get(UserController.get_creators);
 

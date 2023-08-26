@@ -62,6 +62,11 @@ module.exports = {
    */
   validator: (body, key, value) => validate(body, key, value),
 
+  manageCatchErrorModel: function(res, error){
+    console.log("error from model", error);
+    res.status(400).json("Désoler une erreur est survenue.")
+  },
+
   exclude: function (arr, to_excl) {
     if (typeof arr == "array") {
       if (typeof to_excl == "string") {

@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       models.User.hasMany(models.Session, { onDelete: "cascade" });
       models.User.hasMany(models.Like, { onDelete: "cascade" });
       models.User.hasMany(models.SessionTrack, { onDelete: "cascade" });
+      models.User.hasMany(models.Playlist, { onDelete: "cascade" })
     }
 
     static updatable() {

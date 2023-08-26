@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         as: "User",
       });
       models.Audio.hasMany(models.SessionTrack, { onDelete: "CASCADE" });
+      
     }
   }
 

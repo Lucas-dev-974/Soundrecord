@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // models.Liked.belongsTo(models.User)
+      models.Like.belongsTo(models.User)
     }
   }
   // TODO: Create one liked-profile & liked-audio models and migrations 
