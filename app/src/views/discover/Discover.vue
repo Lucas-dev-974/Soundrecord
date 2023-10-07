@@ -1,7 +1,7 @@
 <template>
     <section>
         <div class="my-5">
-            <Searchbar :placeholder="'Search'" @searchData="searchAudio" />
+            <Searchbar :placeholder="'Rechercher une création'" @searchData="searchAudio" />
             <div class="categories-search-buttons">
                 <p>catégories:</p>
                 <GenreTag :text="'Old-school'" :onClick="() => { }" />
