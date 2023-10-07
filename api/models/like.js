@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Liked extends Model {
+  class Like extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,9 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   // TODO: Create one liked-profile & liked-audio models and migrations 
-  Liked.init(
+  Like.init(
     {
       userid: DataTypes.INTEGER,
+      // ! Maybe remove model ?
       model: DataTypes.STRING,// ? audio, profile
       modelid: DataTypes.INTEGER,
     },
@@ -23,5 +24,5 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Like",
     }
   );
-  return Liked;
+  return Like;
 };

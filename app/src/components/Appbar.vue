@@ -6,7 +6,7 @@
         <a class="navlink" href="/discover" v-else>Discover</a>
       </div>
 
-      <h1 @click="$router.push('discover')" id="soundrecord-title">
+      <h1 @click="onClickLogo" id="soundrecord-title">
         Sound<span style="color: #EE1B1B;">Record</span></h1>
 
       <div class="navbar-side-left"></div>
@@ -15,3 +15,4 @@
   </v-app-bar>
 </template>
 
+<script src="./Appbar"></script>

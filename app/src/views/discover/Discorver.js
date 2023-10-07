@@ -5,10 +5,11 @@ import SimpleAudioPlayerComponent from "../simple-player/SimplePlayer.vue";
 import Paging from "./paging/Paging.vue";
 import "./Discover.css";
 import AudioList from "./audioList/list.vue";
+import CommentsPanel from "../../components/comments-panel/CommentsPanel.vue";
 
 export default {
   name: "discover",
-  components: { AudioList, Searchbar, Paging, SimpleAudioPlayerComponent },
+  components: { AudioList, Searchbar, Paging, SimpleAudioPlayerComponent, CommentsPanel },
 
   data() {
     return {
@@ -21,6 +22,7 @@ export default {
   },
 
   async mounted() {
+    console.log("okok", this.$store.state.commentsPanel);
     await this.getAudios();
     this.dataLoaded = true;
     const srcList = this.audios.datas.map((audio) => audio.src);

@@ -40,7 +40,7 @@ module.exports = {
     
     let sessions = await models.Session.findAndCountAll({
       where: { userid: req.user.id },
-      attributes: { exclude: ["createdAt", "updatedAt", "UserId"] },
+      attributes: { exclude: [] },
       limit: limit,
       offset: offset,
     }).catch((error) => {
@@ -78,11 +78,13 @@ module.exports = {
 
   create: async function (req, res) {
     // Check of given data
-    let validated = validator(req.body, { name: "string" });
+    console.log("body", req.body);
+    let validated = validator(req.body, { name: "string|required" });
 
-    // let user    = await models.User.findByPk(req.user.id)
+    if(validated.errors) return res.status(400).json(validated.errors)
+    
     let session = await models.Session.create({
-      session_name: validated.validated.name ?? "Untilted",
+      session_name: validated.name ?? "Untilted",
       userid: req.user.id,
       UserId: req.user.id,
       public: false,

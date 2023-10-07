@@ -27,13 +27,27 @@ const self = module.exports = {
         if(validated.errors) return res.status(400).json(validated)
 
         let comments = await models.Comment.findAll({
-            where: validated
+            where: {
+                ...validated, 
+                enable: true
+            }
         })
 
         const _comments = {}
         const _response = {}
         
         for(const {dataValues} of comments){
+            const author = await models.User.findOne({
+                where: {id: dataValues.userid},
+                attributes: ["id", "pseudo", "picture"]
+            }).catch(error => {return manageCatchErrorModel(error)})
+
+            dataValues.author = author
+            const signaled = await models.SignaledComment.findAndCountAll({
+                where: {commentid: dataValues.id}
+            }).catch(error => {return manageCatchErrorModel(error)})
+
+            dataValues.signaled = signaled.count
             if(dataValues.responseof != null){
                 _response[dataValues.id] = dataValues
             }else{
@@ -55,6 +69,11 @@ const self = module.exports = {
 
         if(validated.errors) return res.status(400).json(validated.errors)
 
+        const audio = await models.Audio.findOne({
+            where: {id: validated.audioid}
+        }).catch(error => {return manageCatchErrorModel(error)})
+        if(!audio) return res.status(404).json("Il n'est pas possible de placer un commentaire sous un audio qui n'existe pas.")
+        
         const comment = await models.Comment.create({
             ...validated,
             userid: req.user.id
@@ -76,7 +95,7 @@ const self = module.exports = {
         if(validated.errors) return res.status(400).json(validated.errors)
 
         const comment = await models.Comment.findOne({
-            where: {id: validated.commentid}
+            where: {id: validated.commentid, enable: true}
         }).catch(error => {return manageCatchErrorModel(error)})
 
         if(comment.userid != req.user.id){
@@ -95,7 +114,7 @@ const self = module.exports = {
 
         if(validated.errors) return res.status(400).json(validated.errors)
         const comment = await models.Comment.findOne({
-            where: {id: validated.commentid}
+            where: {id: validated.commentid, enable: true}
         })
 
         if(comment.userid != req.user.id) return res.status(401).json("Vous ne pouvez pas supprimer un commentaire qui n'est pas le votre !")
@@ -108,26 +127,63 @@ const self = module.exports = {
     },
     
     signal: async function (req, res) {
-        const validated = validator(req.body, {
+        const validated = validator(req.params, {
             commentid: "int|required",
         })
 
         if(validated.errors) return res.status(400).json(validated.errors)
 
         const comment = await models.Comment.findOne({
-            where: {id: validated.commentid}
+            where: {
+                id: validated.commentid,
+                enable: true
+            }
         }).catch(error => {return manageCatchErrorModel(error)})
 
         if(!comment) return res.status(404).json("Le commentaire n'existe plus.")
 
         const signaled = await models.SignaledComment.findOrCreate({
             where: {
-                id: validated.commentid,
+                commentid: validated.commentid,
                 userid: req.user.id
             }
-        }).catch(error => {return manageCatchErrorModel(error)})
+        }).catch(error => {return manageCatchErrorModel(res, error)})
+        
+        if(!signaled[1]){
+            signaled[0].destroy()
+        }
 
         return res.status(200).json(signaled)
     },
+
+    // Todo maybe review that code 
+    mostSignaledComments: async function(req, res){
+        const signaleds = await models.SignaledComment.findAndCountAll({
+            attributes: ['commentid'],
+            group: 'commentid'
+        }).catch(error => {return manageCatchErrorModel(res, error)})
+
+
+        const index = 0;
+        for(const signaled of signaleds.rows){
+
+            try{
+                // TODO here
+                const comment = await models.Comment.findOne({
+                    where: signaled.dataValues.commentid
+                }).catch(error => {return manageCatchErrorModel(res, error)})
+    
+            }catch(error){
+                console.log(error);
+            }
+
+            signaled = {
+                comment: comment,
+                sigledsTime: signaleds.count[index]
+            }
+            index++
+        }
+        return res.status(200).json(signaleds)
+    }
   };
   

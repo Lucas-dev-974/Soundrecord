@@ -1,10 +1,12 @@
 "use strict";
 const { Model } = require("sequelize");
+const models = require("./index")
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
       models.User.hasOne(models.Role, { onDelete: "cascade" });
+      // (1) - relation with audio
       models.User.hasMany(models.Audio, { onDelete: "cascade" });
       models.User.hasMany(models.Session, { onDelete: "cascade" });
       models.User.hasMany(models.Like, { onDelete: "cascade" });
@@ -34,16 +36,20 @@ module.exports = (sequelize, DataTypes) => {
         "facebook_link",
       ];
     }
+
+   followers(userid){
+      console.log(this);
+    }
   }
   User.init(
     {
-      email: DataTypes.STRING,
       name: DataTypes.STRING,
-      pseudo: DataTypes.STRING,
-      password: DataTypes.STRING,
       role: DataTypes.INTEGER,
-      picture: DataTypes.STRING,
+      email: DataTypes.STRING,
+      pseudo: DataTypes.STRING,
       public: DataTypes.BOOLEAN,
+      picture: DataTypes.STRING,
+      password: DataTypes.STRING,
       facebook_link: DataTypes.STRING,
       instagram_link: DataTypes.STRING,
     },

@@ -15,6 +15,9 @@
                     </router-view>
                 </div>
             </v-main>
+
+
+
         </v-app>
 
     </v-app>
@@ -28,7 +31,7 @@ import "./layout.css"
 
 export default {
     components: {
-        Appbar, Alert,
+        Appbar, Alert
     },
 
     data() {
@@ -40,14 +43,18 @@ export default {
     mounted() {
         this.checkScreen()
         this.is_loggedIn()
-        window.onresize = this.checkScreen
+        // Todo: check
+        // window.onresize = this.checkScreen
     },
 
     // TODO when on public page dont return to login page
     methods: {
         is_loggedIn: function () {
             ApiService.get('/api/auth/').catch(() => {
-                if (this.$route.name !== 'authentication' && this.$route.name !== 'home' && this.$route.name !== 'profile') {
+                this.$store.commit('setUser', 'null')
+                if (this.$route.name !== 'authentication'
+                    && this.$route.name !== 'home'
+                    && this.$route.name !== 'profile') {
                     this.$router.push('authentication')
                 }
             })

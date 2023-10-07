@@ -5,3 +5,8 @@
   flex-wrap: wrap;
   gap: 5px;
 }
+
+.list-title{
+  color: white;
+  letter-spacing: 2px;
+}

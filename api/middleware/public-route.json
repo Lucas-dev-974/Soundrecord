@@ -11,6 +11,8 @@
         "POST|/api/mail/password-reset",
         "GET|/api/creators",
         "GET|/api/store",
-        "GET|/api/audio"
+        "GET|/api/audio",
+        "GET|/api/medias/audio/",
+        "GET|/api/comments/"
     ]
 }

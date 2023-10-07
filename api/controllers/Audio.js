@@ -106,7 +106,7 @@ module.exports = {
     let audios = await models.Audio.findAndCountAll({
       where: { public: true },
       attributes: ["id", "userID", "name", "src", "imagesrc", "createdAt"],
-      limit: limit,
+      limit: 12,
       offset: offset,
     }).catch((error) => console.log(error));
 
@@ -115,7 +115,18 @@ module.exports = {
       audio.dataValues.creator = {
         pseudo: user.pseudo
       }
-      audio.dataValues.likes = 0,
+      const like = await models.Like.findAndCountAll({
+        where: {
+          model: "audio",
+          modelid: audio.dataValues.id,
+        }
+      })
+
+      audio.dataValues.likes = {
+        count: like.count,
+        userLike: like.userid
+      },
+      
       audio.dataValues.release = calculateTimePassed(audio.dataValues.createdAt)
     }
 

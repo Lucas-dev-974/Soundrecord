@@ -5,6 +5,8 @@ const { publicPath } = require("./middleware/PublicPath");
 const { checkPagingParams } = require("./middleware/Paging");
 
 const router = require("./api-routes").router;
+const adminRoutes = require("./routes/admin.routes").router
+
 const JwtMidle = require("./middleware/Jwt").isAuthorized;
 // Server params
 const port = process.env.SERVER_PORT;
@@ -16,6 +18,8 @@ const corsOptions = {
 // Instanciate server
 const server = express();
 
+// ? ... Import
+
 // Setup Middleware
 server.use(cors(corsOptions));
 server.use(JwtMidle);
@@ -26,8 +30,7 @@ server.use(checkPagingParams);
 
 // Handle Api Routes
 server.use("/api/", router);
-// server.use(errorHandler);
 
-server.listen(port, () =>
-  console.log("Server Started on http://localhost:" + port)
-);
+server.use("/api/admin/", adminRoutes)
+
+server.listen(port, () => console.log("http://localhost:" + port));

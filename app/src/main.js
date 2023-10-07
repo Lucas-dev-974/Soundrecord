@@ -1,4 +1,3 @@
-console.log("ok");
 if (!window.localStorage.getItem("vuex"))
   window.localStorage.setItem("vuex", "{}");
 

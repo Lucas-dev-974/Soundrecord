@@ -11,15 +11,15 @@ const config = {
     },
   };
 
-const header = {
-  method: null,
-  headers: {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
-  },
-  Authorization: 'Bearer '+ token,
-  body: null
-}
-headerComment
+// const header = {
+//   method: null,
+//   headers: {
+//     'Accept': 'application/json',
+//     'Content-Type': 'application/json'
+//   },
+//   Authorization: 'Bearer '+ token,
+//   body: null
+// }
+
 // export default Api
 export default axios.create(config);

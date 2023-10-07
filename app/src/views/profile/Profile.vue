@@ -6,12 +6,15 @@
 
         <section id="profile-tab">
             <div class="line gap-5">
-                <p>Titres</p>
-                <p>Tracks</p>
-                <p>Favories</p>
-                <p>Mur de music</p>
+                <p v-if="userprofile == true" class="profile-view-selector" @click="() => changeView('sessions')">Sessions
+                </p>
+                <p class="profile-view-selector" @click="() => changeView('tracks')">Tracks</p>
+                <p class="profile-view-selector" @click="() => changeView('favories')">Favories</p>
+                <p class="profile-view-selector" @click="() => changeView('music-wall')">Mur de music</p>
+            </div>
 
-                <p>Sessions</p>
+            <div>
+                <SessionsList v-if="viewname == 'sessions'" />
             </div>
         </section>
     </div>

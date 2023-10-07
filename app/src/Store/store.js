@@ -24,7 +24,17 @@ let initialstate = {
     width: null,
 
     profile_settings: {...profile_settings},
-    theme: 'dark'
+    theme: 'dark',
+
+    // ? ---------------------
+
+    commentsPanel: {
+        audioid: 0,
+        audio: {
+            id: null,
+        },
+        open: false,
+    }
 }
 
 export default new Vuex.Store({
@@ -102,7 +112,18 @@ export default new Vuex.Store({
         logout: function(state){
             Object.assign(state, initialstate)
             window.location.href = '/authentication'
-        }
+        },
+
+        // ? ---------------------------
+        toggleCommentsPanel: function(state, data = null){
+            if(data != null) state.commentsPanel.open
+            else state.commentsPanel.open = !state.commentsPanel.open
+        },
+
+        setCommentsPanelAudio(state, audio){
+            state.commentsPanel.audio = audio
+        },
+        
     },
 
     actions:{
@@ -119,6 +140,7 @@ export default new Vuex.Store({
             })
             return toreturn
         },
+
 
 
     }

@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     audioid: DataTypes.INTEGER,
     userid: DataTypes.INTEGER,
     content: DataTypes.TEXT,
-    responseof: DataTypes.INTEGER
+    responseof: DataTypes.INTEGER,
+    enable: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Comment',

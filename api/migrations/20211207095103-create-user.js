@@ -54,6 +54,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
+      enable: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
+      }
     });
   },
   down: async (queryInterface, Sequelize) => {

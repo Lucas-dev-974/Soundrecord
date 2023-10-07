@@ -1,7 +1,7 @@
 const errorHandler = (req, res, next) => {
   console.log("LERREUR DE LERREUR");
   console.error(req.user); // Vous pouvez enregistrer l'erreur ou effectuer d'autres actions de journalisation
-
+  console.log(req.error);
   // Envoyer une réponse d'erreur
   return res
     .status(500)

@@ -12,7 +12,7 @@ export default{
 
     },
     
-    methods: {
+    methods: {  
         createSession: function(){
             api.post('/api/session/', {name: this.name})
             .then(({data}) => {
@@ -21,6 +21,8 @@ export default{
             }).catch(error => {
                 console.log(error);
             })
-        }
+        },
+
+
     }
 }

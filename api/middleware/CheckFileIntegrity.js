@@ -2,6 +2,7 @@ const fs = require("fs");
 const wav = require("wav");
 const NodeID3 = require("node-id3");
 
+// TODO use this librairy to check file integrity file-type https://www.npmjs.com/package/file-type
 const validateWav = (req, res, next) => {
   if (req.Isaudio && req.fileext === ".wav") {
     const filePath = req.filePath;

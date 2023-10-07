@@ -1,7 +1,6 @@
 // Default setting: bannerbg - bannercolor - show{profile}: name, email...
-const fs = require("fs");
+
 const path = require("path");
-const stream = require("stream");
 const models = require("../models");
 const { validator } = require("../utils.js");
 const htmlspecialchars = require("htmlspecialchars");

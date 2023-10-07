@@ -13,17 +13,12 @@ export default {
         this.setEventsListener()
         this.sliderElement.addEventListener('input', () => {
             const volume = this.sliderElement.value;
-            console.log(volume);
             SimpleAudioPlayer.setVolume(volume);
         });
           
         
     },
     methods: {
-        onChange: function(e){
-            console.log("changed", e);
-        },
-
         setEventsListener: function(){
             try{
                 this.sliderElement = document.getElementById('volumeRange')

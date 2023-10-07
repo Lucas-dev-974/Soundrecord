@@ -5,9 +5,14 @@ const models = require("../models");
 const { returnFields, validator } = require("../utils.js");
 
 module.exports = {
+  /**
+   * Allow user to register him on the app
+   * @param {Request} req 
+   * @param {Response} res 
+   * @returns 
+   */
   register: async function (req, res) {
-    // Validate request params required
-    // If one ore more params not given return errors
+    // 1 - Validate request params required
     let validated = validator(req.body, {
       email: "string|required",
       password: "string|required",
@@ -15,10 +20,11 @@ module.exports = {
       pseudo: "string|required",
     });
 
+    // If one ore more params not given return errors
     if (validated.errors != undefined)
       return res.status(400).json(validated.errors);
 
-    // Search if user email exist in db if exist return warning
+    // 2 - Search if user email exist in db if exist return error
     let user = await models.User.findOne({
       attributes: ["email"],
       where: {
@@ -27,14 +33,16 @@ module.exports = {
       },
     }).catch((error) => console.log(error));
 
-    if (user)
+    if (user){
       return res.status(403).json({
         error: "Cet email est déjà enregistrer, veuillez vous connecté !",
       });
+    }
 
+    // 3 - Hash password before registering it in database
     const password = bcrypt.hashSync(validated.password, bcrypt.genSaltSync(8));
 
-    // Create user
+    // 4 - Create user
     user = await models.User.create({
       name: validated.name,
       email: validated.email,
@@ -45,27 +53,37 @@ module.exports = {
     }).catch((error) => {
       return { error: error };
     });
-    if (user.error)
+    
+    if (user.error){
       return res
         .status(403)
         .json(
           "Désolé une erreur est survenue veuillez ré-essayer plus tard ou nous contacter !"
         );
+    }
 
-    // Let generate Token for the user
+    // 5 - Lets generate Token for the user
     const token = jwt.generateToken({
       id: user.dataValues.id,
       email: user.dataValues.email,
       role: user.dataValues.role,
     });
 
+    // 6 - return response to user
     return res.status(200).json({
       token: token,
       user: returnFields(user.dataValues, models.User.visible()),
     });
   },
 
-  login: async function (req, res, next) {
+  /**
+   * Allow user to login, so if user give compatible 
+   * pseudo/password return an JWToken with user informations
+   * @param {Request} req 
+   * @param {Result} res 
+   * @returns 
+   */
+  login: async function (req, res) {
     let validated = validator(
       req.body,
       {
@@ -115,6 +133,12 @@ module.exports = {
     });
   },
 
+  /**
+   * Allow client app to check if token is ever valid
+   * @param {*} req 
+   * @param {*} res 
+   * @returns 
+   */
   checkToken: function (req, res) {
     let headerAuth = req.headers["authorization"];
     let token = jwt.parseauthorization(headerAuth);
@@ -131,6 +155,11 @@ module.exports = {
     return res.status(200).json(true);
   },
 
+  /**
+   * Create default user profile settings
+   * @param {*} user_id 
+   * @returns 
+   */
   AssingDefaultProfileSettings: async function (user_id) {
     // Row show option | name: show_options | table: profile_settings | options: "email,phone,pseudo,fb,inst,name | default: "fb,inst,pseudo,email""
     const setting_fields = {

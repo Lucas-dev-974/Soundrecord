@@ -9,11 +9,16 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       audioid: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Audios",
+          key: "id",
+          onDelete: "cascade",
+        }
       },
       userid: {
         type: Sequelize.INTEGER,
-        reference: {
+        references: {
           model: "Users",
           key: "id",
           onDelete: "cascade",
@@ -24,11 +29,15 @@ module.exports = {
       },
       responseof: {
         type: Sequelize.INTEGER,
-        reference: {
+        references: {
           model:"Comments",
           key: "id",
           allowNull: true
         }
+      },
+      enable: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
       },
       createdAt: {
         allowNull: false,
