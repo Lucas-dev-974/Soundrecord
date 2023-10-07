@@ -1,17 +1,9 @@
 .audio-container {
   color: white;
   overflow: hidden;
-  max-height: 300px;
-  max-width: 200px;
-  
+  height: 18vh;
 }
 
-@media screen and (max-width: 600px) {
-  .audio-container {
-    max-height: 300px;
-    max-width: 150px; 
-  }
-}
 .audio-header {
   display: flex;
   justify-content: space-between;
