@@ -1,7 +1,12 @@
+.comment-item{
+    
+}
+
 .comment-content{
+    justify-content: space-between;
+    overflow-x: hidden;
     display: flex;
-    /* height: au */
-    padding: 15px;
+    padding: 10px 5px;
 }
 
 .comment-text{

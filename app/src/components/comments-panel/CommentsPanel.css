@@ -1,5 +1,5 @@
 #comments-panel{
-    position: absolute;
+    position: fixed;
     bottom: 10px;
     right:  10px;
     width: 20vw;
@@ -7,7 +7,8 @@
     padding: 10px 5px;
     border-radius: 5px;
     min-width: 320px;
-    background-color: white ;
+    background-color: #505050;
+    color: white;
 }
 
 .comments-panel-container{
@@ -25,6 +26,19 @@
     color: red;
 }
 
+.close-comment-panel{
+    color: #D04343 !important;
+}
+
+.separator{
+    display: block;
+    width: 95%;
+    height: 1px;
+    background: #fff;
+    margin: 0 auto;
+    margin-top: 5px;
+}
+
 .comments-header{
     width: 100%;
     display: flex;
@@ -34,17 +48,18 @@
 .comments-header-title{
     width: 80%;
     overflow-x: hidden;
+    font-size: 18px;
 }
 
 .comments-footer{
     position: absolute;
+    width: 100%;
     bottom: 0;
     left: 0;
-    width: 100%;
-    background-color: red;
 }
 
 .comments-content{
+    margin-top: 15px;
     max-height: 88%;
     overflow-y: auto;
 }

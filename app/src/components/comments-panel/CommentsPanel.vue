@@ -3,8 +3,9 @@
         <section class="comments-panel-container">
             <header class="comments-header">
                 <p class="comments-header-title">{{ $store.state.commentsPanel.audio.name }}</p>
-                <v-icon @click="toggleCommentsPanel">mdi-close</v-icon>
+                <v-icon class="close-comment-panel" @click="toggleCommentsPanel">mdi-close</v-icon>
             </header>
+            <span class="separator" />
 
             <div class="comments-content">
                 <div class="" v-for="comment of comments" v-bind:key="comment.id">
@@ -12,7 +13,7 @@
                 </div>
             </div>
 
-            <footer class="comments-footer" v-if="$store.state.user != null && $store.state.user != 'null'">
+            <footer class="comments-footer" v-if="$store.state.user != null">
                 <CommentInput :audioid="audioid" @pushComment="pushComment" />
             </footer>
         </section>
