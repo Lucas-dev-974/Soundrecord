@@ -106,7 +106,7 @@ module.exports = {
     let audios = await models.Audio.findAndCountAll({
       where: { public: true },
       attributes: ["id", "userID", "name", "src", "imagesrc", "createdAt"],
-      limit: 12,
+      limit: req.size,
       offset: offset,
     }).catch((error) => console.log(error));
 

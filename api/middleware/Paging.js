@@ -1,7 +1,7 @@
 const { validator } = require("../utils");
 
 const checkPagingParams = (req, res, next) => {
-  const pagingValidator = validator(req.params, {
+  const pagingValidator = validator(req.query, {
     page: "int",
     size: "int",
   });
@@ -11,6 +11,7 @@ const checkPagingParams = (req, res, next) => {
 
   req.page = pagingValidator.page;
   req.size = pagingValidator.size;
+
   next();
 };
 
