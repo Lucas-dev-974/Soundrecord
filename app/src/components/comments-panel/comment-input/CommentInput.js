@@ -1,4 +1,5 @@
 import ApiComment from "../../../apis/api.comments.js"
+import "./CommentInput.css"
 
 export default {
     props: {
