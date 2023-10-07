@@ -4,7 +4,10 @@ import VolumeSlider from "./volume-slider/VolumeSlider.vue"
 import PlayPause from "./play-pause/PlayPause.vue"
 
 export default {
-    components: {VolumeSlider, PlayPause},
+    components: {
+        VolumeSlider, PlayPause
+    },
+    
     data(){
         return {
             onPlay: false,
@@ -34,14 +37,13 @@ export default {
                     console.log("la progress na pas été trouver");
                 }
             }
-            console.log(this.progressBar);
         })
 
         document.addEventListener('spl-play', function(){
             this.onPlay = true
             this.progressBar = document.getElementById('spl-progress');
             SimpleAudioPlayer.setFallback(() => {
-                console.log("ok");
+                console.log("ok", SimpleAudioPlayer.getCurrentTime());
                 if (!SimpleAudioPlayer.paused) {
                     const progressWidth = (SimpleAudioPlayer.getCurrentTime() / SimpleAudioPlayer.getDuration()) * 100 + '%';
                     this.progressBar.style.width = progressWidth;
@@ -51,7 +53,6 @@ export default {
         
         document.addEventListener('spl-pause', function(){
             this.onPlay = false
-
             console.log("on pause");
             SimpleAudioPlayer.clearFallback()
         })

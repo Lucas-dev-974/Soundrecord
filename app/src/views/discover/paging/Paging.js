@@ -10,6 +10,10 @@ export default {
     currentPage: Number,
   },
 
+  mounted(){
+    console.log("paging", this.totalItems, this.titemsPerPage);
+  },
+
   computed: {
     totalPages() {
       return Math.ceil(this.totalItems / this.itemsPerPage);

@@ -18,6 +18,7 @@ const { checkAutority } = require("./middleware/Administration");
 const MediasControlller = require("./controllers/MediasControlller");
 const Comment = require("./controllers/Comment");
 const FollowController = require('./controllers/Follow')
+const AudioCategorie = require('./controllers/AudioCategorie')
 
 exports.router = (() => {
   let router = express.Router();
@@ -122,6 +123,7 @@ exports.router = (() => {
     );
   router.route("/audio/:id").delete(AudioController.delete);
   router.route("/audio").patch(AudioController.update);
+  router.route('/audio/categorie').post(AudioCategorie.linkAudioToCategories)
 
   // Medias routes
   router.route("/medias/audio/:id").get(MediasControlller.get);
@@ -139,7 +141,8 @@ exports.router = (() => {
   // ? like / unlike
   router.route("/like").post(Liked.like);
 
-  // // Search routes
+
+
   // router.route("/search/sessions").post(Search.SearchSession);
   // router.route("/search/pists").post(Search.SearchImport);
   // router.route("/search/users").post(Search.SearchUser);

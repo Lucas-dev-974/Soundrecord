@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { validator, exclude } = require("../utils.js");
+const { validator, exclude, manageCatchErrorModel } = require("../utils.js");
 const models = require("../models");
 
 require("dotenv").config();
@@ -111,7 +111,24 @@ module.exports = {
     }).catch((error) => console.log(error));
 
     for(const audio of audios.rows){
-      const user = await models.User.findOne({where: {id: audio.dataValues.userID}})
+      const user = await models.User.findOne({
+        where: {id: audio.dataValues.userID}
+      }).catch(error => { return manageCatchErrorModel(res, error)})
+      
+      const categories = await models.AudioCategorie.findAll({
+        where: { audioId: audio.id }
+      }).catch(error => {return manageCatchErrorModel(res, error)})
+
+      audio.categories = []
+
+      for(const audioCate of categories){
+        const categorie = await models.Categories.findOne({
+          where: { id: audioCate.categorieId }
+        }).catch(error => { return manageCatchErrorModel(res, req)} )
+
+        audio.categories.push(categorie.dataValues)
+      }
+      
       audio.dataValues.creator = {
         pseudo: user.pseudo
       }
@@ -134,6 +151,25 @@ module.exports = {
     if (audios === undefined) return res.status(200).json({ audios: [] });
     const response = GetPagingDatas(audios, req.page, limit);
     return res.status(200).json(response);
+  },
+
+  byCategories: async function(req, res){
+    const validated = validator(req.query, {
+      // * format de la chaine de caractère: 1,3,10
+      categorieIds: 'string'
+    })
+
+    if(validated.errors) return res.status(400).json(validated.errors)
+    
+    // Todo découper la chaine de caractère pour extraire la liste des id de catégorie
+    // * format de la chaine de caractère: 1,3,10
+    const categorieIds = []
+    const audiosCategorie = await models.AudioCategorie.fincdAll({
+      where: {
+        // Todo à revoir parceque c'est un tableau qui d'id et la je fait que pour un id de catégorie
+        categorieId: validated.categorieIds 
+      }
+    })
   },
 
   /**
@@ -218,7 +254,6 @@ module.exports = {
       where: { id: validated.id },
     });
 
-    console.log(audio);
     if (!audio)
       return res.status(400).json({ error: "La pist n'existe pas !" });
     if (audio.userID !== req.user.id)

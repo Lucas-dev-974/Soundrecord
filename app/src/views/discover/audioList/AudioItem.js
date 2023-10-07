@@ -1,7 +1,7 @@
 import SimpleAudioPlayer from "../../../services/SimpleAudioPlayer";
-import "./AudioItem.css";
 import ApiAudio from "../../../apis/api.audio"
 import GenreTag from "../genre-tag/GenreTag.vue";
+import "./AudioItem.css";
 
 export default {
   name: "discover-item-list",
@@ -14,7 +14,6 @@ export default {
   },
 
   async mounted() {
-    console.log(this.audio);
     const img = document.getElementsByClassName("img-" + this.audio.id)[0];
     img.addEventListener('click', this.play)
     const audioItemcontainer = document.getElementsByClassName('audio-container audio-' + this.audio.id)[0]

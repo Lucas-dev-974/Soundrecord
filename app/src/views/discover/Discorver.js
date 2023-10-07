@@ -6,10 +6,18 @@ import Paging from "./paging/Paging.vue";
 import "./Discover.css";
 import AudioList from "./audioList/list.vue";
 import CommentsPanel from "../../components/comments-panel/CommentsPanel.vue";
+import GenreTag from "./genre-tag/GenreTag.vue"
 
 export default {
   name: "discover",
-  components: { AudioList, Searchbar, Paging, SimpleAudioPlayerComponent, CommentsPanel },
+  components: { 
+    SimpleAudioPlayerComponent, 
+    CommentsPanel, 
+    Searchbar, 
+    AudioList, 
+    GenreTag,
+    Paging, 
+  },
 
   data() {
     return {

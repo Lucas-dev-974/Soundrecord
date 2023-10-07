@@ -1,10 +1,11 @@
 .genre-tag{
-    padding: 1px 6px;
+    padding: 0.5px 10px;
+    height: fit-content;
     background-color: #ffffff30;
     border: 1px solid white;
     border-radius: 3px;
     width: fit-content;
-    font-size: 10px;
+    font-size: 11px;
     color: #ffffff;
     margin: 0px;
 }

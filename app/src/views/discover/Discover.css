@@ -10,3 +10,15 @@
   color: white;
   letter-spacing: 2px;
 }
+
+.categories-search-buttons{
+  margin-top: 10px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  color: white;
+}
+.list-title-paging{
+  display: flex;
+  justify-content: space-between;
+}

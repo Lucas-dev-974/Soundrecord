@@ -3,16 +3,24 @@
     bottom: 10px;
     left: 0;
     width: 100vw;
-    height: 30px;
+    height: 40px;
 }
 
 .sp-content {
   display: flex;
-  width: 50%;
-  margin: 0 auto;
-  background-color: aliceblue;
   align-items: center;
+  gap: 15px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 10px;
+  background-color: #313131;
+  color: white;
+  border: 0.5px solid white;
+  border-radius: 5px;
+  align-items: center;
+  height: 100%;
 }
+
 /* Phone */
 @media screen and (max-width: 600px) {
   .sp-content {
@@ -55,11 +63,17 @@
 #progressBar {
   width: 300px;
   height: 10px;
-  background-color: red;
+  background-color: #d9d9d997;
 }
 
 #spl-progress {
   height: 100%;
   width: 0;
   background-color: green;
+}
+
+.play-container{
+  width: 14px;
+  display: flex;
+  align-items: center;
 }

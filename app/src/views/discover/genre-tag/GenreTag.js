@@ -2,6 +2,9 @@ import "./GenreTag.css"
 
 export default {
     props: {
-        text: { required: true }
-    }
+        text: { required: true },
+        onClick: {required: false}
+    },
+
+    
 }

@@ -1,3 +1,9 @@
 .play-pause-container{
     width: fit-content;
 }
+
+.play-btn{
+    width: 14px;
+    display: flex;
+    align-items: center;
+}

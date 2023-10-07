@@ -1,8 +1,9 @@
 <template>
     <div class="play-pause-container">
-        <v-icon @click="play" v-if="!onPlay">
-            mdi-play
-        </v-icon>
+
+        <button class="play-btn" @click="play" v-if="!onPlay">
+            <PlayIcon />
+        </button>
 
         <v-icon @click="pause" v-else>
             mdi-pause

@@ -1,9 +1,11 @@
 <template>
     <section id="simple-player-container">
         <div class="sp-content">
-            <PlayPause />
+            <div class="play-container">
+                <PlayPause />
+            </div>
 
-
+            <p class="timer-duration">00:00</p>
             <div id="progressBar">
                 <div id="spl-progress"></div>
             </div>

@@ -1,11 +1,22 @@
 .audio-container {
   color: white;
   overflow: hidden;
-  max-height: 250px;
+  max-height: 300px;
   max-width: 200px;
   
 }
 
+@media screen and (max-width: 600px) {
+  .audio-container {
+    max-height: 300px;
+    max-width: 150px; 
+  }
+}
+.audio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .audio-image {
   width: 100%;
   height: 60%;
@@ -23,11 +34,13 @@
 }
 
 .audio-footer{
-  justify-content: space-between;
+  justify-content: end;
   display: flex;
+  margin-top: 5px;
 }
 .audio-action { 
   height: fit-content;
+  align-items: center;
   display: flex;
   gap: 5px;
 }
@@ -52,6 +65,16 @@
 .scrollingText {
   display: inline-block; /* Permet au texte de dépasser horizontalement */
   animation: scrollText 10s linear infinite; /* Animation de défilement */
+}
+
+.author-link{
+  color: whitesmoke !important;
+}
+
+.like-count{
+  color: red;
+  right: 0;
+  
 }
 
 @keyframes scrollText {

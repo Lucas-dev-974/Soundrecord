@@ -4,6 +4,10 @@ html {
   overflow-x: hidden;
 }
 
+.button{
+  cursor: pointer;
+}
+
 p{
   margin: 0;
   margin-bottom: 0 !important;
