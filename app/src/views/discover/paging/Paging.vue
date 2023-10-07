@@ -5,7 +5,7 @@
         <button class="paging-btn paging-next" @click="changePage(currentPage + 1)"
             :disabled="currentPage === totalPages" />
 
-        <!-- {{ totalItems }} -->
+        {{ itemsPerPage }}
     </div>
 </template>
 
