@@ -105,6 +105,7 @@ module.exports = {
 
     let audios = await models.Audio.findAndCountAll({
       where: { public: true },
+      // If userID is not set in this list an  error popup
       attributes: ["id", "userID", "name", "src", "imagesrc", "createdAt"],
       limit: req.size,
       offset: offset,
