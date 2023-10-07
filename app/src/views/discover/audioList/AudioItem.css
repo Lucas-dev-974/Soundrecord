@@ -1,7 +1,7 @@
 .audio-container {
   color: white;
-  overflow: hidden;
-  height: 18vh;
+  overflow-x: hidden;
+  height: 22vh;
 }
 
 .audio-header {
