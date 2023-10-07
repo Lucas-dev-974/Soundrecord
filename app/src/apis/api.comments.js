@@ -4,7 +4,7 @@ class ApiComment {
     // Todo manage error status code & connexion 
     async getCommentForAudio(audioid){
         const response = await api.get("/comments/" + audioid)
-        console.log(response);
+        // console.log(response);
         return response.data
     }
 
@@ -13,8 +13,6 @@ class ApiComment {
             audioid: audioid,
             content: content
         })
-
-        console.log(response);
         return response.data
     }
 

@@ -23,19 +23,14 @@ export default {
     },
 
     mounted(){
-        console.log(this.$store.state.user);
         if(!this.audioid == 0){
             this.getComments()
-            console.log(this.comments);
         }
-
-
     },
 
     methods: {
         getComments: async function(){
             this.comments = await ApiComment.getCommentForAudio(this.audioid)
-            console.log("comments", this.comments);
         },
 
         toggleCommentsPanel: function(){
