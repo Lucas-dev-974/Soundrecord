@@ -58,6 +58,10 @@
   display: inline-block; /* Permet au texte de dépasser horizontalement */
   animation: scrollText 10s linear infinite; /* Animation de défilement */
 }
+.categories{
+  display: flex;
+  gap: 4px;
+}
 
 .author-link{
   color: whitesmoke !important;

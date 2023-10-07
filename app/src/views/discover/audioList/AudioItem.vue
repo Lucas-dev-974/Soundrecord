@@ -2,7 +2,9 @@
     <li :class="'audio-container audio-' + audio.id">
         <img class="audio-image" :class="'img-' + audio.id" :src="audio.imagesrc" />
         <div class="audio-header">
-            <GenreTag :text="'test'" />
+            <div class="categories">
+                <GenreTag :text="genre.name" v-for="genre of audio.categories" v-bind:key="genre.id" />
+            </div>
             <a class="author-link" :href="'/profile?pseudo=' + audio.creator.pseudo" rel="noopener noreferrer">
                 {{ audio.creator.pseudo }}
             </a>

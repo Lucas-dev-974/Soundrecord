@@ -120,16 +120,16 @@ module.exports = {
         where: { audioId: audio.id }
       }).catch(error => {return manageCatchErrorModel(res, error)})
 
-      audio.categories = []
-
+      audio.dataValues.categories = []
       for(const audioCate of categories){
         const categorie = await models.Categories.findOne({
           where: { id: audioCate.categorieId }
         }).catch(error => { return manageCatchErrorModel(res, req)} )
-
-        audio.categories.push(categorie.dataValues)
+        
+        audio.dataValues.categories.push(categorie.dataValues)
       }
       
+      console.log("categorie", audio.categories);
       audio.dataValues.creator = {
         pseudo: user.pseudo
       }
