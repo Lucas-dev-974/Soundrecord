@@ -1,6 +1,6 @@
 <template>
     <section>
-        <div class="my-5">
+        <div class="search-actions">
             <Searchbar :placeholder="'Rechercher une création'" @searchData="searchAudio" />
             <div class="categories-search-buttons">
                 <p>catégories:</p>
