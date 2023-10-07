@@ -21,7 +21,12 @@ export default {
 
   data() {
     return {
-      audios: [],
+      audios: {
+        currentPage: Number,
+        datas: [],
+        totalItems: Number,
+        totalPages: Number
+      },
       page: "artists",
       searchKeyword: "",
       currentPageList: 0,
@@ -30,7 +35,6 @@ export default {
   },
 
   async mounted() {
-    console.log("okok", this.$store.state.commentsPanel);
     await this.getAudios();
     this.dataLoaded = true;
     const srcList = this.audios.datas.map((audio) => audio.src);
@@ -39,12 +43,14 @@ export default {
 
   methods: {
     onPageChange: function (page) {
-      this.audios.currentPageList = page;
+      console.log("on change  page");
+      this.audios.currentPage = page;
       this.getAudios();
     },
 
     getAudios: async function () {
-      this.audios = await ApiStore.all(this.currentPageList);
+      this.audios = await ApiStore.all(this.audios.currentPage);
+      console.log(this.audios);
     },
 
     play: async function () {

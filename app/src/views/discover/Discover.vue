@@ -11,7 +11,8 @@
         <div class="list-title-paging">
             <h3 class="list-title">Ecouté</h3>
 
-            <Paging :totalItems="audios.totalItems" :currentPage="audios.currentPage" @changePage="onPageChange" />
+            <Paging :totalPage="audios.totalPages" :itemsPerPage="audios.totalItems" :currentPage="audios.currentPage"
+                @changePage="onPageChange" />
         </div>
         <div class="audio-list-container" v-if="dataLoaded">
             <AudioList :audios="audios.datas" />
