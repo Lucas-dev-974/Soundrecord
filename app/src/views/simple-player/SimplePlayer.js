@@ -20,12 +20,10 @@ export default {
     mounted(){
         document.addEventListener('keypress', event => {
             if (event.code === 'Space') {
-                SimpleAudioPlayer.play()
+                if(SimpleAudioPlayer.paused) SimpleAudioPlayer.play()
+                else SimpleAudioPlayer.pause() 
             }
             
-            if (event.code === "KeyD") {
-                SimpleAudioPlayer.pause()
-            }
         })
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -40,25 +38,25 @@ export default {
 
         document.addEventListener('spl-play', function(){
             this.onPlay = true
-            this.progressBar = document.getElementById('spl-progress');
+            if(this.progressBar == null)
+                this.progressBar = document.getElementsByClassName('spl-progress')[0];
             SimpleAudioPlayer.setFallback(() => {
-                console.log("ok", SimpleAudioPlayer.getCurrentTime());
-                if (!SimpleAudioPlayer.paused) {
-                    const progressWidth = (SimpleAudioPlayer.getCurrentTime() / SimpleAudioPlayer.getDuration()) * 100 + '%';
-                    this.progressBar.style.width = progressWidth;
+                if (!SimpleAudioPlayer.paused) {JSON.stringify
+                    const progressPercent = (SimpleAudioPlayer.getCurrentTime() / SimpleAudioPlayer.getDuration()) * 100;
+                    this.progressBar.value = progressPercent;
                 }
             })
         })
         
         document.addEventListener('spl-pause', function(){
             this.onPlay = false
-            console.log("on pause");
             SimpleAudioPlayer.clearFallback()
         })
-        
     },
 
     methods: {
-
+        onRangeInput: function(event){
+            SimpleAudioPlayer.setCurrentTime(this.trouverValeurPourcentage(event.target.value, SimpleAudioPlayer.getDuration()))
+        }
     }
 }

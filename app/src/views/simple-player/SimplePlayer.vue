@@ -7,7 +7,7 @@
 
             <p class="timer-duration">00:00</p>
             <div class="progress-container">
-                <Progress></Progress>
+                <Progress :onInput="onRangeInput"></Progress>
                 <!-- <div id="spl-progress"></div> -->
             </div>
 
@@ -16,4 +16,4 @@
     </section>
 </template>
 
-<script src="./SimplePlayer"></script>
+<script src="./SimplePlayer.js"></script>
