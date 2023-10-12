@@ -102,12 +102,11 @@ module.exports = {
    */
   store: async function (req, res) {
     const { limit, offset } = GetPagination(req.page, req.size);
-
     let audios = await models.Audio.findAndCountAll({
       where: { public: true },
       // If userID is not set in this list an  error popup
       attributes: ["id", "userID", "name", "src", "imagesrc", "createdAt"],
-      limit: req.size,
+      limit: limit,
       offset: offset,
     }).catch((error) => console.log(error));
 
@@ -129,9 +128,9 @@ module.exports = {
         audio.dataValues.categories.push(categorie.dataValues)
       }
       
-      console.log("categorie", audio.categories);
       audio.dataValues.creator = {
-        pseudo: user.pseudo
+        pseudo: user.pseudo,
+        picture: process.env.APP_URL + "/public/default" + user.picture ?  user.picture  : ""
       }
       const like = await models.Like.findAndCountAll({
         where: {
