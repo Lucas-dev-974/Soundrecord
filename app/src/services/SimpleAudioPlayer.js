@@ -47,13 +47,19 @@ class SimplePlayerAudio {
       this.audioElement.src = audioUrlObject;
     }
   }
-  
   getCurrentTime() {
     if (this.audioElement) {
       return this.audioElement.currentTime;
     }
     return 0; // Si aucun élément audio n'est en cours de lecture, renvoyer 0
   }
+
+  setCurrentTime(time) {
+    if (this.audioElement) {
+      return this.audioElement.currentTime = time;
+    }
+  }
+
 
   getDuration(){
     return this.audioElement.duration
