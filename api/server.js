@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const { publicPath } = require("./middleware/PublicPath");
 const { checkPagingParams } = require("./middleware/Paging");
+const MediaManager = require("./middleware/MediaManager").handleMediaUrl;
 
 const router = require("./api-routes").router;
 const adminRoutes = require("./routes/admin.routes").router
@@ -15,6 +16,7 @@ const corsOptions = {
   methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
 };
 
+
 // Instanciate server
 const server = express();
 
@@ -22,6 +24,7 @@ const server = express();
 
 // Setup Middleware
 server.use(cors(corsOptions));
+server.use(MediaManager)
 server.use(JwtMidle);
 server.use(publicPath);
 server.use(express.json());

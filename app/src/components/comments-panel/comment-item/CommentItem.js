@@ -15,7 +15,9 @@ export default {
             }
         },
         
-        
+        goToAuthor: function(){
+            this.$router.push('/profile?pseudo=' + this.comment.author.pseudo)
+        }
     }
     
 }

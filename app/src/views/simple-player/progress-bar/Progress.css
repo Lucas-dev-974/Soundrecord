@@ -1,4 +1,4 @@
 .progress-input{
     width: 100%;
-    background-color: red;
+    background-color: transparent !important;
 }

@@ -2,7 +2,7 @@ import "./SimplePlayer.css"
 import SimpleAudioPlayer from "../../services/SimpleAudioPlayer"
 import VolumeSlider from "./volume-slider/VolumeSlider.vue"
 import PlayPause from "./play-pause/PlayPause.vue"
-import Progress from "./progress-bar/Progress"
+import Progress from "./progress-bar/Progress.vue"
 
 export default {
     components: {

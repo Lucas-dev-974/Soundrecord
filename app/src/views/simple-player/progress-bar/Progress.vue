@@ -1,5 +1,5 @@
 <template>
-    <input type="range" class="progress-input">
+    <input :ref="inputRef" type="range" class="progress-input">
 </template>
 
 <script src="./Progress.js" />

@@ -3,3 +3,7 @@
     border-radius: 5px;
     padding: 2;
 }
+.comment-input > input {
+    width: 100%;
+    padding: 0  5px;
+}
