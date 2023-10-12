@@ -8,7 +8,8 @@ export default {
   },
 
   mounted(){
-    console.log("current page:", this.page);
+    console.log("current page:", this.currentPage);
+    console.log("total page:", this.totalPage);
   },
 
   computed: {
