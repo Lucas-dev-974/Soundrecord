@@ -22,10 +22,10 @@ export default {
   data() {
     return {
       audios: {
-        currentPage: Number,
+        currentPage: 0,
         datas: [],
-        totalItems: Number,
-        totalPages: Number
+        totalItems: 0,
+        totalPages: 0
       },
       page: "artists",
       searchKeyword: "",
