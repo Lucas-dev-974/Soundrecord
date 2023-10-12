@@ -2,10 +2,11 @@ import "./SimplePlayer.css"
 import SimpleAudioPlayer from "../../services/SimpleAudioPlayer"
 import VolumeSlider from "./volume-slider/VolumeSlider.vue"
 import PlayPause from "./play-pause/PlayPause.vue"
+import Progress from "./progress-bar/Progress"
 
 export default {
     components: {
-        VolumeSlider, PlayPause
+        VolumeSlider, PlayPause, Progress
     },
     
     data(){
@@ -24,15 +25,13 @@ export default {
             
             if (event.code === "KeyD") {
                 SimpleAudioPlayer.pause()
-                console.log('alt');
             }
         })
 
         document.addEventListener('DOMContentLoaded', () => {
             if(this.progressBar == null){
                 try{
-                    this.progressBar = document.getElementById('spl-progress')
-                    
+                    this.progressBar = document.getElementById('spl-progress') 
                 }catch(error){
                     console.log("la progress na pas été trouver");
                 }

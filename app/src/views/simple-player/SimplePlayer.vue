@@ -6,14 +6,13 @@
             </div>
 
             <p class="timer-duration">00:00</p>
-            <div id="progressBar">
-                <div id="spl-progress"></div>
+            <div class="progress-container">
+                <Progress></Progress>
+                <!-- <div id="spl-progress"></div> -->
             </div>
 
             <VolumeSlider />
         </div>
-
-
     </section>
 </template>
 
