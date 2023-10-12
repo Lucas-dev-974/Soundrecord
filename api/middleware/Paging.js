@@ -6,8 +6,8 @@ const checkPagingParams = (req, res, next) => {
     size: "int",
   });
 
-  if (!pagingValidator.page) pagingValidator.page = 0;
-  if (!pagingValidator.size) pagingValidator.size = 18;
+  if (!pagingValidator.page || pagingValidator.page < 0) pagingValidator.page = 0;
+  if (!pagingValidator.size || pagingValidator.size < 0 ) pagingValidator.size = 18;
 
   req.page = pagingValidator.page;
   req.size = pagingValidator.size;
