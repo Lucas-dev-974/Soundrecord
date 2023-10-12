@@ -1,6 +1,10 @@
 import  "./Progress.css"
 
 export default {
+    props: {
+        onInput: {required: true}
+    },
+
     data(){
         return {
             inputRef: null
