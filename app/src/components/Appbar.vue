@@ -9,7 +9,15 @@
       <h1 @click="onClickLogo" id="soundrecord-title">
         Sound<span style="color: #EE1B1B;">Record</span></h1>
 
-      <div class="navbar-side-left"></div>
+      <div class="navbar-side-right">
+        <button @click="login" v-if="$store.state.user == null || $store.state.user == 'null'">
+          Login
+        </button>
+
+        <button v-else @click="logout">
+          Logout
+        </button>
+      </div>
     </div>
 
   </v-app-bar>

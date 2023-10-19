@@ -3,13 +3,13 @@ import VuePersist from 'vuex-persist'
 import Vue from 'vue'
 
 import {profile_settings} from './profile'
-import {sessions, current_session} from './sessions'
+import {sessions, currentSession} from './sessions'
 
 Vue.use(Vuex)
 const vuexLocal = new VuePersist({ storage: window.localStorage })
 
 let initialstate = {
-    current_session: current_session,
+    currentSession: currentSession,
     sessions: sessions, // all sessions created by user 
     audios: [], // Last audios retrieved from api server
     biblio: [], // Bibliotheque
@@ -43,9 +43,8 @@ export default new Vuex.Store({
     state:{ ...initialstate },
 
     mutations: {
-        setCurrentSession: function(state, session){ state.current_session = session },
+        setCurrentSession: function(state, session){ state.currentSession = session },
         
-        setSessions: function(state, data){ state.sessions = data },
         
         setPistPlaylist: function(state, playlist){ state.biblio = playlist },
 

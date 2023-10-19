@@ -15,17 +15,9 @@ module.exports = {
     let session = await models.Session.findOne({
       where: { id: id, userid: req.user.id },
       attributes: { exclude: ["createdAt", "updatedAt"] },
-      include: [
-        {
-          model: models.SessionTrack,
-          attributes: { exclude: ["createdAt", "updatedAt"] },
-          include: [{ model: models.Import }],
-        },
-      ],
-    }).catch((error) => {
-      console.log(error);
-    });
+    }).catch((error) => { console.log(error) });
 
+    session.dataValues.tracks = await session.getTracks(models)
     if (!session)
       return res
         .status(400)
@@ -38,7 +30,7 @@ module.exports = {
     if (!size) size = 5;
     const { limit, offset } = GetPagination(page, size);
     
-    let sessions = await models.Session.findAndCountAll({
+    const sessions = await models.Session.findAndCountAll({
       where: { userid: req.user.id },
       attributes: { exclude: [] },
       limit: limit,
@@ -47,22 +39,18 @@ module.exports = {
       console.log(error);
     });
 
-    for (const key in sessions.rows) {
-      const session = sessions.rows[key].dataValues;
-      let audio = await models.SessionTrack.findAll({
-        where: { sessionid: session.id },
-      });
-      sessions.rows[key].dataValues.importedIn = audio.count;
+    for(const session of sessions.rows){
+      session.dataValues.tracksCount = (await session.getTracks(models)).count
     }
-    const response = GetPagingDatas(sessions, page, limit);
-    return res.status(200).json(response);
+
+    return res.status(200).json(GetPagingDatas(sessions, page, limit));
   },
 
   delete: async function (req, res) {
     let validated = validator(req.params, { id: "int|required" });
     if (validated.failsSize > 0) return res.status(400).json(validated);
 
-    let session = await models.Session.findByPk(validated.validated.id).catch(
+    let session = await models.Session.findByPk(validated.id).catch(
       (error) => console.log(error)
     );
 
@@ -77,10 +65,7 @@ module.exports = {
   },
 
   create: async function (req, res) {
-    // Check of given data
-    console.log("body", req.body);
     let validated = validator(req.body, { name: "string|required" });
-
     if(validated.errors) return res.status(400).json(validated.errors)
     
     let session = await models.Session.create({
@@ -94,6 +79,7 @@ module.exports = {
       });
     });
 
+    session.dataValues.tracks = []
     return res.status(200).json(session);
   },
 
@@ -104,22 +90,22 @@ module.exports = {
       newValue: "any|required",
     });
 
-    if (validated.failsSize > 0) return res.status(403).json(validated.fails);
+    if (validated.errors) return res.status(403).json(validated.errors);
 
     const session = await models.Session.findOne({
-      where: { id: validated.validated.id },
+      where: { id: validated.id },
     });
 
     if (!session) {
       return res.status(400).json({ error: "La session n'existe pas !" });
     } else if (session.userid !== req.user.id) {
-      return res
-        .json(402)
-        .json({ error: "Vous n'ête pas autoriser à modifié cet ressource" });
+      return res.json(402).json({ 
+        error: "Vous n'ête pas autoriser à modifié cet ressource" 
+      });
     }
 
     try {
-      session.set(validated.validated.field, validated.validated.newValue);
+      session.set(validated.field, validated.newValue);
       await session.save();
       return res.json(session);
     } catch (error) {
@@ -172,7 +158,7 @@ module.exports = {
     }
 
     const session_track = await models.SessionTrack.create({
-      sessionid: validated.validated.sessionid,
+      sessionid: validated.sessionid,
       audioid: audio.dataValues.id,
       userid: req.user.id,
       muted: false,
@@ -223,7 +209,7 @@ module.exports = {
 
     const audio = await checkExistingByID(
       models.Audio,
-      validated.validated.audioid
+      validated.audioid
     );
 
     if (audio.message != undefined) {
@@ -237,7 +223,7 @@ module.exports = {
 
     // const NewAudioPath =
     //   StoragePath(req.user.id) +
-    //   validated.validated.sessionid +
+    //   validated.sessionid +
     //   "." +
     //   audio.imported_date +
     //   "-" +
@@ -272,11 +258,11 @@ module.exports = {
       userID: req.user.id,
       public: false,
       src: process.env.APP_URL + "/api/audio/" + lastid,
-      name: validated.validated.sessionid + "." + audio.name,
+      name: validated.sessionid + "." + audio.name,
     });
 
     const track = await models.SessionTrack.create({
-      sessionid: validated.validated.sessionid,
+      sessionid: validated.sessionid,
       audioid: newAudio.id,
       userid: req.user.id,
       gain: 0.5,

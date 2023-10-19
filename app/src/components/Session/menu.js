@@ -36,7 +36,7 @@ export default{
                 // Create form to send file
                 let form_data = new FormData()
                 form_data.append('audio', this.localFile) // Add file
-                form_data.append('sessionid', this.$store.state.current_session.id) // Add the current Session ID
+                form_data.append('sessionid', this.$store.state.currentSession.id) // Add the current Session ID
 
                 // Send request with the form data
                 const response = await api.post('/api/pist', form_data).catch(error => console.log(error))
@@ -69,7 +69,7 @@ export default{
         },
 
         importPistInSession: async function(pist){
-            const response = await api.post('/api/session_track', {sessionid: this.$store.state.current_session.id, audioid: pist.id}).catch(error => console.log(error))
+            const response = await api.post('/api/session_track', {sessionid: this.$store.state.currentSession.id, audioid: pist.id}).catch(error => console.log(error))
             if(response.status == 200){
                 const src = api.defaults.baseURL + response.data.src + '?token=' + this.$store.state.token
                 player.add_track({

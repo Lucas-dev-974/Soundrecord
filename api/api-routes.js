@@ -71,7 +71,7 @@ exports.router = (() => {
   //     MulterFilesManager.upload.single("profile_picture"),
   //     UserController.upload
   //   );
-  // router.route("/picture/").get(UserController.picture);
+  router.route("/userPicture").get(UserController.picture);
 
   // Profile routes
   // router.route("/profile").get(ProfileSetting.getProfile);
@@ -92,41 +92,36 @@ exports.router = (() => {
   // router.route("/profile-setting").patch(ProfileSetting.update);
 
   // Sessions routes
+  router.route("/session/:sessionid").get(SessionController.get);
   router.route("/session").post(SessionController.create);
   router.route("/sessions").get(SessionController.all);
-  router.route("/session/:sessionid").get(SessionController.get);
   router.route("/session/:id").delete(SessionController.delete);
   router.route("/session").patch(SessionController.update);
-  router
-    .route("/session/import-in")
-    .post(
+
+
+  router.route("/session/import-in").post(
       MulterFilesManager.upload.single("audio"),
       CheckFileIntegrity.CheckWavFileIntegrity,
       SessionController.importIn
-    );
-  router
-    .route("/session/import-from-library")
-    .post(SessionController.importInFromLibrary);
+  );
+  router.route("/session/import-from-library").post(SessionController.importInFromLibrary);
 
   // Pists routes
-
   router.route("/store").get(AudioController.store);
   router.route("/library").get(AudioController.library);
   router.route("/audio/:id").get(AudioController.get);
-  router
-    .route("/audio")
-    .post(
+  router.route("/audio").post(
       MulterFilesManager.upload.single("audio"),
       CheckFileIntegrity.CheckWavFileIntegrity,
       CheckFileIntegrity.CheckMp3FileIntegrity,
       AudioController.Import
-    );
+  );
   router.route("/audio/:id").delete(AudioController.delete);
   router.route("/audio").patch(AudioController.update);
   router.route('/audio/categorie').post(AudioCategorie.linkAudioToCategories)
 
   // Medias routes
-  router.route("/medias/audio/:id").get(MediasControlller.get);
+  router.route("/medias/audio/:id").get(MediasControlller.getAudio);
   // session_track
   // router
   //   .route("/where/session_track")

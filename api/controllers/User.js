@@ -6,21 +6,16 @@ const fs = require("fs");
 const stream = require("stream");
 const { GetPagination, validator } = require("../utils.js");
 const jwt = require("../middleware/Jwt.js");
+const { haveModeratorAccess } = require('../middleware/Administration')
 
 const self = (module.exports = {
   get: async function (req, res) {
     let user;
+    
     if(!req.user){
-      const validated = validator(req.params, {
-        pseudo: 'string|required'
-      })
-      if(validated.errors){
-        return res.status(403).json(validated.errors)
-      }
-
-      user = await models.User.findOne({where: {
-        pseudo: validated.pseudo
-      }})
+      const validated = validator(req.params, { pseudo: "string|required" })
+      if(validated.errors) return res.status(403).json(validated.errors)
+      user = await models.User.findOne({where: { pseudo: validated.pseudo }})
 
     }else{
       user = await models.User.findOne({
@@ -28,8 +23,12 @@ const self = (module.exports = {
         attributes: { exclude: ["updatedAt", "createdAt", "password"] },
       });
     }
-    console.log("user:", user);
-    if (!user) return res.status(404).json("L'utilisateur n'existe pas !");
+
+    user.dataValues.followers = await user.followers(models)
+    // * TODO do the count of music created !
+    user.dataValues.totalProductions = await user.getCountOfProductions(models)
+
+    if (!user) return res.status(404).json("L'utilisateur n'existe pas.");
     return res.status(200).json(user);
   },
 
@@ -38,7 +37,7 @@ const self = (module.exports = {
     let { page, size } = req.query;
     const { limit, offset } = GetPagination(page, size);
 
-    if (req.user.role == 1) {
+    if (haveModeratorAccess(req)) {
       users = await models.User.findAll({
         attributes: {
           exclude: ["updatedAt", "createdAt", "password", "roleid"],
@@ -48,32 +47,34 @@ const self = (module.exports = {
       });
 
       return res.status(200).json(users);
-    }
-
-    if (!users) return res.status(200).json(users);
-    return res.status(200).json(users);
+    }else return res.status(401).json({message: "Vous n'avez pas accès à c'est information"})
   },
 
   update: async function (req, res) {
     const user = await models.User.findOne({ where: { id: req.params.id } });
+    if(!user) return res.status(404).json({message: "L'utilisateur n'existe pas."})
+
     const validated = validator(req.body, {
       name: "string",
       email: "string",
-      pseudo: "string",
       password: "string",
       facebook_link: "string",
       instagram_link: "string",
       public: "boolean",
     });
-
-    if (validated.validatedSize > 0) {
-      Object.entries(validated.validated).forEach(async (data, key) => {
-        console.log(data[0], data[1]);
+    
+    let updated = false
+    if (!validated.errors) {
+      Object.entries(validated).forEach(async data => {
         user.set(data[0], data[1]);
         await user.save();
-        console.log(user);
+        updated = true
       });
     }
+
+    if(!updated && Object.keys(validated).length != 0) return res.status(400).json({
+      message: "Une erreur est survenue: le champs sur lequel une mise à jour est demander possiblement non existant"
+    })
     return res.status(200).json(req.body);
   },
 
@@ -97,7 +98,7 @@ const self = (module.exports = {
   },
 
   upload: async function (req, res) {
-    // Check if is autorized, Setting up in MulterMiddleware
+    // Check if file is autorized, Setting up in MulterMiddleware
     if (!req.AutorizedFile || !req.Isimage)
       return res.status(403).json({
         error: "Un fichier de type .png - .jpg - .jpeg est attendu !",
@@ -111,31 +112,10 @@ const self = (module.exports = {
     return res.status(200).json();
   },
 
-  picture: async function (req, res) {
-    let userid = req.query.userid ?? req.user.id;
+  returnImage: function(filePath){
+    if (!fs.existsSync(filePath)) return false
 
-    let picture_dir;
-    if (userid) {
-      const picture = await models.User.findOne({
-        where: { id: userid },
-        attributes: ["picture"],
-      });
-      console.log(picture);
-      if (picture.picture != null)
-        picture_dir =
-          path.resolve(__dirname, "../public/user-") +
-          userid +
-          "/picture/" +
-          picture.dataValues.picture.replace(/ /g, "");
-    }
-
-    if (!fs.existsSync(picture_dir))
-      picture_dir = path.resolve(
-        __dirname,
-        "../public/default_picture/defaultpp.jpg"
-      );
-
-    const filereader = fs.createReadStream(picture_dir);
+    const filereader = fs.createReadStream(filePath);
     const ps = new stream.PassThrough(); // Handle error during stream
 
     stream.pipeline(filereader, ps, (err) => {
@@ -146,7 +126,24 @@ const self = (module.exports = {
         });
       }
     });
+    
     ps.pipe(res);
+  },
+
+  picture: async function (req, res) {
+    let userid = req.query.pseudo ?? req.user ? req.user.pseudo : null;
+    let picture_dir;
+
+    if (userid == null) return res.status(404).json({message: "Veuillez spécifié le pseudo d'un utilisateur", user: req.user})
+    const user = await models.User.findOne({  where: { pseudo: userid } });
+    if(!user) return res.status(404).json({message: "user doesnt exist"})
+
+    picture_dir = "../public/user-" + userid + "/picture/" + user.dataValues.picture.replace(/ /g, "")
+    if (!fs.existsSync(picture_dir)) picture_dir = "../public/default/defaultUserPicture.png"
+    if (!fs.existsSync(picture_dir)) return res.status(404).json({message: "Le fichier n'a pas été retrouver."})
+
+    picture_dir = path.resolve(__dirname, picture_dir);
+    this.returnImage(picture_dir)
   },
 
   get_creators: async function (req, res) {
@@ -186,14 +183,10 @@ const self = (module.exports = {
       password_confirmation: "string|required",
     });
 
-    if (Object.keys(validated.fails).length > 0) {
-      return res.status(403).json(validated.fails);
-    }
-
+    if (validated.errors) return res.status(403).json(validated.fails);
+    
     // Check if password and password confirmation is identic
-    if (
-      validated.validated.password != validated.validated.password_confirmation
-    )
+    if (validated.validated.password != validated.validated.password_confirmation)
       return res
         .status(403)
         .json({ error: "Les mot de passe ne corresponde pas !" });
@@ -203,6 +196,7 @@ const self = (module.exports = {
     if (token.error) return res.status(403).json(token);
 
     console.log(token);
+
     let user = await models.User.findOne({
       where: { email: token.email },
     }).catch((error) => {

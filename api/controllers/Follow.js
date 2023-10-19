@@ -44,8 +44,8 @@ module.exports = {
 
     let follow = await models.Follows.findOrCreate({
       where: {
-        userFollowed: req.user.id,
-        userFolloweur: validated.userid,
+        userFollowed: validated.userid,
+        userFolloweur: req.user.id,
       },
     }).catch(error => {return manageCatchErrorModel(error)});;
 

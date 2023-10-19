@@ -1,6 +1,5 @@
 "use strict";
-const { Model } = require("sequelize");
-const models = require("./index")
+const { Model, Op } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -37,9 +36,38 @@ module.exports = (sequelize, DataTypes) => {
       ];
     }
 
-   followers(userid){
-      console.log(this);
+    static async getUser(models, userPseudo){
+      return await models.User.findOne()
     }
+
+    async followers(models){
+      let followers = {}
+
+      const followingMe = await models.Follows.findAndCountAll({
+        where: {userFollowed: this.dataValues.id}
+      })
+
+      const IFollow = await models.Follows.findAndCountAll({
+        where: {userFolloweur: this.dataValues.id}
+      })
+
+      followers = {
+        followingMe: followingMe,
+        IFollow: IFollow
+      }
+      console.log("followers:", followers);
+      return followers
+    }
+
+    async getCountOfProductions(models){
+      return await models.Session.findAndCountAll({
+        where: {
+          userid: this.dataValues.id,
+          mixed: { [Op.ne]: null }
+        }
+      })
+    }
+
   }
   User.init(
     {

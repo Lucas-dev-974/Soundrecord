@@ -69,13 +69,14 @@ const self = (module.exports = {
           }
         );
         
+        
         if (user) {
           // Set "req.user = user" to have information in all controller that use JWT Middleware
           req.user = {
             id: user.dataValues.id,
             email: user.dataValues.email,
             role: user.dataValues.role,
-            name: user.dataValues.name,
+            pseudo: user.dataValues.pseudo,
           };
         }
       }

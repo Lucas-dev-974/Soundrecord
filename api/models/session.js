@@ -16,6 +16,15 @@ module.exports = (sequelize, DataTypes) => {
         as: "user",
       });
     }
+
+    async getTracks(models){
+      return await models.SessionTrack.findAndCountAll({
+        where: {
+          sessionid: this.dataValues.id
+        }
+      })
+    }
+
   }
   sequelizePaginate.paginate(Session);
   Session.init(

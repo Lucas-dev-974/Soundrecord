@@ -3,7 +3,7 @@ const { validator } = require("../utils.js");
 const fs = require("fs");
 
 module.exports = {
-  get: function (req, res) {
+  getAudio: function (req, res) {
     // TODO: BUGFIX - validator to take only one rule
     // const validated = validator(req.params, {
     //   id: "required",
@@ -25,4 +25,6 @@ module.exports = {
 
     return res.sendFile(filePath);
   },
+
+  
 };

@@ -3,7 +3,7 @@ import { player } from "../../services/Player"
 export default{
     data(){
         return {
-            text: this.$store.state.current_session.text,
+            text: this.$store.state.currentSession.text,
             show_menu: false,
             x: 0,
             y: 0,

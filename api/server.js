@@ -24,7 +24,7 @@ const server = express();
 
 // Setup Middleware
 server.use(cors(corsOptions));
-server.use(MediaManager)
+// server.use(MediaManager)
 server.use(JwtMidle);
 server.use(publicPath);
 server.use(express.json());

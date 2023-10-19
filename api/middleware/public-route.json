@@ -4,7 +4,7 @@
         "PATCH|/api/auth",
         "GET|/api/profile-setting/banner-img",
         "GET|/api/profile"  ,
-        "GET|/api/picture",
+        "GET|/api/userPicture",
         "GET|/api/profile/banner",      
 
         "PATCH|/api/user/reset-password",
@@ -13,6 +13,8 @@
         "GET|/api/store",
         "GET|/api/audio",
         "GET|/api/medias/audio/",
-        "GET|/api/comments/"
+        "GET|/api/comments/",
+
+        "GET|/api/media/"
     ]
 }

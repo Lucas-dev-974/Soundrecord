@@ -1,6 +1,6 @@
 export default  {
     sessions: [],
-    current_session: {
+    currentSession: {
         id:     null,
         userid: null,
         name:   '',
