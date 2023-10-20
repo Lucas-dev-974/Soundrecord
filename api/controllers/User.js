@@ -4,29 +4,38 @@ const bcrypt = require("bcrypt");
 const path = require("path");
 const fs = require("fs");
 const stream = require("stream");
-const { GetPagination, validator } = require("../utils.js");
+const {
+  GetPagination,
+  validator,
+  manageCatchErrorModel,
+} = require("../utils.js");
 const jwt = require("../middleware/Jwt.js");
-const { haveModeratorAccess } = require('../middleware/Administration')
+const { haveModeratorAccess } = require("../middleware/Administration");
 
 const self = (module.exports = {
   get: async function (req, res) {
     let user;
-    
-    if(!req.user){
-      const validated = validator(req.params, { pseudo: "string|required" })
-      if(validated.errors) return res.status(403).json(validated.errors)
-      user = await models.User.findOne({where: { pseudo: validated.pseudo }})
 
-    }else{
+    if (!req.user) {
+      const validated = validator(req.params, { pseudo: "string|required" });
+      if (validated.errors) return res.status(403).json(validated.errors);
+      user = await models.User.findOne({ where: { pseudo: validated.pseudo } });
+    } else {
       user = await models.User.findOne({
         where: { id: req.user.id },
         attributes: { exclude: ["updatedAt", "createdAt", "password"] },
       });
     }
 
-    user.dataValues.followers = await user.followers(models)
-    // * TODO do the count of music created !
-    user.dataValues.totalProductions = await user.getCountOfProductions(models)
+    if (!user)
+      return res
+        .status(404)
+        .json({ message: "L'uttilisateur n'a pas été trouver" });
+    user.dataValues.followers = await user.followers(models);
+
+    user.dataValues.totalProductions = (
+      await user.getCountOfProductions(models)
+    ).count;
 
     if (!user) return res.status(404).json("L'utilisateur n'existe pas.");
     return res.status(200).json(user);
@@ -47,12 +56,16 @@ const self = (module.exports = {
       });
 
       return res.status(200).json(users);
-    }else return res.status(401).json({message: "Vous n'avez pas accès à c'est information"})
+    } else
+      return res
+        .status(401)
+        .json({ message: "Vous n'avez pas accès à c'est information" });
   },
 
   update: async function (req, res) {
     const user = await models.User.findOne({ where: { id: req.params.id } });
-    if(!user) return res.status(404).json({message: "L'utilisateur n'existe pas."})
+    if (!user)
+      return res.status(404).json({ message: "L'utilisateur n'existe pas." });
 
     const validated = validator(req.body, {
       name: "string",
@@ -62,19 +75,21 @@ const self = (module.exports = {
       instagram_link: "string",
       public: "boolean",
     });
-    
-    let updated = false
+
+    let updated = false;
     if (!validated.errors) {
-      Object.entries(validated).forEach(async data => {
+      Object.entries(validated).forEach(async (data) => {
         user.set(data[0], data[1]);
         await user.save();
-        updated = true
+        updated = true;
       });
     }
 
-    if(!updated && Object.keys(validated).length != 0) return res.status(400).json({
-      message: "Une erreur est survenue: le champs sur lequel une mise à jour est demander possiblement non existant"
-    })
+    if (!updated && Object.keys(validated).length != 0)
+      return res.status(400).json({
+        message:
+          "Une erreur est survenue: le champs sur lequel une mise à jour est demander possiblement non existant",
+      });
     return res.status(200).json(req.body);
   },
 
@@ -112,8 +127,8 @@ const self = (module.exports = {
     return res.status(200).json();
   },
 
-  returnImage: function(filePath){
-    if (!fs.existsSync(filePath)) return false
+  returnImage: function (filePath) {
+    if (!fs.existsSync(filePath)) return false;
 
     const filereader = fs.createReadStream(filePath);
     const ps = new stream.PassThrough(); // Handle error during stream
@@ -126,7 +141,7 @@ const self = (module.exports = {
         });
       }
     });
-    
+
     ps.pipe(res);
   },
 
@@ -134,16 +149,28 @@ const self = (module.exports = {
     let userid = req.query.pseudo ?? req.user ? req.user.pseudo : null;
     let picture_dir;
 
-    if (userid == null) return res.status(404).json({message: "Veuillez spécifié le pseudo d'un utilisateur", user: req.user})
-    const user = await models.User.findOne({  where: { pseudo: userid } });
-    if(!user) return res.status(404).json({message: "user doesnt exist"})
+    if (userid == null)
+      return res.status(404).json({
+        message: "Veuillez spécifié le pseudo d'un utilisateur",
+        user: req.user,
+      });
+    const user = await models.User.findOne({ where: { pseudo: userid } });
+    if (!user) return res.status(404).json({ message: "user doesnt exist" });
 
-    picture_dir = "../public/user-" + userid + "/picture/" + user.dataValues.picture.replace(/ /g, "")
-    if (!fs.existsSync(picture_dir)) picture_dir = "../public/default/defaultUserPicture.png"
-    if (!fs.existsSync(picture_dir)) return res.status(404).json({message: "Le fichier n'a pas été retrouver."})
+    picture_dir =
+      "../public/user-" +
+      userid +
+      "/picture/" +
+      user.dataValues.picture.replace(/ /g, "");
+    if (!fs.existsSync(picture_dir))
+      picture_dir = "../public/default/defaultUserPicture.png";
+    if (!fs.existsSync(picture_dir))
+      return res
+        .status(404)
+        .json({ message: "Le fichier n'a pas été retrouver." });
 
     picture_dir = path.resolve(__dirname, picture_dir);
-    this.returnImage(picture_dir)
+    this.returnImage(picture_dir);
   },
 
   get_creators: async function (req, res) {
@@ -184,9 +211,11 @@ const self = (module.exports = {
     });
 
     if (validated.errors) return res.status(403).json(validated.fails);
-    
+
     // Check if password and password confirmation is identic
-    if (validated.validated.password != validated.validated.password_confirmation)
+    if (
+      validated.validated.password != validated.validated.password_confirmation
+    )
       return res
         .status(403)
         .json({ error: "Les mot de passe ne corresponde pas !" });

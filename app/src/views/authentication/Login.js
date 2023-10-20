@@ -20,23 +20,21 @@ export default {
   },
 
   methods: {
-    login: function () {
-      ApiService.post("/api/auth", {
+    login: async function () {
+      const response = await ApiService.post("/api/auth", {
         email: this.email,
         password: this.password,
-      })
-        .then(({ data }) => {
-          this.$store.commit("setToken", data.token);
-          this.$store.commit("setUser", data.user);
-          window.location.href = "/profile";
-        })
-        .catch((err) => {
-          this.$store.commit("push_alert", {
-            open: true,
-            message: err.response.data.errors,
-            type: "warning",
-          });
+      }).catch((err) => {
+        this.$store.commit("push_alert", {
+          open: true,
+          message: err.response.data.errors,
+          type: "warning",
         });
+      });
+
+      this.$store.commit("setToken", response.data.token);
+      this.$store.commit("setUser", response.data.user);
+      this.$router.push("/profile");
     },
 
     forgot_password: async function () {

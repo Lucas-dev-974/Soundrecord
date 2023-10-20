@@ -7,9 +7,9 @@ const { returnFields, validator } = require("../utils.js");
 module.exports = {
   /**
    * Allow user to register him on the app
-   * @param {Request} req 
-   * @param {Response} res 
-   * @returns 
+   * @param {Request} req
+   * @param {Response} res
+   * @returns
    */
   register: async function (req, res) {
     // 1 - Validate request params required
@@ -33,7 +33,7 @@ module.exports = {
       },
     }).catch((error) => console.log(error));
 
-    if (user){
+    if (user) {
       return res.status(403).json({
         error: "Cet email est déjà enregistrer, veuillez vous connecté !",
       });
@@ -53,8 +53,8 @@ module.exports = {
     }).catch((error) => {
       return { error: error };
     });
-    
-    if (user.error){
+
+    if (user.error) {
       return res
         .status(403)
         .json(
@@ -77,11 +77,11 @@ module.exports = {
   },
 
   /**
-   * Allow user to login, so if user give compatible 
+   * Allow user to login, so if user give compatible
    * pseudo/password return an JWToken with user informations
-   * @param {Request} req 
-   * @param {Result} res 
-   * @returns 
+   * @param {Request} req
+   * @param {Result} res
+   * @returns
    */
   login: async function (req, res) {
     let validated = validator(
@@ -105,39 +105,25 @@ module.exports = {
         .status(403)
         .json({ errors: "Email ou mot de passe incorrecte" });
 
-    let comparation = bcrypt.compareSync(validated.password, user.password);
-    if (!comparation)
-      return res.status(401).json({ error: "Identifiant incorrect" });
+    const password = bcrypt.compareSync(validated.password, user.password);
+    if (!password) {
+      return res
+        .status(401)
+        .json({ message: "Les informations renseigner sont incorrecte." });
+    }
 
-    // return res.status(200).json({
-    //     user:  returnFields(user.dataValues, models.User.visible()),
-    //     token: jwt.generateToken(user)
-    // })
-
-    bcrypt.compare(validated.password, user.password, (err, resBycrypt) => {
-      if (resBycrypt)
-        return res.status(200).json({
-          user: returnFields(user.dataValues, [
-            "email",
-            "id",
-            "name",
-            "picture",
-            "roleid",
-          ]),
-          token: jwt.generateToken(user),
-        });
-      else
-        return res
-          .status(403)
-          .json({ error: "Email ou mot de passe incorrecte" });
+    delete user.dataValues["password"];
+    return res.status(200).json({
+      user: user.dataValues,
+      token: jwt.generateToken(user),
     });
   },
 
   /**
    * Allow client app to check if token is ever valid
-   * @param {*} req 
-   * @param {*} res 
-   * @returns 
+   * @param {*} req
+   * @param {*} res
+   * @returns
    */
   checkToken: function (req, res) {
     let headerAuth = req.headers["authorization"];
@@ -157,8 +143,8 @@ module.exports = {
 
   /**
    * Create default user profile settings
-   * @param {*} user_id 
-   * @returns 
+   * @param {*} user_id
+   * @returns
    */
   AssingDefaultProfileSettings: async function (user_id) {
     // Row show option | name: show_options | table: profile_settings | options: "email,phone,pseudo,fb,inst,name | default: "fb,inst,pseudo,email""

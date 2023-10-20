@@ -1,6 +1,8 @@
 .input-form{
     background-color: aliceblue;
-    padding: 3px 5px;
+    padding: 0 5px;
+    border-radius: 3px;
+    height: fit-content;
 }
 
 .input{

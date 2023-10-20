@@ -1,20 +1,21 @@
 {
-    "routes": [
-        "POST|/api/auth",   
-        "PATCH|/api/auth",
-        "GET|/api/profile-setting/banner-img",
-        "GET|/api/profile"  ,
-        "GET|/api/userPicture",
-        "GET|/api/profile/banner",      
+  "routes": [
+    "POST|/api/auth",
+    "PATCH|/api/auth",
+    "GET|/api/profile-setting/banner-img",
+    "GET|/api/profile",
+    "GET|/api/userPicture",
+    "GET|/api/profile/banner",
 
-        "PATCH|/api/user/reset-password",
-        "POST|/api/mail/password-reset",
-        "GET|/api/creators",
-        "GET|/api/store",
-        "GET|/api/audio",
-        "GET|/api/medias/audio/",
-        "GET|/api/comments/",
+    "PATCH|/api/user/reset-password",
+    "POST|/api/mail/password-reset",
+    "GET|/api/creators",
+    "GET|/api/store",
+    "GET|/api/audio",
+    "GET|/api/medias/audio/",
+    "GET|/api/comments/",
 
-        "GET|/api/media/"
-    ]
+    "GET|/api/media/",
+    "GET|/api/user/"
+  ]
 }

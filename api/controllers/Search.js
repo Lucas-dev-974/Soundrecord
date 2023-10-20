@@ -3,22 +3,21 @@ const { validator } = require("../utils.js");
 const { GetPagination, GetPagingDatas } = require("../utils.js");
 const { Op } = require("sequelize");
 
-const self = (module.exports = {
+module.exports = {
   SearchSession: async function (req, res) {
-    const validated = validator(req.body, {
-      query: "string",
-      size: "int",
-      page: "int",
-    });
-    const { limit, offset } = GetPagination(validated.page, validated.size);
-
-    const sessions = await models.Session.findAll({
+    const validated = validator(req.body, { query: "string" });
+    console.log("valdated:", validated);
+    const { limit, offset } = GetPagination(req.page, req.size);
+    const sessions = await models.Session.findAndCountAll({
       where: {
-        session_name: "%" + validated.query + "%",
+        session_name: {
+          [Op.like]: "%" + validated.query + "%",
+        },
       },
       limit: limit,
       offset: offset,
     }).catch((erro) => console.log(erro));
+    console.log("Sessions:", sessions);
 
     for (const key in sessions.rows) {
       const session = sessions.rows[key].dataValues;
@@ -97,7 +96,7 @@ const self = (module.exports = {
       offset: offset,
     }).catch((erro) => console.log(erro));
 
-    const response = GetPagingDatas(search, req.page, limit);
+    const response = GetPagingDatas(search.datas, req.page, limit);
     return res.status(200).json(response);
   },
-});
+};

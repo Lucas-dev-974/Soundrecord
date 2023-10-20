@@ -19,7 +19,7 @@ function calculateTimePassed(dateString) {
   return {
     days: days,
     hours: hours % 24,
-    minutes: minutes % 60
+    minutes: minutes % 60,
   };
 }
 
@@ -34,7 +34,7 @@ module.exports = {
       where: { id: validated.id },
       attributes: [
         "id",
-        "userID",
+        "userid",
         "name",
         "imported_date",
         "src",
@@ -55,13 +55,13 @@ module.exports = {
       }
     }
 
-    if (!audio.public && audio.userID != req.user.id)
+    if (!audio.public && audio.userid != req.user.id)
       return res.status(401).json({
         message: "Vous n'êtes pas autorisé à accéder à cet ressource.",
       });
 
     const audioPath =
-      StoragePath(audio.userID) + audio.imported_date + "-" + audio.name;
+      StoragePath(audio.userid) + audio.imported_date + "-" + audio.name;
 
     if (!fs.existsSync(audioPath))
       return res
@@ -78,22 +78,21 @@ module.exports = {
    */
   library: async function (req, res) {
     const audios = await models.Audio.findAll({
-      where: { userID: req.user.id },
-      attributes: ["id", "userID", "name", "src", "public", "imagesrc"],
+      where: { userid: req.user.id },
+      attributes: ["id", "userid", "name", "src", "public", "imagesrc"],
     }).catch((error) => console.log(error));
 
-    audios.map(audio => {
-      const user = models.User.findOne({where: {id: audio.userID}})
+    audios.map((audio) => {
+      const user = models.User.findOne({ where: { id: audio.userid } });
       audio.creator = {
-        pseudo: user.pseudo
-      }
-    })
+        pseudo: user.pseudo,
+      };
+    });
     if (audios === undefined) return res.status(200).json({ audios: [] });
 
     return res.status(200).json(audios);
   },
 
-  
   /**
    * Store will return all public song
    * @param {Request} req
@@ -104,72 +103,81 @@ module.exports = {
     const { limit, offset } = GetPagination(req.page, req.size);
     let audios = await models.Audio.findAndCountAll({
       where: { public: true },
-      // If userID is not set in this list an  error popup
-      attributes: ["id", "userID", "name", "src", "imagesrc", "createdAt"],
+      // If userid is not set in this list an  error popup
+      attributes: ["id", "userid", "name", "src", "imagesrc", "createdAt"],
       limit: limit,
       offset: offset,
     }).catch((error) => console.log(error));
 
-    for(const audio of audios.rows){
+    for (const audio of audios.rows) {
       const user = await models.User.findOne({
-        where: {id: audio.dataValues.userID}
-      }).catch(error => { return manageCatchErrorModel(res, error)})
-      
-      const categories = await models.AudioCategorie.findAll({
-        where: { audioId: audio.id }
-      }).catch(error => {return manageCatchErrorModel(res, error)})
+        where: { id: audio.dataValues.userid },
+      }).catch((error) => {
+        return manageCatchErrorModel(res, error);
+      });
 
-      audio.dataValues.categories = []
-      for(const audioCate of categories){
+      const categories = await models.AudioCategorie.findAll({
+        where: { audioId: audio.id },
+      }).catch((error) => {
+        return manageCatchErrorModel(res, error);
+      });
+
+      audio.dataValues.categories = [];
+      for (const audioCate of categories) {
         const categorie = await models.Categories.findOne({
-          where: { id: audioCate.categorieId }
-        }).catch(error => { return manageCatchErrorModel(res, req)} )
-        
-        audio.dataValues.categories.push(categorie.dataValues)
+          where: { id: audioCate.categorieId },
+        }).catch((error) => {
+          return manageCatchErrorModel(res, req);
+        });
+
+        audio.dataValues.categories.push(categorie.dataValues);
       }
-      
+
       audio.dataValues.creator = {
         pseudo: user.pseudo,
-        picture: process.env.APP_URL + "/public/default" + user.picture ?  user.picture  : ""
-      }
+        picture:
+          process.env.APP_URL + "/public/default" + user.picture
+            ? user.picture
+            : "",
+      };
       const like = await models.Like.findAndCountAll({
         where: {
           model: "audio",
           modelid: audio.dataValues.id,
-        }
-      })
+        },
+      });
 
-      audio.dataValues.likes = {
+      (audio.dataValues.likes = {
         count: like.count,
-        userLike: like.userid
-      },
-      
-      audio.dataValues.release = calculateTimePassed(audio.dataValues.createdAt)
+        userLike: like.userid,
+      }),
+        (audio.dataValues.release = calculateTimePassed(
+          audio.dataValues.createdAt
+        ));
     }
 
-    
     if (audios === undefined) return res.status(200).json({ audios: [] });
     const response = GetPagingDatas(audios, req.page, limit);
     return res.status(200).json(response);
   },
 
-  byCategories: async function(req, res){
+  byCategories: async function (req, res) {
     const validated = validator(req.query, {
       // * format de la chaine de caractère: 1,3,10
-      categorieIds: 'string'
-    })
+      categorieIds: "string",
+    });
 
-    if(validated.errors) return res.status(400).json(validated.errors)
-    
+    if (validated.errors) return res.status(400).json(validated.errors);
+
     // Todo découper la chaine de caractère pour extraire la liste des id de catégorie
     // * format de la chaine de caractère: 1,3,10
-    const categorieIds = []
+    const categorieIds = [];
     const audiosCategorie = await models.AudioCategorie.fincdAll({
       where: {
         // Todo à revoir parceque c'est un tableau qui d'id et la je fait que pour un id de catégorie
-        categorieId: validated.categorieIds 
-      }
-    })
+        categorieId: validated.categorieIds,
+      },
+    });
   },
 
   /**
@@ -199,7 +207,7 @@ module.exports = {
       {
         name: req.filename,
         imported_date: req.fileInfos.date,
-        userID: req.user.id,
+        userid: req.user.id,
         public: true,
         src: process.env.APP_URL + "/api/audio/" + lastid,
         imagesrc: process.env.APP_URL + "/api/medias/audio/default",
@@ -256,7 +264,7 @@ module.exports = {
 
     if (!audio)
       return res.status(400).json({ error: "La pist n'existe pas !" });
-    if (audio.userID !== req.user.id)
+    if (audio.userid !== req.user.id)
       return res
         .status(400)
         .json({ error: "Vous n'ête pas autorisé à modifier cet pist" });
@@ -295,7 +303,7 @@ module.exports = {
         return res.status(400).json({ error: "La pist n'existe plus !" });
 
       // Check if the user is authorized to delete the entry
-      if (pist.userID !== req.user.id)
+      if (pist.userid !== req.user.id)
         return res.status(401).json({
           error: "Vous n'êtes pas autorisé à supprimer cette donnée !",
         });

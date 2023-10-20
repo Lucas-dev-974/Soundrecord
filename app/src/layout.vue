@@ -51,7 +51,7 @@ export default {
     methods: {
         is_loggedIn: function () {
             ApiService.get('/api/auth/').catch(() => {
-                this.$store.commit('setUser', 'null')
+                this.$store.commit('setUser', undefined)
                 if (this.$route.name !== 'authentication'
                     && this.$route.name !== 'home'
                     && this.$route.name !== 'profile') {

@@ -1,14 +1,14 @@
 <template>
     <section class="profile-content-section">
         <header class="profile-content-header">
-            <SearchBar onKeyPressEnter="sz" placeholder="Recherchez une session" />
+            <SearchBar onKeyPressEnter="sz" placeholder="Recherchez une session" :onInput="search" />
             <button @click="createSession">Créer</button>
         </header>
 
         <div class="profile-content-content">
             <!-- List of  sessions -->
-            <div v-for="session in sessions" :key="session.id">
-                {{ session }}
+            <div v-for="session of sessions" :key="session.id">
+                <SessionItem :session="session" />
             </div>
         </div>
     </section>
@@ -17,9 +17,11 @@
 <script>
 import ApiSession from "../../../apis/api.session"
 import SearchBar from "../../../components/search-bar/SearchBar.vue"
+import SessionItem from "./session-item/SessionItem.vue"
+import "./SessionList.css"
 
 export default {
-    components: { SearchBar },
+    components: { SearchBar, SessionItem },
 
     data() {
         return {
@@ -33,17 +35,31 @@ export default {
 
     methods: {
         getSessions: async function () {
-            this.sessions = await ApiSession.all()
-            console.log("SESSIONS", this.sessions);
+            const sessions = await ApiSession.all()
+            if (this.$store.state.currentSession.id == null)
+                this.sessions = sessions.datas
+            else {
+                // replace last session at the top of list
+                const currentSessionIndex = sessions.datas.findIndex(item => item.id == this.$store.state.currentSession.id)
+                const currentSession = sessions.datas[currentSessionIndex]
+                if (currentSession != undefined) {
+                    sessions.datas.splice(currentSessionIndex, 1)
+                    sessions.datas.unshift(currentSession)
+                }
+                this.sessions = sessions.datas
+            }
         },
 
         createSession: async function () {
             const response = await ApiSession.create({ name: "Session 1" })
             this.$store.commit('setCurrentSession', response)
-            console.log("current session:", this.$store.state.currentSession);
             this.$router.push('/studio')
+        },
 
-            console.log("add session");
+        search: async function (inputKeys) {
+            if (inputKeys == "") return this.getSessions()
+            const sessions = await ApiSession.search(inputKeys)
+            this.sessions = sessions.datas
         }
     }
 }

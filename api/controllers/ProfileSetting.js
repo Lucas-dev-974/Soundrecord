@@ -2,25 +2,51 @@
 
 const path = require("path");
 const models = require("../models");
-const { validator } = require("../utils.js");
+const { validator, manageCatchErrorModel } = require("../utils.js");
 const htmlspecialchars = require("htmlspecialchars");
 
 require("dotenv").config();
 
 const self = (module.exports = {
   get: async function (req, res) {
-    let validated = validator(req.body, { setting_name: "string" });
-    if (validated.errors != undefined)
-      return res.status(402).json(validated.errors);
-
-    const setting = await models.ProfileSettings.findOne({
-      where: { setting_name: validated.setting_name, userid: req.user.id },
-      attributes: { exclude: ["createdAt", "updatedAt"] },
+    const validated = validator(req.query, {
+      pseudo: "string|required",
     });
 
-    if (!setting)
-      res.status(404).json({ error: "Aucun paramètre disponible ici" });
-    else res.status(200).json(setting);
+    if (validated.errors) return res.status(403).json(validated.errors);
+
+    let attributes = {
+      exclude: ["password", "email", "updatedAt"],
+    };
+
+    let isMyProfile = false;
+
+    if (req.user && req.user.pseudo == validated.pseudo) {
+      attributes = { exclude: ["password"] };
+      isMyProfile = true;
+    }
+
+    const user = await models.User.findOne({
+      where: { pseudo: validated.pseudo },
+      attributes: attributes,
+    }).catch((error) => {
+      return manageCatchErrorModel(error);
+    });
+    if (!user)
+      return res.status(404).json({ message: "L'utilisateur n'existe pas." });
+
+    user.dataValues.followers = await user.followers(models);
+    user.dataValues.tracks = await user.tracks(models, {
+      public: isMyProfile ? false : user.dataValues.public,
+    });
+    user.dataValues.sessions = await user.sessions(models, {
+      public: isMyProfile ? false : user.dataValues.public,
+    });
+    user.playlists = await user.playlists(models, {
+      public: isMyProfile ? false : user.dataValues.public,
+    });
+
+    return res.status(200).json([user, req.user]);
   },
 
   all: async function (req, res, next, userid = null) {
@@ -120,7 +146,7 @@ const self = (module.exports = {
     if (req.user) {
       like = await models.Like.findAll({
         where: { userid: req.user.id, model: "creator", modelid: userid },
-        attributes: { exclude: ["UserId"] },
+        attributes: { exclude: ["userid"] },
       }).catch((error) => {
         console.log(error);
       });

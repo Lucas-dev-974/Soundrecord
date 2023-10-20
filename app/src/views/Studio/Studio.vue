@@ -16,13 +16,11 @@ export default {
     },
 
     mounted() {
-
+        console.log(this.$store.state.currentSession);
     },
 
     methods: {
-        update: function () {
-
-        }
+        getSession: function () { }
     }
 }
 </script>

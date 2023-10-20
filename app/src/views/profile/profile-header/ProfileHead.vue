@@ -11,26 +11,46 @@
                     <h2>{{ user.pseudo }}</h2>
                 </div>
                 <div class="line-right">
-                    <button>Suirve</button>
+                    <button v-if="!isLogedInProfile()">Suivre</button>
                 </div>
             </div>
 
             <div class="line justify-between">
                 <div class="line-left">
                     <div class="line">
-                        <span>{{ nbFollower }} |</span>
-                        <span>Nb production</span>
-                    </div>
 
-                    genres
+                    </div>
+                    <div class="line">
+                        <p>Production Total: {{ user.totalProductions }}</p>
+                    </div>
                 </div>
 
                 <div class="line-right">
-                    social networks
+                    <span>followers: {{ user.followers.followingMe.count }} </span>
+                    <span>suivis: {{ user.followers.IFollow.count }} </span>
                 </div>
             </div>
         </div>
     </div>
 </template>
 
-<script src="./ProfileHead.js" />
+<script>
+import "./ProfileHead.css";
+
+export default {
+    props: {
+        user: { required: true },
+        isLogedInProfile: { required: true }
+    },
+
+    data() {
+        return {
+            name: "Name",
+        };
+    },
+
+    mounted() {
+        console.log(this.isLogedInProfile());
+    },
+};
+</script>

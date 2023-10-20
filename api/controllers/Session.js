@@ -15,9 +15,11 @@ module.exports = {
     let session = await models.Session.findOne({
       where: { id: id, userid: req.user.id },
       attributes: { exclude: ["createdAt", "updatedAt"] },
-    }).catch((error) => { console.log(error) });
+    }).catch((error) => {
+      console.log(error);
+    });
 
-    session.dataValues.tracks = await session.getTracks(models)
+    session.dataValues.tracks = await session.getTracks(models);
     if (!session)
       return res
         .status(400)
@@ -29,7 +31,7 @@ module.exports = {
     let { page, size } = req.query;
     if (!size) size = 5;
     const { limit, offset } = GetPagination(page, size);
-    
+
     const sessions = await models.Session.findAndCountAll({
       where: { userid: req.user.id },
       attributes: { exclude: [] },
@@ -39,8 +41,8 @@ module.exports = {
       console.log(error);
     });
 
-    for(const session of sessions.rows){
-      session.dataValues.tracksCount = (await session.getTracks(models)).count
+    for (const session of sessions.rows) {
+      session.dataValues.tracksCount = (await session.getTracks(models)).count;
     }
 
     return res.status(200).json(GetPagingDatas(sessions, page, limit));
@@ -50,8 +52,8 @@ module.exports = {
     let validated = validator(req.params, { id: "int|required" });
     if (validated.failsSize > 0) return res.status(400).json(validated);
 
-    let session = await models.Session.findByPk(validated.id).catch(
-      (error) => console.log(error)
+    let session = await models.Session.findByPk(validated.id).catch((error) =>
+      console.log(error)
     );
 
     if (!session || session == null)
@@ -66,12 +68,12 @@ module.exports = {
 
   create: async function (req, res) {
     let validated = validator(req.body, { name: "string|required" });
-    if(validated.errors) return res.status(400).json(validated.errors)
-    
+    if (validated.errors) return res.status(400).json(validated.errors);
+
     let session = await models.Session.create({
       session_name: validated.name ?? "Untilted",
       userid: req.user.id,
-      UserId: req.user.id,
+      userid: req.user.id,
       public: false,
     }).catch(() => {
       return res.status(403).json({
@@ -79,7 +81,7 @@ module.exports = {
       });
     });
 
-    session.dataValues.tracks = []
+    session.dataValues.tracks = [];
     return res.status(200).json(session);
   },
 
@@ -99,8 +101,8 @@ module.exports = {
     if (!session) {
       return res.status(400).json({ error: "La session n'existe pas !" });
     } else if (session.userid !== req.user.id) {
-      return res.json(402).json({ 
-        error: "Vous n'ête pas autoriser à modifié cet ressource" 
+      return res.json(402).json({
+        error: "Vous n'ête pas autoriser à modifié cet ressource",
       });
     }
 
@@ -144,7 +146,7 @@ module.exports = {
     const audio = await models.Audio.create({
       name: req.filename,
       imported_date: req.fileInfos.date,
-      userID: req.user.id,
+      userid: req.user.id,
       public: false,
       src: process.env.APP_URL + "/api/audio/" + lastid,
     }).catch((error) => {
@@ -207,10 +209,7 @@ module.exports = {
       return model ?? response;
     };
 
-    const audio = await checkExistingByID(
-      models.Audio,
-      validated.audioid
-    );
+    const audio = await checkExistingByID(models.Audio, validated.audioid);
 
     if (audio.message != undefined) {
       return res.status(404).json(audio.message);
@@ -255,7 +254,7 @@ module.exports = {
 
     const newAudio = await models.Audio.create({
       imported_date: audio.imported_date,
-      userID: req.user.id,
+      userid: req.user.id,
       public: false,
       src: process.env.APP_URL + "/api/audio/" + lastid,
       name: validated.sessionid + "." + audio.name,

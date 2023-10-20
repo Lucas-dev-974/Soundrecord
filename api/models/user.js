@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       models.User.hasMany(models.Session, { onDelete: "cascade" });
       models.User.hasMany(models.Like, { onDelete: "cascade" });
       models.User.hasMany(models.SessionTrack, { onDelete: "cascade" });
-      models.User.hasMany(models.Playlist, { onDelete: "cascade" })
+      models.User.hasMany(models.Playlist, { onDelete: "cascade" });
     }
 
     static updatable() {
@@ -36,38 +36,72 @@ module.exports = (sequelize, DataTypes) => {
       ];
     }
 
-    static async getUser(models, userPseudo){
-      return await models.User.findOne()
+    static async getUser(models, userPseudo, loggedUser = false) {
+      return await models.User.findOne();
     }
 
-    async followers(models){
-      let followers = {}
-
-      const followingMe = await models.Follows.findAndCountAll({
-        where: {userFollowed: this.dataValues.id}
-      })
+    async followers(models) {
+      let followers = {};
+      console.log(this.dataValues.id);
+      const followingMe = await models.Follows.findAll({
+        where: { userFollowed: this.dataValues.id },
+      }).catch((error) => console.log(error));
+      console.log("okok");
 
       const IFollow = await models.Follows.findAndCountAll({
-        where: {userFolloweur: this.dataValues.id}
-      })
+        where: { userFolloweur: this.dataValues.id },
+      }).catch((error) => console.log(error));
 
       followers = {
         followingMe: followingMe,
-        IFollow: IFollow
-      }
+        IFollow: IFollow,
+      };
       console.log("followers:", followers);
-      return followers
+      return followers;
     }
 
-    async getCountOfProductions(models){
+    async getCountOfProductions(models) {
       return await models.Session.findAndCountAll({
         where: {
           userid: this.dataValues.id,
-          mixed: { [Op.ne]: null }
-        }
-      })
+          mixed: { [Op.ne]: null },
+        },
+      });
     }
 
+    async tracks(models, options = { public: false }) {
+      const audios = await models.Audio.findAndCountAll({
+        where: { userid: this.dataValues.id, public: options.public },
+      });
+
+      return audios;
+    }
+
+    async sessions(models, options = { public: false }) {
+      const sessions = await models.Session.findAndCountAll({
+        where: { userid: this.dataValues.id, public: options.public },
+      });
+
+      return sessions;
+    }
+
+    async playlists(models, options = { public: false }) {
+      const playlists = await models.Playlist.findAndCountAll({
+        where: { userid: this.dataValues.id, public: options.public },
+      });
+
+      if (playlists.rows.length == 0) return [];
+
+      for (const playlist of playlists.rows) {
+        const tracks = await models.PlaylistAudio.findAndCountAll({
+          where: { playlistid: playlist.dataValues.id },
+        });
+
+        playlist.tracks == tracks;
+      }
+
+      return playlist;
+    }
   }
   User.init(
     {

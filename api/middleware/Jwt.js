@@ -8,9 +8,9 @@ const publicRoutes = require("./public-route.json");
 const self = (module.exports = {
   /**
    * Generate Token valid 5 days if is not token form mailing, mailing token have 3 houre validity
-   * @param {*} user 
-   * @param {*} mailtoken 
-   * @returns 
+   * @param {*} user
+   * @param {*} mailtoken
+   * @returns
    */
   generateToken: function (user, mailtoken = null) {
     if (mailtoken !== null)
@@ -24,7 +24,7 @@ const self = (module.exports = {
     else
       return jwt.sign(
         {
-          userID: user.id,
+          userid: user.id,
           password: user.password,
           role: user.roleid,
         },
@@ -35,8 +35,8 @@ const self = (module.exports = {
 
   /**
    * Check if Bearer is present in the Request
-   * @param {*} authorization 
-   * @returns 
+   * @param {*} authorization
+   * @returns
    */
   parseauthorization: function (authorization) {
     if (typeof authorization == "undefined") return null;
@@ -45,11 +45,11 @@ const self = (module.exports = {
 
   /**
    * Check if token is valid, if it is extract user informations from the token
-   * Store user informations onto the Request to be accessible by controllers 
-   * @param {Request} req 
-   * @param {Response} res 
-   * @param {NextCallback} next 
-   * @returns 
+   * Store user informations onto the Request to be accessible by controllers
+   * @param {Request} req
+   * @param {Response} res
+   * @param {NextCallback} next
+   * @returns
    */
   isAuthorized: async function (req, res, next) {
     let headerAuth = req.headers["authorization"];
@@ -61,15 +61,17 @@ const self = (module.exports = {
       // Check if token is valid
       let tokenInfos = self.checkToken(token);
       if (!tokenInfos.error) {
-        // Get user from database with the userID from the token
-        let user = await models.User.findByPk(tokenInfos.userID).catch(
+        // Get user from database with the userid from the token
+        let user = await models.User.findByPk(tokenInfos.userid).catch(
           (error) => {
-            console.log(error)
-            req.token = {error: "Une erreur de connexion à la base de données c'est produite."}
+            console.log(error);
+            req.token = {
+              error:
+                "Une erreur de connexion à la base de données c'est produite.",
+            };
           }
         );
-        
-        
+
         if (user) {
           // Set "req.user = user" to have information in all controller that use JWT Middleware
           req.user = {
@@ -87,8 +89,8 @@ const self = (module.exports = {
 
   /**
    * Check if token is token delivered by this app
-   * @param {*} token 
-   * @returns 
+   * @param {*} token
+   * @returns
    */
   checkToken: function (token) {
     try {
@@ -104,9 +106,9 @@ const self = (module.exports = {
   /**
    * Return true if  asked root is public
    * Allow bypass token verification
-   * @param {*} asked_path 
-   * @param {*} asked_method 
-   * @returns 
+   * @param {*} asked_path
+   * @param {*} asked_method
+   * @returns
    */
   autorizeRoutes: function (asked_path, asked_method) {
     let route = asked_method + "|" + asked_path;

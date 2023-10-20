@@ -1,35 +1,38 @@
-'use strict';
+"use strict";
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Playlists', {
+    await queryInterface.createTable("Playlists", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
-      UserId: {
+      userid: {
         type: Sequelize.INTEGER,
         references: {
           model: "Users",
           key: "id",
           onDelete: "cascade",
-        }
+        },
+      },
+      public: {
+        type: Sequelize.BOOLEAN,
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Playlists');
-  }
+    await queryInterface.dropTable("Playlists");
+  },
 };

@@ -5,11 +5,9 @@ class ApiUser {
     const response = await api.get("/user/" + pseudo).catch((error) => {
       console.log(error);
     });
-
-    console.log("api response", response);
+    if (!response) return false;
     // TODO: manage error
     return response.data;
   }
-
 }
 export default new ApiUser();
