@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
     async followers(models) {
       let followers = {};
       console.log(this.dataValues.id);
-      const followingMe = await models.Follows.findAll({
+      const followingMe = await models.Follows.findAndCountAll({
         where: { userFollowed: this.dataValues.id },
       }).catch((error) => console.log(error));
       console.log("okok");
@@ -69,25 +69,25 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    async tracks(models, options = { public: false }) {
+    async tracks(models, options = {}) {
       const audios = await models.Audio.findAndCountAll({
-        where: { userid: this.dataValues.id, public: options.public },
+        where: { userid: this.dataValues.id, ...options },
       });
 
       return audios;
     }
 
-    async sessions(models, options = { public: false }) {
+    async sessions(models, options = {}) {
       const sessions = await models.Session.findAndCountAll({
-        where: { userid: this.dataValues.id, public: options.public },
+        where: { userid: this.dataValues.id, ...options },
       });
 
       return sessions;
     }
 
-    async playlists(models, options = { public: false }) {
+    async playlists(models, options = {}) {
       const playlists = await models.Playlist.findAndCountAll({
-        where: { userid: this.dataValues.id, public: options.public },
+        where: { userid: this.dataValues.id, ...options },
       });
 
       if (playlists.rows.length == 0) return [];
@@ -100,7 +100,7 @@ module.exports = (sequelize, DataTypes) => {
         playlist.tracks == tracks;
       }
 
-      return playlist;
+      return playlists;
     }
   }
   User.init(

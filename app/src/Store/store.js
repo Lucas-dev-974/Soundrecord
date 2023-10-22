@@ -14,6 +14,7 @@ let initialstate = {
   audios: [], // Last audios retrieved from api server
   biblio: [], // Bibliotheque
 
+  userProfile: undefined,
   user: null,
 
   // TODO: Use cookie insteand of store the token in the local storage
@@ -23,7 +24,6 @@ let initialstate = {
   main_theme: "bg-dark",
   width: null,
 
-  profile_settings: { ...profile_settings },
   theme: "dark",
 
   // ? ---------------------
@@ -43,6 +43,10 @@ export default new Vuex.Store({
   state: { ...initialstate },
 
   mutations: {
+    setUserProfile: function (state, profile) {
+      state.userProfile = profile;
+    },
+
     setCurrentSession: function (state, session) {
       state.currentSession = session;
     },

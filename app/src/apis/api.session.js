@@ -23,7 +23,6 @@ export default class ApiSession {
   }
 
   static async search(searchKey) {
-    console.log(searchKey);
     const response = await api.post("/search/sessions", { query: searchKey });
     return response.data;
   }

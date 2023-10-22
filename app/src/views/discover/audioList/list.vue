@@ -1,6 +1,6 @@
 <template>
     <ul class="grid audio-collection">
-        <AudioItem :audio="audio" v-for="audio in audios" :key="audio.id" />
+        <AudioItem :track="audio" v-for="audio in audios" :key="audio.id" />
     </ul>
 </template>
 

@@ -1,14 +1,44 @@
 <template>
     <div class="play-pause-container">
 
-        <button class="play-btn" @click="play" v-if="!onPlay">
+        <button class="play-btn" @click="onClick" v-if="!onplay">
             <PlayIcon />
         </button>
 
-        <v-icon @click="pause" v-else>
+        <v-icon @click="onClick" v-else>
             mdi-pause
         </v-icon>
     </div>
 </template>
 
-<script src="./PlayPause"></script>
+<script>
+import PlayIcon from "../../../icons/PlayIcon.vue"
+import SimpleAudioPlayer from "../../../services/SimpleAudioPlayer"
+import "./PlayPause.css"
+
+export default {
+    components: { PlayIcon },
+
+    props: {
+        onClick: { required: true },
+        onPlay: { required: true }
+    },
+
+    data() {
+        return {
+            onplay: this.onPlay()
+        }
+    },
+
+    mounted() {
+        document.addEventListener('spl-play', () => {
+            console.log("PLAY PAUSE", this.onPlay(), SimpleAudioPlayer.getCurrentAudio());
+            this.onplay = this.onPlay()
+        })
+
+        document.addEventListener('spl-pause', () => {
+            this.onplay = this.onPlay()
+        })
+    }
+}
+</script>

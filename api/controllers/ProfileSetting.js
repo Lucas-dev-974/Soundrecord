@@ -26,6 +26,9 @@ const self = (module.exports = {
       isMyProfile = true;
     }
 
+    if (isMyProfile) {
+    }
+
     const user = await models.User.findOne({
       where: { pseudo: validated.pseudo },
       attributes: attributes,
@@ -36,17 +39,23 @@ const self = (module.exports = {
       return res.status(404).json({ message: "L'utilisateur n'existe pas." });
 
     user.dataValues.followers = await user.followers(models);
-    user.dataValues.tracks = await user.tracks(models, {
-      public: isMyProfile ? false : user.dataValues.public,
-    });
-    user.dataValues.sessions = await user.sessions(models, {
-      public: isMyProfile ? false : user.dataValues.public,
-    });
-    user.playlists = await user.playlists(models, {
-      public: isMyProfile ? false : user.dataValues.public,
-    });
 
-    return res.status(200).json([user, req.user]);
+    user.dataValues.tracks = await user.tracks(
+      models,
+      isMyProfile ? {} : { public: user.dataValues.public }
+    );
+
+    user.dataValues.sessions = await user.sessions(
+      models,
+      isMyProfile ? {} : { public: user.dataValues.public }
+    );
+
+    user.dataValues.playlists = await user.playlists(
+      models,
+      isMyProfile ? {} : { public: user.dataValues.public }
+    );
+
+    return res.status(200).json(user);
   },
 
   all: async function (req, res, next, userid = null) {

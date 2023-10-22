@@ -1,0 +1,23 @@
+.dialog-layout{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #0000006e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: unset;
+    z-index: 1;
+}
+
+.dialog-content{
+    width: 15vw;
+    min-width: 250px;
+    padding: 15px 10px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 5px;
+    color: black;
+    z-index: 10;
+}

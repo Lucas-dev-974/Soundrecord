@@ -47,10 +47,10 @@ exports.router = (() => {
 
   router.route("/playlists").get(Playlist.all);
   router.route("/playlist/:id").get(Playlist.one);
-  router.route("/playlist").post(Playlist.add);
+  router.route("/playlist").post(Playlist.create);
   router.route("/playlist/:id").delete(Playlist.remove);
   router.route("/playlist/add-audio").post(Playlist.addAudio);
-  router.route("/playlist/rm-audio").delete(Playlist.removeAudio);
+  router.route("/playlist/:playlistid/:audioid").delete(Playlist.removeAudio);
 
   router.route("/comments/:audioid").get(Comment.getAudioComments);
   router.route("/comment").post(Comment.post);

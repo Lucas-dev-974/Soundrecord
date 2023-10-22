@@ -23,11 +23,11 @@ import "./SessionList.css"
 export default {
     components: { SearchBar, SessionItem },
 
-    data() {
-        return {
-            sessions: []
-        }
+    props: {
+        sessionsProps: { required: true },
     },
+
+    data() { return { sessions: [] } },
 
     mounted() {
         this.getSessions()

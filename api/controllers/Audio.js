@@ -77,17 +77,36 @@ module.exports = {
    * @param {Response} res
    */
   library: async function (req, res) {
-    const audios = await models.Audio.findAll({
-      where: { userid: req.user.id },
-      attributes: ["id", "userid", "name", "src", "public", "imagesrc"],
-    }).catch((error) => console.log(error));
+    if (!req.userPseudo)
+      return res
+        .status(404)
+        .json({ message: "L'utilisateur n'a pas été trouver" });
 
-    audios.map((audio) => {
-      const user = models.User.findOne({ where: { id: audio.userid } });
-      audio.creator = {
-        pseudo: user.pseudo,
-      };
+    let where = {};
+    if (!req.isMyProfile) where = { public: true };
+
+    const user = await models.User.findOne({
+      where: { pseudo: req.userPseudo },
     });
+
+    if (!user)
+      return res.status(404).json({ message: "L'utilisateur n'existe pas." });
+
+    const audios = await models.Audio.findAll({
+      where: { userid: user.dataValues.id, ...where },
+      attributes: {
+        exclude: [],
+      },
+    }).catch((error) => {
+      return manageCatchErrorModel(res, error);
+    });
+
+    for (const audio of audios) {
+      console.log("audio set like, creator", await audio.user(models));
+      audio.dataValues.likes = await audio.getLikes(models);
+      audio.dataValues.creator = await audio.user(models);
+    }
+
     if (audios === undefined) return res.status(200).json({ audios: [] });
 
     return res.status(200).json(audios);

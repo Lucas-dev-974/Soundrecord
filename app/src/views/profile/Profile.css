@@ -22,3 +22,8 @@
   align-items: center;
   width: 100%;
 }
+
+.profile-content-content{
+  max-height: 60vh;
+  overflow-x: auto;
+}

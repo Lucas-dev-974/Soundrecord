@@ -6,5 +6,7 @@
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "better-comments.multilineComments": true,
+  "better-comments.highlightPlainText": false
 }

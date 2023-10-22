@@ -1,4 +1,11 @@
 .progress-input{
+    overflow: hidden;
+    height: 6px;
     width: 100%;
     background-color: transparent !important;
 }
+
+.progress-input::-webkit-slider-thumb {
+    cursor: ew-resize;
+  }
+

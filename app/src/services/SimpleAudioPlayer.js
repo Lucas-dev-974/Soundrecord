@@ -1,31 +1,31 @@
 class SimplePlayerAudio {
   onPlay() {
-    const event = new Event('spl-play',{bubbles: true});
+    const event = new Event("spl-play", { bubbles: true });
     document.dispatchEvent(event);
-            // ...dispatch on elem!
-            // let event = new Event("hello", {bubbles: true}); // (2)
-            // document.dispatchEvent(event);
   }
 
   onPause() {
-    const event = new Event('spl-pause', {bubbles: true});
+    const event = new Event("spl-pause", { bubbles: true });
     document.dispatchEvent(event);
   }
 
   onResume() {
-    const event = new Event('resume');
+    const event = new Event("resume");
     document.dispatchEvent(event);
   }
 
   constructor() {
-    this.initalised = false
-    this.currentUrl = ""
+    this.initalised = false;
+    this.currentUrl = undefined;
     this.audioList = [];
+
     this.currentIndex = 0;
     this.audioElement = new Audio();
     this.audioElement.onended = () => this.handleAudioEnd();
-    this.paused = false
+    this.paused = false;
     this.currentAudio = {};
+
+    this.globalFallack = undefined;
   }
 
   async fetchAudioBuffer(audioUrl) {
@@ -56,61 +56,47 @@ class SimplePlayerAudio {
 
   setCurrentTime(time) {
     if (this.audioElement) {
-      return this.audioElement.currentTime = time;
+      return (this.audioElement.currentTime = time);
     }
   }
 
-
-  getDuration(){
-    return this.audioElement.duration
+  getDuration() {
+    return this.audioElement.duration;
   }
 
-  async play(url = null) {
+  async play(url = undefined, audio = undefined) {
+    if (audio != undefined) this.currentAudio = audio;
     // If no url params & is not in pause & the current url is not empty
     // lets play the current url
-    if (!this.paused && url == null && this.currentUrl != "") {
+    if (!this.paused && this.currentUrl == url && url != undefined) {
       this.audioElement.pause();
-      this.onPause()
       this.paused = true;
-      return;
-    }else{
-      this.onPlay()
-    }
-    
-    // If current url params is not null & current url is not = url params or current url is empty
-    // lets define current url on url params
-    if (url != null && this.currentUrl !== url || this.currentUrl == "") {
-      this.currentUrl = url;
-    }   
-
-    // If is in pause & not params url & is index of playlist 
-    if (this.paused && url == null && this.currentUrl == this.audioList[this.currentIndex]) {
-      console.log("play audio");
-      this.audioElement.play();
-      this.paused = false;
+      this.onPause();
       return;
     }
 
-    if (this.paused && url == null) {
-      console.log("pause audio");
-      this.audioElement.play();
-      this.paused = false;
-      return
+    if (!url && !this.currentUrl && this.audioList.length > 0) {
+      this.currentUrl = this.audioList[this.currentIndex].src;
+      this.currentAudio = this.audioList[this.currentIndex];
     }
 
-    if (this.audioList[this.currentIndex] && this.currentUrl != "" && url == null) {
-      url = this.audioList[this.currentIndex]
-      this.currentUrl = url;
+    if (this.currentUrl != url || !this.currentUrl) {
+      this.currentUrl = url != undefined ? url : this.currentUrl;
+      const audioBuffer = await this.fetchAudioBuffer(this.currentUrl);
+      await this.createAudioBlobUrl(audioBuffer);
     }
-  
-    const audioBuffer = await this.fetchAudioBuffer(this.currentUrl);
-    await this.createAudioBlobUrl(audioBuffer);
-  
+
+    this.paused = false;
     this.audioElement.play();
+    this.onPlay();
+  }
+
+  isPaused() {
+    return this.paused;
   }
 
   pause() {
-    this.onPause()
+    this.onPause();
     this.audioElement.pause();
     this.paused = true;
   }
@@ -132,14 +118,25 @@ class SimplePlayerAudio {
     this.audioElement.volume = volume;
   }
 
+  // TODO review the fallback logic to have multiple fallback with an auto generated id
   setFallback(callback, interval = 100) {
     this.fallbackInterval = setInterval(() => {
-      callback()
+      callback(this.getCurrentTime());
+    }, interval);
+  }
+
+  setGlobalFallback(callback, interval = 100) {
+    this.globalFallack = setInterval(() => {
+      callback(this.getCurrentTime());
     }, interval);
   }
 
   clearFallback() {
     clearInterval(this.fallbackInterval);
+  }
+
+  clearGlobalFallback() {
+    clearInterval(this.globalFallack);
   }
 
   handleAudioEnd() {
@@ -151,6 +148,14 @@ class SimplePlayerAudio {
       SimplePlayerAudio.instance = new SimplePlayerAudio();
     }
     return SimplePlayerAudio.instance;
+  }
+
+  getCurrentAudio() {
+    return this.currentAudio;
+  }
+
+  getCurrentUrl() {
+    return this.currentUrl;
   }
 }
 

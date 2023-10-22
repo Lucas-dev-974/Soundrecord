@@ -4,6 +4,7 @@ const JWT_SIGN_SECRET = process.env.JWT_SIGN_SECRET;
 const models = require("../models/");
 
 const publicRoutes = require("./public-route.json");
+const validator = require("../validator");
 
 const self = (module.exports = {
   /**
@@ -83,7 +84,22 @@ const self = (module.exports = {
         }
       }
     }
-    req.token = self.checkToken(token);
+
+    let pseudo = validator.validate(req.query, {
+      userPseudo: "string",
+    }).userPseudo;
+
+    if (!pseudo && req.user && req.user.pseudo) pseudo = req.user.pseudo;
+    console.log("PSEUDO:", pseudo, req.query);
+    console.log("USER:", req.user);
+
+    if (req.user && pseudo == req.user.pseudo) {
+      pseudo = req.user.pseudo;
+      req.isMyProfile = true;
+    } else req.isMyProfile = false;
+
+    req.userPseudo = pseudo;
+    if (req.user) req.token = self.checkToken(token);
     return next();
   },
 

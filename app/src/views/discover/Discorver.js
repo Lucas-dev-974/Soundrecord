@@ -6,17 +6,17 @@ import Paging from "./paging/Paging.vue";
 import "./Discover.css";
 import AudioList from "./audioList/list.vue";
 import CommentsPanel from "../../components/comments-panel/CommentsPanel.vue";
-import GenreTag from "./genre-tag/GenreTag.vue"
+import GenreTag from "./genre-tag/GenreTag.vue";
 
 export default {
   name: "discover",
-  components: { 
-    SimpleAudioPlayerComponent, 
-    CommentsPanel, 
-    Searchbar, 
-    AudioList, 
+  components: {
+    SimpleAudioPlayerComponent,
+    CommentsPanel,
+    Searchbar,
+    AudioList,
     GenreTag,
-    Paging, 
+    Paging,
   },
 
   data() {
@@ -25,7 +25,7 @@ export default {
         currentPage: 0,
         datas: [],
         totalItems: 0,
-        totalPages: 0
+        totalPages: 0,
       },
       page: "artists",
       searchKeyword: "",
@@ -50,7 +50,6 @@ export default {
 
     getAudios: async function () {
       this.audios = await ApiStore.all(this.audios.currentPage);
-      console.log(this.audios);
     },
 
     play: async function () {

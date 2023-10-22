@@ -14,26 +14,40 @@
             </div>
 
             <div>
-                <SessionsList v-if="viewname == 'sessions'" />
+                <SessionsList v-if="viewname == 'sessions' && isLogedInProfile()" :sessionsProps="sessions"
+                    :is-my-profile="isLogedInProfile()" />
+
+                <div v-if="viewname == 'tracks'">
+                    <TracksList />
+                    <SimplePlayer />
+                </div>
+
+                <Playlist v-if="viewname == 'playlist'" />
             </div>
         </section>
     </div>
 </template>
 
 <script>
-import ProfileHead from "./profile-header/ProfileHead.vue";
+import ProfileHead from "./sessions/profile-header/ProfileHead.vue";
 import "./Profile.css"
 import ApiUser from "../../apis/api.user"
-import SessionsList from "./session-list/SessionsList.vue";
+import SessionsList from "./sessions/SessionsList.vue";
+import TracksList from "./tracks/TracksList.vue";
+import SimplePlayer from "../simple-player/SimplePlayer.vue";
+import Playlist from "./playlist/Playlist.vue";
 
 export default {
     name: "profile",
-    components: { ProfileHead, SessionsList },
+    components: { ProfileHead, SessionsList, TracksList, SimplePlayer, Playlist },
 
     data() {
         return {
             viewname: "sessions",
             user: undefined,
+            sessions: [],
+            tracks: [],
+            playlist: []
         };
     },
 
@@ -50,10 +64,20 @@ export default {
     methods: {
         getUserInformations: async function () {
             const params = (new URL(document.location)).searchParams;
-            const pseudo = params.get("pseudo")
-            this.user = await ApiUser.get(pseudo)
-            if (!this.user && !this.$store.state.user) return this.$router.push('/')
-            console.log("USER:", this.user);
+            let pseudo = params.get("pseudo")
+            if (!this.user && !this.$store.state.user && !pseudo) return this.$router.push('/')
+            if (!pseudo) pseudo = this.$store.state.user.pseudo
+
+            this.user = await ApiUser.profile(pseudo)
+            this.sessions = this.user.sessions
+            this.tracks = this.user.tracks
+            this.playlists = this.user.playlists
+
+            if (!this.isLogedInProfile()) this.viewname = "tracks"
+            else this.viewname = "sessions"
+            console.log(this.viewname);
+            // Todo review the fact of use userProfile in store instead of datas
+            this.$store.commit('setUserProfile', { user: this.user, isMyProfile: this.isLogedInProfile() })
         },
 
         changeView: function (viewname) {

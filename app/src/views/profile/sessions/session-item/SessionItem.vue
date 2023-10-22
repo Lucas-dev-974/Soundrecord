@@ -17,9 +17,10 @@
                 </div>
             </div>
             <div class="session-item-line-bottom">
-                <p>Public: switch</p>
+                <p class="line-fit">public:
+                    <SwitchToggler :checked="session.public" @onChange="updatePublic"></SwitchToggler>
+                </p>
                 <p>créer: {{ session.createdAt.substring(0, 10) }} </p>
-
             </div>
         </div>
     </div>
@@ -27,11 +28,15 @@
 
 <script>
 import "./SessionItem.css"
+import SwitchToggler from "../switch-checkbox/SwitchToggler.vue"
+import apiUser from "../../../../apis/api.user";
 
 export default {
-    props: { session: { required: true } },
+    components: { SwitchToggler },
 
-    mounted() { },
+    props: {
+        session: { required: true },
+    },
 
     methods: {
         // TODO to complete 
@@ -42,6 +47,11 @@ export default {
         delete: () => {
 
         },
+
+        updatePublic: async function (value) {
+            const response = await apiUser.update({ public: value })
+            console.log(response);
+        }
     }
 }
 

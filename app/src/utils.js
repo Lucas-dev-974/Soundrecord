@@ -1,17 +1,18 @@
-module.exports = {
-    setClass(groups, theClass, toRemove){
-        if(groups.length > 0){
-            Array.from(groups).forEach(element => {
-                if(toRemove)
-                    element.classList.remove(toRemove)
-                element.classList.add(theClass)
-            });
-        }
-    },
+export function trouverValeurPourcentage(pourcentage, valeurTotale) {
+  if (pourcentage < 0 || pourcentage > 100) {
+    return "Le pourcentage doit être compris entre 0 et 100";
+  }
+  return (valeurTotale * pourcentage) / 100;
+}
 
-    Array2Object: function(entry_datas, name_field, value_field){
-        let out_datas = {}
-        entry_datas.forEach(data => { out_datas[data[name_field]] = data[value_field] })
-        return out_datas
-    }
+export function trouverPourcentage(valeurPartielle, valeurTotale) {
+  // Assurez-vous que les valeurs sont des nombres positifs
+  if (valeurPartielle < 0 || valeurTotale <= 0) {
+    return "Les valeurs doivent être des nombres positifs";
+  }
+
+  // Calculez le pourcentage
+  const pourcentage = (valeurPartielle / valeurTotale) * 100;
+
+  return pourcentage;
 }

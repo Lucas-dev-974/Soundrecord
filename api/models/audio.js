@@ -10,6 +10,22 @@ module.exports = (sequelize, DataTypes) => {
       });
       models.Audio.hasMany(models.SessionTrack, { onDelete: "CASCADE" });
     }
+
+    async getLikes(models) {
+      return await models.Like.findAndCountAll({
+        where: {
+          model: "audio",
+          modelid: this.id,
+        },
+      });
+    }
+
+    async user(models) {
+      return await models.User.findOne({
+        where: { id: this.userid },
+        attributes: ["pseudo", "picture"],
+      });
+    }
   }
 
   Audio.init(

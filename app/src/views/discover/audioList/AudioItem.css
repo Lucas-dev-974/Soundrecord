@@ -25,9 +25,9 @@
   text-wrap: nowrap;
 }
 
-.audio-footer{
-  justify-content: end;
+.audio-footer{  
   display: flex;
+  justify-content: space-between;
   margin-top: 5px;
 }
 .audio-action { 
