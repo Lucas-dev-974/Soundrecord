@@ -20,6 +20,7 @@
 </template>
 
 <script>
+
 import "./PlaylistItem.css"
 import PlaylistTrackItem from "../playlist-track-item/PlaylistTrackItem.vue";
 import SwitchToggler from "../../sessions/switch-checkbox/SwitchToggler.vue";

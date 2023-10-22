@@ -1,30 +1,22 @@
 const models = require("../models");
-const { validator } = require("../utils.js");
+const { validator, manageCatchErrorModel } = require("../utils.js");
 const { GetPagination, GetPagingDatas } = require("../utils.js");
 const { Op } = require("sequelize");
 
 module.exports = {
   SearchSession: async function (req, res) {
     const validated = validator(req.body, { query: "string" });
-    console.log("valdated:", validated);
     const { limit, offset } = GetPagination(req.page, req.size);
     const sessions = await models.Session.findAndCountAll({
-      where: {
-        session_name: {
-          [Op.like]: "%" + validated.query + "%",
-        },
-      },
+      where: { session_name: { [Op.like]: "%" + validated.query + "%" } },
       limit: limit,
       offset: offset,
-    }).catch((erro) => console.log(erro));
-    console.log("Sessions:", sessions);
+    }).catch((erro) => {
+      return manageCatchErrorModel(res, erro);
+    });
 
-    for (const key in sessions.rows) {
-      const session = sessions.rows[key].dataValues;
-      let imports = await models.SessionTrack.findAll({
-        where: { sessionid: session.id },
-      });
-      sessions.rows[key].dataValues.importedIn = imports.count;
+    for (const session of sessions.rows) {
+      session.dataValues.tracksCount = (await session.getTracks(models)).count;
     }
 
     const response = GetPagingDatas(sessions, validated.page, limit);

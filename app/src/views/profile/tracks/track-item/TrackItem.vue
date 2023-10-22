@@ -1,18 +1,18 @@
 <template>
-    <div class="session-item">
-        <div class="session-img-container">
-            <img class="session-img" :src="track.imagesrc" alt="session-image">
+    <div class="track-item">
+        <div class="track-img-container">
+            <img class="track-img" :src="track.imagesrc" alt="track-image">
         </div>
 
-        <div class="session-item-content">
-            <div class="session-item-line-top">
+        <div class="track-item-content">
+            <div class="track-item-line-top">
                 <p>{{ track.name }}</p>
             </div>
-            <div class="session-item-line-center">
+            <div class="track-item-line-center">
                 <PlayProgress :audioUrl="track.src" :onPlay="Playing" :onClickPlay="play" :onInputDuration="onInputDuration"
                     :on-grab-duration="onGrabDuration" :track="track" />
             </div>
-            <div class="session-item-line-bottom">
+            <div class="track-item-line-bottom">
                 <p class="line-fit">public:
                     <SwitchToggler :checked="true" @onChange="updatePublic"></SwitchToggler>
                 </p>
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import "./SessionItem.css"
+import "./TrackItem.css"
 import SwitchToggler from "../switch-checkbox/SwitchToggler.vue"
 import PlayProgress from "../../../simple-player/play-progress/PlayProgress.vue";
 import SimpleAudioPlayer from "../../../../services/SimpleAudioPlayer";

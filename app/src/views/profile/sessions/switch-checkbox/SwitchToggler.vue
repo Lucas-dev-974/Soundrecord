@@ -1,6 +1,6 @@
 <template>
     <label class="switch">
-        <input type="checkbox" @change="onChange" :checked="this.checkedValue">
+        <input type="checkbox" @change="onChangeHandler" :checked="this.checkedValue">
         <span class="slider round"></span>
     </label>
 </template>
@@ -11,6 +11,7 @@ import "./SwitchToggler.css"
 export default {
     props: {
         checked: { required: true },
+        onChange: { required: true }
     },
 
     data() {
@@ -26,9 +27,9 @@ export default {
     },
 
     methods: {
-        onChange: function () {
+        onChangeHandler: async function () {
             this.checkedValue = !this.checkedValue
-            this.$emit("updatePublic", this.checked)
+            await this.onChange(this.checkedValue)
         }
     }
 }

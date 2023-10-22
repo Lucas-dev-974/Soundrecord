@@ -93,7 +93,7 @@ exports.router = (() => {
   router.route("/session/:sessionid").get(SessionController.get);
   router.route("/session").post(SessionController.create);
   router.route("/sessions").get(SessionController.all);
-  router.route("/session/:id").delete(SessionController.delete);
+  router.route("/session/:sessionid").delete(SessionController.delete);
   router.route("/session").patch(SessionController.update);
 
   router

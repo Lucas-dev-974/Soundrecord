@@ -1,5 +1,5 @@
 const models = require("../models");
-const { validator } = require("../utils");
+const { validator, manageCatchErrorModel } = require("../utils");
 const fs = require("fs");
 const { returnFields, GetPagination, GetPagingDatas } = require("../utils.js");
 const session = require("../models/session");
@@ -49,21 +49,20 @@ module.exports = {
   },
 
   delete: async function (req, res) {
-    let validated = validator(req.params, { id: "int|required" });
+    const validated = validator(req.params, { sessionid: "int|required" });
     if (validated.failsSize > 0) return res.status(400).json(validated);
 
-    let session = await models.Session.findByPk(validated.id).catch((error) =>
-      console.log(error)
+    const session = await models.Session.findByPk(validated.sessionid).catch(
+      (error) => console.log(error)
     );
 
-    if (!session || session == null)
-      return res
-        .status(400)
-        .json({ error: "Il s'emblerais que la session n'existe pas !" });
+    console.log("Session:", session);
+    if (!session)
+      return res.status(400).json({ error: "La session n'existe pas." });
 
-    session.destroy();
+    await session.destroy();
 
-    return res.status(200).json(true);
+    return res.status(200).json(session.dataValues.id);
   },
 
   create: async function (req, res) {
@@ -87,34 +86,33 @@ module.exports = {
 
   update: async function (req, res) {
     let validated = validator(req.body, {
-      id: "int|required",
+      sessionid: "int|required",
       field: "string|required",
-      newValue: "any|required",
+      value: "any|required",
     });
 
     if (validated.errors) return res.status(403).json(validated.errors);
-
+    console.log("kok");
     const session = await models.Session.findOne({
-      where: { id: validated.id },
+      where: { id: validated.sessionid },
     });
 
     if (!session) {
       return res.status(400).json({ error: "La session n'existe pas !" });
-    } else if (session.userid !== req.user.id) {
-      return res.json(402).json({
-        error: "Vous n'ête pas autoriser à modifié cet ressource",
-      });
+    }
+
+    if (session.userid !== req.user.id) {
+      return res
+        .json(402)
+        .json({ error: "Vous n'ête pas autoriser à modifié cet ressource" });
     }
 
     try {
-      session.set(validated.field, validated.newValue);
+      await session.set(validated.field, validated.value);
       await session.save();
       return res.json(session);
     } catch (error) {
-      console.log(error);
-      return res.status(500).json({
-        error: "Une erreur est survenu, veuillez réesayer plus tard !",
-      });
+      return manageCatchErrorModel(res, error);
     }
   },
 

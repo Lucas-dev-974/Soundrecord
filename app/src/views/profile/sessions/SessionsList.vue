@@ -59,6 +59,7 @@ export default {
         search: async function (inputKeys) {
             if (inputKeys == "") return this.getSessions()
             const sessions = await ApiSession.search(inputKeys)
+            console.log("Searched sessions:", sessions);
             this.sessions = sessions.datas
         }
     }

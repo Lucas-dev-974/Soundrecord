@@ -31,7 +31,6 @@ export default {
     methods: {
         isInPlaylist: async function () {
             const track = await this.playlist.tracks.rows.find(item => item.id == this.bufferTrack.id)
-
             return track != undefined
         },
 

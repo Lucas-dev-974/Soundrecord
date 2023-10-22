@@ -26,4 +26,9 @@ export default class ApiSession {
     const response = await api.post("/search/sessions", { query: searchKey });
     return response.data;
   }
+
+  static async delete(sessionid) {
+    const response = await api.delete("/session/" + sessionid);
+    return response.data;
+  }
 }

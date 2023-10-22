@@ -13,23 +13,25 @@
                 <p>tracks: {{ session.tracksCount }}</p>
                 <p>{{ session.mixed == null ? "aucun mix" : session.mixed }}</p>
                 <div class="session-item-actions">
-                    <button @click="open">open</button>
+                    <button @click="open" class="open-session-btn">ouvrir</button>
+                    <v-icon @click="deleteSession" color="red" :size="20">mdi-trash-can</v-icon>
                 </div>
             </div>
             <div class="session-item-line-bottom">
                 <p class="line-fit">public:
-                    <SwitchToggler :checked="session.public" @onChange="updatePublic"></SwitchToggler>
+                    <SwitchToggler :checked="session.public" :onChange="updatePublic"></SwitchToggler>
                 </p>
                 <p>créer: {{ session.createdAt.substring(0, 10) }} </p>
             </div>
         </div>
+
     </div>
 </template>
 
 <script>
 import "./SessionItem.css"
 import SwitchToggler from "../switch-checkbox/SwitchToggler.vue"
-import apiUser from "../../../../apis/api.user";
+import ApiSession from "../../../../apis/api.session";
 
 export default {
     components: { SwitchToggler },
@@ -44,12 +46,19 @@ export default {
             this.$store.commit('setCurrentSession', this.session)
             this.$router.push('/studio')
         },
-        delete: () => {
-
-        },
 
         updatePublic: async function (value) {
-            const response = await apiUser.update({ public: value })
+            console.log("okok", value);
+            const response = await ApiSession.update({
+                sessionid: this.session.id,
+                field: "public",
+                value: value
+            })
+            console.log(response);
+        },
+
+        deleteSession: async function () {
+            const response = await ApiSession.delete(this.session.id)
             console.log(response);
         }
     }
