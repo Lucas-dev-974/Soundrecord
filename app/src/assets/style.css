@@ -453,13 +453,9 @@ input.custom-profile-input:disabled {
 }
 
 .navlink {
-  font-family: "Brush Script MT";
   cursor: pointer;
-  color: white !important;
   text-decoration: none;
-  font-size: 22px !important;
-  font-weight: 1 !important;
-  letter-spacing: 3px;
+  color: white !important;
 }
 
 .volume-general {

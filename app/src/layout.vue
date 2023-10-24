@@ -41,27 +41,19 @@ export default {
     },
 
     mounted() {
-        this.checkScreen()
         this.is_loggedIn()
-        // Todo: check
-        // window.onresize = this.checkScreen
     },
 
-    // TODO when on public page dont return to login page
     methods: {
         is_loggedIn: function () {
             ApiService.get('/api/auth/').catch(() => {
                 this.$store.commit('setUser', undefined)
-                if (this.$route.name !== 'authentication'
+                if (this.$route.name !== "login" | "register"
                     && this.$route.name !== 'home'
                     && this.$route.name !== 'profile') {
-                    this.$router.push('authentication')
+                    this.$router.push('login')
                 }
             })
-        },
-
-        checkScreen: function () {
-            this.$store.commit('setWidth', window.screen.width)
         },
     }
 }

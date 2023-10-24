@@ -1,15 +1,26 @@
 <template>
     <div class="playlist-item">
         <div class="playlist-item-head">
-            <p>{{ playlist.name }}</p>
-            <p>Titres: {{ playlist.tracks.count }}</p>
-            <SwitchToggler :checked="playlist.public" />
-            <button v-if="collapsed" @click="() => collapsed = false">
-                <v-icon>mdi-chevron-down</v-icon>
-            </button>
-            <button v-else @click="() => collapsed = true">
-                <v-icon>mdi-chevron-up</v-icon>
-            </button>
+            <div class="line-fit edit-name">
+                <v-icon v-if="!onUpdate" :size="16" style="margin-top: 6px" @click="updatePlaylistName">mdi-pencil</v-icon>
+                <v-icon v-else :size="16" style="margin-top: 6px" @click="() => onUpdate = false">mdi-check</v-icon>
+                <input v-on:keypress.enter="() => onUpdate = false" ref="playlistInputName" class="edit-name-input"
+                    type="text" v-model="playlistName" disabled>
+            </div>
+
+            <div class="line-fit">
+                <p>{{ playlist.tracks.count }} titres -</p>
+                <p class="line-fit">
+                    public:
+                    <SwitchToggler :checked="playlist.public" :onChange="updatePublic" />
+                    -
+                </p>
+                <v-icon @click="deletePlaylist" color="red" :size="18">mdi-trash-can</v-icon>
+            </div>
+            <div class="line-fit">
+                <v-icon v-if="collapsed" @click="() => collapsed = false">mdi-chevron-down</v-icon>
+                <v-icon v-else @click="() => collapsed = true">mdi-chevron-up</v-icon>
+            </div>
         </div>
         <div class="playlist-collapse" :class="collapsed ? '' : 'active'">
             <div class="" v-for="track of playlist.tracks.rows" v-bind:key="track.id">
@@ -24,28 +35,61 @@
 import "./PlaylistItem.css"
 import PlaylistTrackItem from "../playlist-track-item/PlaylistTrackItem.vue";
 import SwitchToggler from "../../sessions/switch-checkbox/SwitchToggler.vue";
+import ApiPlaylist from "../../../../apis/api.playlist";
 
 export default {
     components: { PlaylistTrackItem, SwitchToggler },
     props: {
-        playlist: { required: true }
+        playlist: { required: true },
+        removePlaylist: { required: true }
     },
 
     data() {
         return {
             collapsed: true, // CLosed
-            collapseElement: undefined
+            collapseElement: undefined,
+            playlistName: undefined,
+            onUpdate: false
+        }
+    },
+
+    watch: {
+        async onUpdate(newVal) {
+            this.$refs.playlistInputName.disabled = !this.$refs.playlistInputName.disabled
+            if (newVal) this.$refs.playlistInputName.focus()
+
+            if (!newVal) {
+                await ApiPlaylist.update({
+                    playlistid: this.playlist.id,
+                    field: "name",
+                    value: this.playlistName
+                })
+            }
         }
     },
 
     mounted() {
-        console.log("Playlist item mounted", this.playlist);
+        this.playlistName = this.playlist.name
     },
 
     methods: {
-        updatePublic: function () {
-            console.log("update public");
-            this.playlist.public = !this.playlist.public
+        updatePlaylistName: async function () {
+            this.onUpdate = !this.onUpdate
+        },
+
+        updatePublic: async function (value) {
+            const response = await ApiPlaylist.update({
+                playlistid: this.playlist.id,
+                field: "public",
+                value: String(value)
+            })
+            console.log(response);
+        },
+
+        deletePlaylist: async function () {
+            const response = await ApiPlaylist.delete(this.playlist.id)
+            console.log(response);
+            this.removePlaylist(response.id)
         }
     }
 }

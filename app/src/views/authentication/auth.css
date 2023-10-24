@@ -1,0 +1,82 @@
+.auth-layout{
+    height: calc(100vh - 114px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-card{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 10px;
+    background-color: white;
+    border-radius: 5px;
+    min-width: 250px;
+    max-width: 350px;
+    min-height: 20vh;
+    width: 50%;
+    position: relative;
+    top: -100px;
+}
+
+.auth-title{
+    font-size: 1.2rem;
+}
+
+.auth-content{
+    display: flex;
+    flex-wrap: wrap;
+    width: 90%;
+    margin: 0 auto;
+    gap: 5px;
+}
+
+.auth-input{
+    width: 100%;
+    border: 0.2px solid rgba(0, 0, 0, 0.258);
+    border-radius: 5px;
+    padding: 2px 5px;
+}
+
+.auth-title{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.auth-actions{
+    margin-top: 10px;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.forget-password{
+    font-size: 14px;
+    color: #D04343;
+}
+
+.register-button, .login-button{
+    margin-top: 5px;
+    padding: 3px 10px;
+    color: white;
+    border-radius: 5px;
+    transition: all 500ms;
+}
+
+.login-button{
+    background-color: #4ecb71;
+}
+
+.register-button{
+    background-color: #e97929;
+}
+
+.login-button:hover{
+    box-shadow: 1px 1px 5px #00000066;
+}
+
+.register-button:hover{
+    box-shadow: 1px 1px 5px #00000066;
+}

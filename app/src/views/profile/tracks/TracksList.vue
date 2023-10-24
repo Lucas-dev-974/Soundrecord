@@ -1,13 +1,13 @@
 <template>
     <section class="profile-content-section">
         <header class="profile-content-header">
-            <SearchBar onKeyPressEnter="sz" placeholder="Recherchez une session" :onInput="search" />
+            <Searchbar onKeyPressEnter="sz" placeholder="Recherchez une session" :onInput="search" />
             <button @click="uploadTrack">Importer</button>
         </header>
 
         <div class="profile-content-content">
             <div v-for="track of tracks" :key="track.id">
-                <TrackItem :track="track" />
+                <TrackItem :track="track" :removeTrack="removeTrack" />
             </div>
         </div>
     </section>
@@ -16,13 +16,13 @@
 <script>
 import apiAudio from "../../../apis/api.audio"
 import ApiSession from "../../../apis/api.session"
-import SearchBar from "../../../components/search-bar/SearchBar.vue"
+import Searchbar from "../../discover/searchbar/Searchbar.vue"
 import TrackItem from "./track-item/TrackItem.vue"
 import "./SessionList.css"
 import SimpleAudioPlayer from "../../../services/SimpleAudioPlayer"
 
 export default {
-    components: { SearchBar, TrackItem },
+    components: { Searchbar, TrackItem },
 
     data() { return { tracks: [] } },
     mounted() { this.getTracks() },
@@ -43,6 +43,12 @@ export default {
 
         uploadTrack: function () {
 
+        },
+
+        removeTrack: async function (trackid) {
+            const trackIndex = this.tracks.findIndex(item => item.id == trackid)
+            if (trackIndex == -1) return console.log("ERROR le track na pas été trouver");
+            this.tracks = this.tracks.filter(item => item.id != trackid)
         }
     }
 }

@@ -78,6 +78,7 @@ export default {
             console.log(this.viewname);
             // Todo review the fact of use userProfile in store instead of datas
             this.$store.commit('setUserProfile', { user: this.user, isMyProfile: this.isLogedInProfile() })
+            console.log("Is my profile:", this.isLogedInProfile(), this.$store.state.userProfile);
         },
 
         changeView: function (viewname) {

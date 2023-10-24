@@ -2,8 +2,8 @@
   width: 65%;
   margin: 0 auto;
   min-height: calc(100vh - 64px);
-  /* height: ; */
-  padding-top: 15px;
+  padding-top: 50px;
+
 }
 
 /* Phone */
@@ -46,4 +46,12 @@
 
 .btn-icon{
   cursor: pointer;
+}
+
+.v-application ul, .v-application ol{
+  padding-left: 5px !important;
+}
+
+.w-full{
+  width: 100%;
 }

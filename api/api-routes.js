@@ -47,6 +47,7 @@ exports.router = (() => {
 
   router.route("/playlists").get(Playlist.all);
   router.route("/playlist/:id").get(Playlist.one);
+  router.route("/playlist").patch(Playlist.update);
   router.route("/playlist").post(Playlist.create);
   router.route("/playlist/:id").delete(Playlist.remove);
   router.route("/playlist/add-audio").post(Playlist.addAudio);
@@ -119,8 +120,8 @@ exports.router = (() => {
       CheckFileIntegrity.CheckMp3FileIntegrity,
       AudioController.Import
     );
-  router.route("/audio/:id").delete(AudioController.delete);
-  router.route("/audio").patch(AudioController.update);
+  router.route("/track/:id").delete(AudioController.delete);
+  router.route("/track").patch(AudioController.update);
   router.route("/audio/categorie").post(AudioCategorie.linkAudioToCategories);
 
   // Medias routes

@@ -1,20 +1,19 @@
-import "./AppBar.css"
+import "./AppBar.css";
 
 export default {
-    methods: {
-        onClickLogo: function(){
-            this.$router.push('/')
-        },
+  methods: {
+    onClickLogo: function () {
+      this.$router.push("/");
+    },
 
-        login: function(){
-            this.$router.push('/authentication')
-        },
+    login: function () {
+      this.$router.push("/login");
+    },
 
-        logout: function(){
-            this.$store.commit('setToken', '')
-            this.$store.commit('setUser', null)
-            this.$router.push('/')
-            // if(this.$router.)
-        }
-    }
-}
+    logout: function () {
+      this.$store.commit("setToken", "");
+      this.$store.commit("setUser", null);
+      this.$router.push("/");
+    },
+  },
+};

@@ -52,3 +52,20 @@
     gap: 5px;
     width: 100%;
 }
+
+.track-item-name-actions{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.track-name-input:disabled{
+    background-color: transparent;
+    border: none;
+    color: white;
+}
+
+.track-name-input{
+    background-color: transparent;
+    border-bottom: 1px solid white;
+}

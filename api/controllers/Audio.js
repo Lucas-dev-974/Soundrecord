@@ -47,14 +47,6 @@ module.exports = {
     if (!audio)
       return res.status(403).json({ errors: "L'audio n'a pas été trouvé !" });
 
-    if (req.user == undefined) {
-      if (!audio.public) {
-        return res.status(401).json({
-          message: "Vous n'êtes pas autorisé à accéder à cet ressource.",
-        });
-      }
-    }
-
     if (!audio.public && audio.userid != req.user.id)
       return res.status(401).json({
         message: "Vous n'êtes pas autorisé à accéder à cet ressource.",
@@ -268,31 +260,43 @@ module.exports = {
     let validated = validator(req.body, {
       fields: "string",
       datas: "string",
-      id: "int|required",
+      trackid: "int|required",
     });
 
+    console.log("VALIDATED:", validated);
     if (validated.errors != undefined)
       return res.status(400).json(validated.errors);
 
-    let fields = validated.fields.split("|");
-    let datas = validated.datas.split("|");
-    let fieldsPist = ["name", "public"];
-    let audio = await models.Audio.findOne({
-      where: { id: validated.id },
+    const fields = validated.fields.split("|");
+    const datas = validated.datas.split("|");
+    const updatableTrackFields = ["name", "public"];
+
+    const track = await models.Audio.findOne({
+      where: { id: validated.trackid },
     });
 
-    if (!audio)
+    if (!track)
       return res.status(400).json({ error: "La pist n'existe pas !" });
-    if (audio.userid !== req.user.id)
+    if (track.userid !== req.user.id)
       return res
         .status(400)
         .json({ error: "Vous n'ête pas autorisé à modifier cet pist" });
 
     for (let i = 0; i < fields.length; i++) {
-      if (fieldsPist.includes(fields[i])) {
+      if (updatableTrackFields.includes(fields[i])) {
         try {
-          audio.set({ [fields[i]]: datas[i] }); // {name: 'pistname'}
-          await audio.save();
+          console.log(
+            "BIG UPDATE --------------",
+            fields[i],
+            datas[i],
+            typeof datas[i]
+          );
+
+          if (datas[i] == "false") datas[i] = false;
+          if (datas[i] == "true") datas[i] == true;
+
+          track.set(fields[i], datas[i]);
+          track.save();
         } catch (error) {
           console.log(error);
           return res.status(500).json({
@@ -302,39 +306,33 @@ module.exports = {
       }
     }
 
-    return res.status(200).json();
+    return res.status(200).json(track);
   },
 
   delete: async function (req, res) {
     // Validate input parameters
     let validated = validator(req.params, { id: "int" });
-    if (validated.fails.length > 0)
-      return res.status(403).json({ errors: validated.fails });
+    if (validated.errors) return res.status(403).json(validated.errors);
+
+    // Find the audio entry by ID
+    const track = await models.Audio.findOne({ where: { id: validated.id } });
+
+    // If the entry doesn't exist, return an error response
+    if (!track) return res.status(400).json({ error: "La pist n'existe pas." });
+
+    // Check if the user is authorized to delete the entry
+    if (track.userid !== req.user.id)
+      return res.status(401).json({ error: "Vous n'avez pas l'autirisation" });
 
     try {
-      // Find the audio entry by ID
-      let pist = await models.Audio.findOne({
-        where: { id: validated.id },
-      });
-
-      // If the entry doesn't exist, return an error response
-      if (!pist)
-        return res.status(400).json({ error: "La pist n'existe plus !" });
-
-      // Check if the user is authorized to delete the entry
-      if (pist.userid !== req.user.id)
-        return res.status(401).json({
-          error: "Vous n'êtes pas autorisé à supprimer cette donnée !",
-        });
-
       // Destroy entry in the database
-      await pist.destroy();
+      await track.destroy();
     } catch (error) {
       return res.status(500).json({ error: "Une erreur s'est produite !" });
     }
 
     // Return a success response
-    return res.status(200).json({ message: "La pist a bien été supprimée !" });
+    return res.status(200).json(track.dataValues.id);
   },
 
   deleteIn: async function (req, res) {

@@ -1,6 +1,6 @@
 <template>
     <label class="switch">
-        <input type="checkbox" @change="onChange" checked>
+        <input type="checkbox" @change="onChangeHandler" :checked="checked">
         <span class="slider round"></span>
     </label>
 </template>
@@ -9,11 +9,16 @@
 import "./SwitchToggler.css"
 
 export default {
-    props: { checked: { required: true }, },
+    props: {
+        checked: { required: true },
+        onChange: { required: true }
+    },
 
     methods: {
-        onChange: function () {
-            this.$emit("updatePublic")
+        onChangeHandler: function () {
+            if (this.checked) this.checked = false
+            else this.checked = true
+            this.onChange(this.checked)
         }
     }
 }

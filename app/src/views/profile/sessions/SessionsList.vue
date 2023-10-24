@@ -1,7 +1,7 @@
 <template>
     <section class="profile-content-section">
         <header class="profile-content-header">
-            <SearchBar onKeyPressEnter="sz" placeholder="Recherchez une session" :onInput="search" />
+            <Searchbar onKeyPressEnter="sz" placeholder="Recherchez une session" :onInput="search" />
             <button @click="createSession">Créer</button>
         </header>
 
@@ -16,12 +16,12 @@
 
 <script>
 import ApiSession from "../../../apis/api.session"
-import SearchBar from "../../../components/search-bar/SearchBar.vue"
+import Searchbar from "../../discover/searchbar/Searchbar.vue"
 import SessionItem from "./session-item/SessionItem.vue"
 import "./SessionList.css"
 
 export default {
-    components: { SearchBar, SessionItem },
+    components: { Searchbar, SessionItem },
 
     props: {
         sessionsProps: { required: true },

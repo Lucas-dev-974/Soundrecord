@@ -131,7 +131,7 @@ export default new Vuex.Store({
 
     logout: function (state) {
       Object.assign(state, initialstate);
-      window.location.href = "/authentication";
+      window.location.href = "/";
     },
 
     // ? ---------------------------

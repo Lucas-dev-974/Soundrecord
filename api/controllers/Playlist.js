@@ -9,7 +9,6 @@ module.exports = {
 
     let public = { public: true };
     if (req.isMyProfile) public = {};
-    console.log("public:", req.isMyProfile);
     const playlists = await models.Playlist.findAll({
       where: { userid: req.user.id, ...public },
     }).catch((error) => {
@@ -53,12 +52,43 @@ module.exports = {
       name: "string|required",
     });
 
-    if (validated.errors) req.status(400).json(validated.errors);
+    if (validated.errors) res.status(400).json(validated.errors);
 
     const playlist = await models.Playlist.create({
       name: validated.name,
       userid: req.user.id,
     });
+
+    playlist.dataValues.tracks = await playlist.tracks(models);
+
+    return res.status(200).json(playlist);
+  },
+
+  update: async function (req, res) {
+    const validated = validator(req.body, {
+      playlistid: "int|required",
+      field: "string|required",
+      value: "string|required",
+    });
+
+    if (validated.errors) return res.status(403).json(validated.errors);
+
+    const playlist = await models.Playlist.findByPk(validated.playlistid).catch(
+      (error) => {
+        return manageCatchErrorModel(res, error);
+      }
+    );
+
+    if (!playlist)
+      return res.status(404).json({ message: "La playlist n'existe pas." });
+
+    if (validated.value == "false") validated.value = false;
+    if (validated.value == "true") validated.value = true;
+
+    if (playlist.dataValues[validated.field] != undefined) {
+      await playlist.set(validated.field, validated.value);
+      await playlist.save();
+    }
 
     return res.status(200).json(playlist);
   },
@@ -76,8 +106,16 @@ module.exports = {
     if (playlist.userid != req.user.id)
       return res.status(401).json("vous n'avez pas l'authorisation !");
 
+    const trackAssociated = await models.PlaylistAudio.findAll({
+      where: { playlistid: validated.id },
+    });
+
+    for (const associatedTrack of trackAssociated) {
+      associatedTrack.destroy();
+    }
+
     playlist.destroy();
-    return res.status(200).json(true);
+    return res.status(200).json(playlist);
   },
 
   addAudio: async function (req, res) {

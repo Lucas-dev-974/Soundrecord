@@ -2,10 +2,12 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 
 // Views
-import Authentication from "./views/authentication/Authentication.vue";
+
 import Discover from "./views/discover/Discover.vue";
 import Profile from "./views/profile/Profile.vue";
 import Studio from "./views/Studio/Studio.vue";
+import Register from "./views/authentication/Register.vue";
+import Login from "./views/authentication/Login.vue";
 
 Vue.use(VueRouter);
 
@@ -19,9 +21,15 @@ const router = new VueRouter({
     },
 
     {
-      path: "/authentication",
-      name: "authentication",
-      component: Authentication,
+      path: "/login",
+      name: "login",
+      component: Login,
+    },
+
+    {
+      path: "/register",
+      name: "register",
+      component: Register,
     },
 
     {

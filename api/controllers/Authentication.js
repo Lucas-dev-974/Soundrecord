@@ -2,7 +2,11 @@ const bcrypt = require("bcrypt");
 const jwt = require("../middleware/Jwt");
 const models = require("../models");
 
-const { returnFields, validator } = require("../utils.js");
+const {
+  returnFields,
+  validator,
+  manageCatchErrorModel,
+} = require("../utils.js");
 
 module.exports = {
   /**
@@ -16,7 +20,6 @@ module.exports = {
     let validated = validator(req.body, {
       email: "string|required",
       password: "string|required",
-      name: "string|required",
       pseudo: "string|required",
     });
 
@@ -24,55 +27,39 @@ module.exports = {
     if (validated.errors != undefined)
       return res.status(400).json(validated.errors);
 
-    // 2 - Search if user email exist in db if exist return error
-    let user = await models.User.findOne({
-      attributes: ["email"],
-      where: {
-        email: validated.email,
-        pseudo: "string",
-      },
-    }).catch((error) => console.log(error));
-
-    if (user) {
-      return res.status(403).json({
-        error: "Cet email est déjà enregistrer, veuillez vous connecté !",
-      });
-    }
-
     // 3 - Hash password before registering it in database
     const password = bcrypt.hashSync(validated.password, bcrypt.genSaltSync(8));
 
     // 4 - Create user
-    user = await models.User.create({
-      name: validated.name,
-      email: validated.email,
-      pseudo: validated.pseudo,
-      password: password,
-      role: 2,
-      public: false,
+    const user = await models.User.findOrCreate({
+      where: {
+        email: validated.email,
+        pseudo: validated.pseudo,
+      },
+      defaults: {
+        password: password,
+        role: 2,
+      },
     }).catch((error) => {
-      return { error: error };
+      return manageCatchErrorModel(res, error);
     });
 
-    if (user.error) {
-      return res
-        .status(403)
-        .json(
-          "Désolé une erreur est survenue veuillez ré-essayer plus tard ou nous contacter !"
-        );
-    }
+    console.log(user[0].dataValues);
 
+    if (user[1])
+      return res.status(403).json({ message: "Le pseudo choisi existe déjà" });
     // 5 - Lets generate Token for the user
     const token = jwt.generateToken({
-      id: user.dataValues.id,
-      email: user.dataValues.email,
-      role: user.dataValues.role,
+      id: user[0].dataValues.id,
+      email: user[0].dataValues.email,
+      role: user[0].dataValues.role,
     });
 
+    delete user[0].dataValues.password;
     // 6 - return response to user
     return res.status(200).json({
       token: token,
-      user: returnFields(user.dataValues, models.User.visible()),
+      user: user[1].dataValues,
     });
   },
 
@@ -84,21 +71,17 @@ module.exports = {
    * @returns
    */
   login: async function (req, res) {
-    let validated = validator(
-      req.body,
-      {
-        email: "string|required",
-        password: "string|required",
-      },
-      res
-    );
+    console.log("BODY: ", req.body);
+    let validated = validator(req.body, {
+      email: "string|required",
+      password: "string|required",
+    });
+    console.log("VALIDATED:", validated);
 
     if (validated.errors != undefined)
       return res.status(400).json(validated.errors);
 
-    let user = await models.User.findOne({
-      where: { email: validated.email },
-    });
+    let user = await models.User.findOne({ where: { email: validated.email } });
 
     if (!user)
       return res
