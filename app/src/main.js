@@ -19,9 +19,11 @@ Vue.config.productionTip = true;
 window.addEventListener("resize", () => {
   store.commit("setWidth", window.innerwidth);
 });
-new Vue({
+const app = new Vue({
   vuetify,
   store: store,
   router,
   render: (h) => h(Layout),
 }).$mount("#app");
+
+window.App = app;

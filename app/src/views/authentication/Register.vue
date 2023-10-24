@@ -50,7 +50,6 @@ export default {
                 pseudo: this.pseudo,
                 password: this.password
             })
-
             if (!response) return console.log("ERROR: Une erreur est survenue lors de la connexion");
 
             this.$store.commit('setUser', response.user)

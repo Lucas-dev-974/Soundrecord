@@ -27,12 +27,32 @@ class ApiUser {
   }
 
   async register(datas) {
-    const response = await api.patch("/auth", datas);
+    const response = await api.patch("/auth", datas).catch((error) => {
+      return error.response;
+    });
+
+    if (response.status != 200) {
+      window.App.$store.commit("push_alert", {
+        message: response.data.message,
+        type: "info",
+      });
+      return false;
+    }
     return response.data;
   }
 
   async login(datas) {
-    const response = await api.post("/auth", datas);
+    const response = await api.post("/auth", datas).catch((error) => {
+      return error.response;
+    });
+
+    if (response.status != 200) {
+      window.App.$store.commit("push_alert", {
+        message: response.data.message,
+        type: "info",
+      });
+      return false;
+    }
     return response.data;
   }
 }

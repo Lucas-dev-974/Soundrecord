@@ -17,15 +17,14 @@ module.exports = {
    */
   register: async function (req, res) {
     // 1 - Validate request params required
-    let validated = validator(req.body, {
+    const validated = validator(req.body, {
       email: "string|required",
       password: "string|required",
       pseudo: "string|required",
     });
 
     // If one ore more params not given return errors
-    if (validated.errors != undefined)
-      return res.status(400).json(validated.errors);
+    if (validated.errors) return res.status(400).json(validated.errors);
 
     // 3 - Hash password before registering it in database
     const password = bcrypt.hashSync(validated.password, bcrypt.genSaltSync(8));
@@ -44,9 +43,9 @@ module.exports = {
       return manageCatchErrorModel(res, error);
     });
 
-    console.log(user[0].dataValues);
+    console.log("USER:", user[1]);
 
-    if (user[1])
+    if (user[1] == false)
       return res.status(403).json({ message: "Le pseudo choisi existe déjà" });
     // 5 - Lets generate Token for the user
     const token = jwt.generateToken({
@@ -59,7 +58,7 @@ module.exports = {
     // 6 - return response to user
     return res.status(200).json({
       token: token,
-      user: user[1].dataValues,
+      user: user[0].dataValues,
     });
   },
 
