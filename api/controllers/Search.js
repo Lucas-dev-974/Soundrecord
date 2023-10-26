@@ -74,9 +74,7 @@ module.exports = {
     if (validated.errors != undefined)
       return res.status(400).json(validated.errors);
 
-    console.log("req.page", req.page);
     const { limit, offset } = GetPagination(req.page, req.size);
-
     const search = await models.Audio.findAndCountAll({
       where: {
         name: {
@@ -88,7 +86,7 @@ module.exports = {
       offset: offset,
     }).catch((erro) => console.log(erro));
 
-    const response = GetPagingDatas(search.datas, req.page, limit);
+    const response = GetPagingDatas(search, req.page, limit);
     return res.status(200).json(response);
   },
 };

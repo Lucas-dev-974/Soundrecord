@@ -1,3 +1,4 @@
+const path = require("path");
 const { DefaultStoragePath } = require("../middleware/MulterFileManager.js");
 const { validator } = require("../utils.js");
 const fs = require("fs");
@@ -8,14 +9,13 @@ module.exports = {
     // const validated = validator(req.params, {
     //   id: "required",
     // });
+    // if (validator.errors) return res.status(403).json(validator.errors);
+
     const validated = req.params;
-
-    if (validator.errors) return res.status(403).json(validator.errors);
-
     let filePath;
 
     if (validated.id == "default") {
-      filePath = DefaultStoragePath() + "audio.jpg";
+      filePath = path.resolve(__dirname, "../public/default-audio-picture.jpg");
     }
 
     if (!fs.existsSync(filePath))
@@ -25,6 +25,4 @@ module.exports = {
 
     return res.sendFile(filePath);
   },
-
-  
 };

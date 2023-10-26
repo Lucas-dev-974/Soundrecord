@@ -1,12 +1,12 @@
 const fs = require("fs");
 const wav = require("wav");
 const NodeID3 = require("node-id3");
+const path = require("path");
 
 // TODO use this librairy to check file integrity file-type https://www.npmjs.com/package/file-type
 const validateWav = (req, res, next) => {
   if (req.Isaudio && req.fileext === ".wav") {
     const filePath = req.filePath;
-    console.log(filePath);
     fs.readFile(filePath, (err, data) => {
       if (err) {
         req.fileIntegrity = false;
@@ -24,7 +24,6 @@ const validateWav = (req, res, next) => {
       } catch (error) {
         req.fileIntegrity = false;
       }
-
       next();
     });
   } else {
@@ -34,10 +33,12 @@ const validateWav = (req, res, next) => {
 
 const validateMp3 = (req, res, next) => {
   if (req.Isaudio && req.fileext === ".mp3") {
-    const filePath = req.filePath;
+    console.log("dirname", __dirname);
+    const filePath = path.resolve(__dirname, "../" + req.filename);
 
     fs.readFile(filePath, (err, data) => {
       if (err) {
+        console.log("ERROR");
         req.fileIntegrity = false;
         return next();
       }
@@ -49,9 +50,13 @@ const validateMp3 = (req, res, next) => {
         req.fileIntegrity = true;
       }
 
+      console.log("file integrity:", req.fileIntegrity);
+
       next();
     });
   } else {
+    console.log("file integrity:", req.fileIntegrity);
+
     req.fileIntegrity = req.fileIntegrity ?? false;
     console.log("file integrity:", req.fileIntegrity);
     next();

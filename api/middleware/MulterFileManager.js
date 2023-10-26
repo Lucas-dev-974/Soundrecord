@@ -1,12 +1,13 @@
 const multer = require("multer");
 const path = require("path");
-const fs = require("fs");
 
 const StoragePath = (userID) =>
   path.resolve(__dirname, "..") + "/public/user-" + userID + "/";
 
 const DefaultStoragePath = () =>
   path.resolve(__dirname, "..") + "/public/default/";
+
+const folderPath = path.resolve(__dirname, "..") + "/public/";
 
 exports.StoragePath = (userID) => StoragePath(userID);
 exports.DefaultStoragePath = DefaultStoragePath;
@@ -21,17 +22,7 @@ const storage = multer.diskStorage({
    * @param {Function} cb
    */
   destination: async (req, file, cb) => {
-    // Location to import all file for the user
-    let folder_file = StoragePath(req.user.id);
-    req.folder_file = folder_file;
-
-    req.fileInfos = file;
-    req.fileInfos["date"] = Date.now();
-
-    // If the folder does'nt exist create one
-    if (!fs.existsSync(folder_file))
-      fs.mkdirSync(folder_file, { recursive: true });
-    cb(null, folder_file);
+    cb(null, folderPath);
   },
 
   /**
@@ -45,10 +36,9 @@ const storage = multer.diskStorage({
    */
   filename: (req, file, cb) => {
     const name = file.originalname.replace(/ /g, "");
-    req.filename = name;
-    req.filePath = req.folder_file + req.fileInfos.date + "-" + name;
-    req.fileSrc = "user-" + req.user.id + "/" + name;
-    cb(null, req.fileInfos.date + "-" + name);
+    req.filename = Date.now() + name;
+    req.orignalname = path.parse(file.originalname).name;
+    cb(null, req.filename);
   },
 });
 
@@ -60,15 +50,15 @@ exports.upload = multer({
    * @param {Function} callback
    */
   fileFilter: function (req, file, callback) {
+    console.log("Multer file", file);
     let ext = path.extname(file.originalname);
     let extensions_img = [".jpeg", ".png", ".jpg"];
-    let extensions_sng = [".mp3", ".wav", ".m4a"];
+    let extensions_sng = [".mp3", ".wav"];
 
     req.Isaudio = false;
     req.Isimage = false;
     req.AutorizedFile = false;
 
-    console.log(extensions_img.includes(ext), extensions_sng.includes(ext));
     // If the extension name is not included in extensions arrays
     if (extensions_img.includes(ext) || extensions_sng.includes(ext)) {
       req.AutorizedFile = true;
@@ -78,7 +68,6 @@ exports.upload = multer({
       req.Isaudio = true;
     } else req.Isimage = true;
 
-    req.filename = file;
     req.fileext = ext;
 
     callback(null, true);

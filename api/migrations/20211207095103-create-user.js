@@ -19,7 +19,7 @@ module.exports = {
       pseudo: {
         allowNull: false,
         type: Sequelize.STRING,
-        unique: true
+        unique: true,
       },
       password: {
         allowNull: false,
@@ -32,6 +32,7 @@ module.exports = {
       picture: {
         allowNull: true,
         type: Sequelize.STRING,
+        unique: true,
       },
       public: {
         allowNull: false,
@@ -56,8 +57,8 @@ module.exports = {
       },
       enable: {
         type: Sequelize.BOOLEAN,
-        defaultValue: true
-      }
+        defaultValue: true,
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {

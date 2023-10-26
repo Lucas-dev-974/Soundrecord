@@ -5,6 +5,7 @@ const models = require("../models");
 require("dotenv").config();
 const { GetPagination, GetPagingDatas } = require("../utils.js");
 const { StoragePath } = require("../middleware/MulterFileManager.js");
+const path = require("path");
 
 function calculateTimePassed(dateString) {
   const pastDate = new Date(dateString);
@@ -40,27 +41,31 @@ module.exports = {
         "src",
         "public",
         "imagesrc",
+        "filename",
       ],
       // include: [{ model: models.User, as: "User" }],
     });
 
     if (!audio)
-      return res.status(403).json({ errors: "L'audio n'a pas été trouvé !" });
+      return res.status(403).json({ errors: "L'audio n'a pas été trouver." });
 
-    if (!audio.public && audio.userid != req.user.id)
+    if (!audio.dataValues.public)
       return res.status(401).json({
         message: "Vous n'êtes pas autorisé à accéder à cet ressource.",
       });
 
-    const audioPath =
-      StoragePath(audio.userid) + audio.imported_date + "-" + audio.name;
-
-    if (!fs.existsSync(audioPath))
+    // return res.json(audio);
+    const filePath = path.resolve(
+      __dirname,
+      "../public/" + audio.dataValues.filename
+    );
+    console.log("file path:", filePath);
+    if (!fs.existsSync(filePath))
       return res
         .status(403)
-        .json({ error: "Une erreur s'est produite avec le fichier" });
+        .json({ error: "Le fichier audio de semble pas exister." });
 
-    return res.sendFile(audioPath);
+    return res.sendFile(filePath);
   },
 
   /**
@@ -199,61 +204,33 @@ module.exports = {
    * @returns
    */
   Import: async function (req, res) {
+    // console.log("AutorizedFile", req.AutorizedFile);
+    // console.log("fileIntegrity", req.fileIntegrity);
+    // console.log("Isaudio", req.Isaudio);
     // Check if is autorized, Setting up in MulterMiddleware
-    if (!req.AutorizedFile || !req.Isaudio || !req.fileIntegrity)
+    // ! TODO review file integrity
+    // if (!req.AutorizedFile || !req.Isaudio || !req.fileIntegrity)
+    if (!req.AutorizedFile || !req.Isaudio)
       return res
         .status(403)
         .json({ error: "Un fichier de type mp3, wav est attendu !" });
 
-    let validated = validator(req.body, { sessionid: "int" }); // Check if we have session id
+    const lastAudio = await models.Audio.findOne({ order: [["id", "DESC"]] });
+    const lastid = lastAudio == null ? 1 : lastAudio.id + 1;
 
-    let lastAudio = await models.Audio.findOne({
-      order: [["id", "DESC"]],
+    const audio = await models.Audio.create({
+      name: req.orignalname,
+      imported_date: Date.now(),
+      userid: req.user.id,
+      public: true,
+      filename: req.filename,
+      src: process.env.APP_URL + "/api/audio/" + lastid,
+      imagesrc: process.env.APP_URL + "/api/medias/audio/default",
+    }).catch((error) => {
+      return manageCatchErrorModel(error);
     });
-
-    let lastid = lastAudio == null ? 1 : lastAudio.id + 1;
-
-    // Create audio entity from source import song on use account
-    let audio = await models.Audio.create(
-      {
-        name: req.filename,
-        imported_date: req.fileInfos.date,
-        userid: req.user.id,
-        public: true,
-        src: process.env.APP_URL + "/api/audio/" + lastid,
-        imagesrc: process.env.APP_URL + "/api/medias/audio/default",
-        // User: req.user,
-      }
-      // { include: models.User }
-    ).catch((error) => {
-      console.log(error);
-      return res.status(403).json({
-        message: "Une erreur est survenue veuillez essayer ultérieurement",
-      });
-    });
-
-    if (validated.sessionid) {
-      let session_track = await models.SessionTrack.create({
-        sessionid: validated.sessionid,
-        audioid: audio.dataValues.id,
-        userid: req.user.id,
-        muted: false,
-        color: "green",
-        src: process.env.APP_URL + "/api/pist/" + audio.id,
-        gain: 0.5,
-      }).catch((error) => {
-        console.log(error);
-      });
-      return res.status(200).json({
-        import: audio.dataValues,
-        session_track: session_track,
-        test: exclude(audio, ["updatedAt", "createdAt"]),
-      });
-    }
 
     return res.status(200).json(audio);
-    // if (validated.errors != undefined)
-    //   return res.status(400).json(validated.errors);
   },
 
   update: async function (req, res) {

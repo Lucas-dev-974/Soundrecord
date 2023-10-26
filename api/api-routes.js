@@ -40,6 +40,8 @@ exports.router = (() => {
     .put(checkAutority, UserController.reset_password);
   router.route("/creators").get(UserController.get_creators);
 
+  router.route("/profile").get(ProfileSetting.get);
+
   // Follow
   router.route("/follow").post(FollowController.Follow);
   router.route("/followed").get(FollowController.Followed);
@@ -63,32 +65,10 @@ exports.router = (() => {
   // ! ADMIN
   router.route("/ad/signaled-comments").get(Comment.mostSignaledComments);
 
-  // User picture
-  // router
-  //   .route("/picture")
-  //   .post(
-  //     MulterFilesManager.upload.single("profile_picture"),
-  //     UserController.upload
-  //   );
-  router.route("/userPicture").get(UserController.picture);
-
-  // Profile routes
-  // router.route("/profile").get(ProfileSetting.getProfile);
-  // router.route("/profile/banner").get(ProfileSetting.banner_image);
-
-  // Profile Setting
-  // router
-  //   .route("/profile-setting/banner-upload")
-  //   .post(
-  //     MulterFilesManager.upload.single("banner-img"),
-  //     ProfileSetting.upload
-  //   );
-  // router
-  //   .route("/profile-setting/banner-img")
-  //   .delete(ProfileSetting.delete_banner);
-  router.route("/profile").get(ProfileSetting.get);
-  // router.route("/profile-settings").get(ProfileSetting.all);
-  // router.route("/profile-setting").patch(ProfileSetting.update);
+  router
+    .route("/user-picture")
+    .post(MulterFilesManager.upload.single("picture"), UserController.upload);
+  router.route("/user-picture").get(UserController.picture);
 
   // Sessions routes
   router.route("/session/:sessionid").get(SessionController.get);
@@ -97,29 +77,27 @@ exports.router = (() => {
   router.route("/session/:sessionid").delete(SessionController.delete);
   router.route("/session").patch(SessionController.update);
 
-  router
-    .route("/session/import-in")
-    .post(
-      MulterFilesManager.upload.single("audio"),
-      CheckFileIntegrity.CheckWavFileIntegrity,
-      SessionController.importIn
-    );
-  router
-    .route("/session/import-from-library")
-    .post(SessionController.importInFromLibrary);
+  // router
+  //   .route("/session/import-in")
+  //   .post(
+  //     MulterFilesManager.upload.single("audio"),
+  //     CheckFileIntegrity.CheckWavFileIntegrity,
+  //     SessionController.importIn
+  //   );
+  // router
+  //   .route("/session/import-from-library")
+  //   .post(SessionController.importInFromLibrary);
 
   // Pists routes
   router.route("/store").get(AudioController.store);
   router.route("/library").get(AudioController.library);
   router.route("/audio/:id").get(AudioController.get);
-  router
-    .route("/audio")
-    .post(
-      MulterFilesManager.upload.single("audio"),
-      CheckFileIntegrity.CheckWavFileIntegrity,
-      CheckFileIntegrity.CheckMp3FileIntegrity,
-      AudioController.Import
-    );
+  router.route("/audio").post(
+    MulterFilesManager.upload.single("audio"),
+    // CheckFileIntegrity.CheckWavFileIntegrity,
+    // CheckFileIntegrity.CheckMp3FileIntegrity,
+    AudioController.Import
+  );
   router.route("/track/:id").delete(AudioController.delete);
   router.route("/track").patch(AudioController.update);
   router.route("/audio/categorie").post(AudioCategorie.linkAudioToCategories);

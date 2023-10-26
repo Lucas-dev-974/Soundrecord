@@ -90,8 +90,6 @@ const self = (module.exports = {
     }).userPseudo;
 
     if (!pseudo && req.user && req.user.pseudo) pseudo = req.user.pseudo;
-    console.log("PSEUDO:", pseudo, req.query);
-    console.log("USER:", req.user);
 
     if (req.user && pseudo == req.user.pseudo) {
       pseudo = req.user.pseudo;

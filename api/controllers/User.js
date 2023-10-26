@@ -113,22 +113,22 @@ const self = (module.exports = {
   },
 
   upload: async function (req, res) {
-    // Check if file is autorized, Setting up in MulterMiddleware
     if (!req.AutorizedFile || !req.Isimage)
       return res.status(403).json({
         error: "Un fichier de type .png - .jpg - .jpeg est attendu !",
       });
 
-    console.log(req.fileInfos);
-    let user = await models.User.findByPk(req.user.id);
-    user.set("picture", req.fileInfos.originalname);
+    const user = await models.User.findByPk(req.user.id);
+    user.set("picture", req.filename);
     await user.save();
-
     return res.status(200).json();
   },
 
-  returnImage: function (filePath) {
-    if (!fs.existsSync(filePath)) return false;
+  returnImage: function (res, filePath) {
+    if (!fs.existsSync(filePath))
+      return res
+        .status(403)
+        .json({ message: "Une erreur est survenue l'image n'existe pas" });
 
     const filereader = fs.createReadStream(filePath);
     const ps = new stream.PassThrough(); // Handle error during stream
@@ -146,36 +146,32 @@ const self = (module.exports = {
   },
 
   picture: async function (req, res) {
-    let userid = req.query.pseudo ?? req.user ? req.user.pseudo : null;
-    let picture_dir;
+    const validated = validator(req.query, { pseudo: "string|required" });
+    if (validated.errors) return res.status(403).json(validated.errors);
 
-    if (userid == null)
-      return res.status(404).json({
-        message: "Veuillez spécifié le pseudo d'un utilisateur",
-        user: req.user,
-      });
-    const user = await models.User.findOne({ where: { pseudo: userid } });
+    const user = await models.User.findOne({
+      where: { pseudo: validated.pseudo },
+    }).catch((error) => {
+      return manageCatchErrorModel(res, error);
+    });
+
     if (!user) return res.status(404).json({ message: "user doesnt exist" });
 
-    picture_dir =
-      "../public/user-" +
-      userid +
-      "/picture/" +
-      user.dataValues.picture.replace(/ /g, "");
-    if (!fs.existsSync(picture_dir))
-      picture_dir = "../public/default/defaultUserPicture.png";
-    if (!fs.existsSync(picture_dir))
-      return res
-        .status(404)
-        .json({ message: "Le fichier n'a pas été retrouver." });
+    let filePath;
+    if (!user.dataValues.picture)
+      filePath = path.resolve(__dirname, "../public/default-user-picture.png");
+    else
+      filePath = path.resolve(
+        __dirname,
+        "../public/" + user.dataValues.picture
+      );
 
-    picture_dir = path.resolve(__dirname, picture_dir);
-    this.returnImage(picture_dir);
+    self.returnImage(res, filePath);
   },
 
   get_creators: async function (req, res) {
     const exclude_fields = { exclude: ["updatedAt", "createdAt", "password"] };
-    console.log("okok");
+
     // Get public creators
     let creators = await models.User.findAll({
       where: { public: true },
@@ -184,10 +180,8 @@ const self = (module.exports = {
     creators.rows.forEach(
       (creator, key) => (creators.rows[key] = creator.dataValues)
     );
-    console.log(creators);
     // Get like's and return response
     creators = await self.get_likes(creators);
-    console.log(creators);
     return res.status(200).json(creators);
   },
 

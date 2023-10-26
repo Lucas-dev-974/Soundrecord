@@ -50,11 +50,12 @@ module.exports = {
    * @returns datas of asked page
    */
   GetPagingDatas: function (data, page, limit) {
-    const { count: totalItems, rows: datas } = data;
+    console.log(data);
+    const { count: count, rows: datas } = data;
     const currentPage = page ? +page : 0;
-    const totalPages = Math.ceil(totalItems / limit);
+    const totalPages = Math.ceil(count / limit);
 
-    return { totalItems, datas, totalPages, currentPage };
+    return { totalItems: count, datas, totalPages, currentPage };
   },
 
   /**
@@ -62,9 +63,9 @@ module.exports = {
    */
   validator: (body, key, value) => validate(body, key, value),
 
-  manageCatchErrorModel: function(res, error){
+  manageCatchErrorModel: function (res, error) {
     console.log("error from model", error);
-    res.status(400).json("Désoler une erreur est survenue.")
+    res.status(400).json("Désoler une erreur est survenue.");
   },
 
   exclude: function (arr, to_excl) {

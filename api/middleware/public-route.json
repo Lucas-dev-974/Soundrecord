@@ -16,6 +16,7 @@
     "GET|/api/comments/",
 
     "GET|/api/media/",
-    "GET|/api/user/"
+    "GET|/api/user/",
+    "POST|/api/search/audio"
   ]
 }

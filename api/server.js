@@ -6,7 +6,7 @@ const { checkPagingParams } = require("./middleware/Paging");
 const MediaManager = require("./middleware/MediaManager").handleMediaUrl;
 
 const router = require("./api-routes").router;
-const adminRoutes = require("./routes/admin.routes").router
+const adminRoutes = require("./routes/admin.routes").router;
 
 const JwtMidle = require("./middleware/Jwt").isAuthorized;
 // Server params
@@ -16,11 +16,10 @@ const corsOptions = {
   methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
 };
 
-
 // Instanciate server
 const server = express();
 
-// ? ... Import
+// * ... Import ?
 
 // Setup Middleware
 server.use(cors(corsOptions));
@@ -34,6 +33,6 @@ server.use(checkPagingParams);
 // Handle Api Routes
 server.use("/api/", router);
 
-server.use("/api/admin/", adminRoutes)
+server.use("/api/admin/", adminRoutes);
 
 server.listen(port, () => console.log("http://localhost:" + port));
