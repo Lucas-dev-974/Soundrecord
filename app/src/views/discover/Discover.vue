@@ -63,6 +63,7 @@ export default {
         await this.getAudios();
         this.dataLoaded = true;
         const srcList = this.audios.datas.map((audio) => audio.src);
+        console.log("srcList:", srcList);
         SimpleAudioPlayer.setAudioList(srcList);
         console.log(SimpleAudioPlayer.getAudioList());
     },

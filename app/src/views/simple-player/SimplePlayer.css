@@ -1,26 +1,49 @@
 #simple-player-container{
-    position: fixed;
-    bottom: 10px;
-    left: 0;
-    width: 100vw;
-    height: 40px;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  bottom: 0px;
+  left: 0;
+  width: 100vw;
+  height: 40px;
+  background-color: #0f0f0f7b;
 }
 
 .sp-content {
   display: flex;
+  justify-content: space-around;
   align-items: center;
   gap: 15px;
-  width: 100%;
+  width: 60%;
   margin: 0 auto;
   padding: 0 5px;
-  background-color: #4b4b4bc5;
+  /* background-color: #4b4b4bc5; */
   color: white;
   border-radius: 5px;
   align-items: center;
 }
 
+.progress-duration{
+  width: 80%;
+}
+
+.left-control{
+  width: 15%;
+}
+
+.next-after{
+  position: relative !important;
+  left: -22px;
+}
+.previous-after, .previous-before {
+  transform: rotate(180deg);
+}
+.previous-after{
+  position: relative !important;
+  left: -20px;
+}
 /* Phone */
-@media screen and (max-width: 600px) {
+/* @media screen and (max-width: 600px) {
   .sp-content {
     width: 95%;
   }
@@ -54,7 +77,7 @@
   .sp-content {
     width: 50%;
   }
-}
+} */
 
 
 
@@ -66,7 +89,6 @@
 }
 
 .play-container{
-  width: 14px;
   display: flex;
   align-items: center;
 }

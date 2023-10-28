@@ -4,7 +4,13 @@
   }
   
 .volume-range-input{
-  height: 6px;
+  height: 5px;
   overflow: hidden;
   width: 100%;
 }
+
+
+.volume-range-input::-webkit-slider-thumb {
+  cursor: ew-resize;
+}
+

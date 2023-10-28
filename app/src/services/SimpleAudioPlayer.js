@@ -69,20 +69,28 @@ class SimplePlayerAudio {
   }
 
   async play(url = undefined, audio = undefined) {
-    if (audio != undefined) this.currentAudio = audio;
     // If no url params & is not in pause & the current url is not empty
     // lets play the current url
-    if (!this.paused && this.currentUrl == url && url != undefined) {
+    if (!this.paused && this.currentUrl) {
+      console.log("okok");
       this.audioElement.pause();
       this.paused = true;
       this.onPause();
       return;
     }
+    if (audio != undefined) this.currentAudio = audio;
 
     if (!url && !this.currentUrl && this.audioList.length > 0) {
-      console.log("sete url", this.currentIndex);
-      this.currentUrl = this.audioList[this.currentIndex].src;
-      // this.currentAudio = this.audioList[this.currentIndex];
+      this.currentUrl = this.audioList[this.currentIndex];
+    }
+
+    console.log(!url && this.paused && this.currentUrl);
+    if (!url && this.paused && this.currentUrl) {
+      console.log("okokok");
+      this.paused = false;
+      this.audioElement.play();
+      this.onPlay();
+      return;
     }
 
     if (this.currentUrl != url || !this.currentUrl) {

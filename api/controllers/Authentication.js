@@ -66,7 +66,7 @@ module.exports = {
    * @returns
    */
   login: async function (req, res) {
-    console.log("BODY: ", req.body, JWT_SIGN_SECRET, process.env);
+    console.log("BODY: ", req.body, env(JWT_SIGN_SECRET), process.env);
     let validated = validator(req.body, {
       email: "string|required",
       password: "string|required",
