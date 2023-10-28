@@ -14,6 +14,7 @@ const self = (module.exports = {
    * @returns
    */
   generateToken: function (user, mailtoken = null) {
+    console.log("JWT SECRET KEY:", JWT_SIGN_SECRET);
     if (mailtoken !== null)
       return jwt.sign(
         {
