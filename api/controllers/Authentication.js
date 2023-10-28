@@ -1,8 +1,8 @@
 require("dotenv").config();
+const JWT_SIGN_SECRET = process.env.JWT_SIGN_SECRET;
 const bcrypt = require("bcrypt");
 const jwt = require("../middleware/Jwt");
 const models = require("../models");
-const JWT_SIGN_SECRET = process.env.JWT_SIGN_SECRET;
 
 const { validator, manageCatchErrorModel } = require("../utils.js");
 
@@ -66,7 +66,7 @@ module.exports = {
    * @returns
    */
   login: async function (req, res) {
-    console.log("BODY: ", req.body, JWT_SIGN_SECRET);
+    console.log("BODY: ", req.body, JWT_SIGN_SECRET, process.env);
     let validated = validator(req.body, {
       email: "string|required",
       password: "string|required",
