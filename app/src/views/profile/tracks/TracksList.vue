@@ -32,6 +32,7 @@ export default {
             const userPseudo = this.$store.state.userProfile ? this.$store.state.userProfile.user.pseudo : undefined
             const tracks = await apiAudio.library(userPseudo)
             this.tracks = tracks
+            console.log("TRACKS:", tracks);
             SimpleAudioPlayer.setAudioList(tracks)
         },
 
@@ -41,7 +42,21 @@ export default {
             this.tracks = sessions.datas
         },
 
-        uploadTrack: function () {
+        uploadTrack: async function () {
+            const input = document.createElement('input');
+            input.type = 'file';
+            const pushTrack = (track) => {
+                this.tracks.push(track)
+            }
+            input.addEventListener('change', async () => {
+                const files = Array.from(input.files);
+                const formData = new FormData()
+                formData.append('track', files[0])
+                const response = await apiAudio.upload(formData)
+                pushTrack(response)
+            })
+
+            input.click();
 
         },
 

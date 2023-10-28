@@ -92,8 +92,8 @@ exports.router = (() => {
   router.route("/store").get(AudioController.store);
   router.route("/library").get(AudioController.library);
   router.route("/audio/:id").get(AudioController.get);
-  router.route("/audio").post(
-    MulterFilesManager.upload.single("audio"),
+  router.route("/track").post(
+    MulterFilesManager.upload.single("track"),
     // CheckFileIntegrity.CheckWavFileIntegrity,
     // CheckFileIntegrity.CheckMp3FileIntegrity,
     AudioController.Import

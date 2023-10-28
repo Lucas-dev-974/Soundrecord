@@ -89,24 +89,19 @@ module.exports = {
     if (!user)
       return res.status(404).json({ message: "L'utilisateur n'existe pas." });
 
-    const audios = await models.Audio.findAll({
+    const tracks = await models.Audio.findAll({
       where: { userid: user.dataValues.id, ...where },
-      attributes: {
-        exclude: [],
-      },
     }).catch((error) => {
       return manageCatchErrorModel(res, error);
     });
 
-    for (const audio of audios) {
-      console.log("audio set like, creator", await audio.user(models));
-      audio.dataValues.likes = await audio.getLikes(models);
-      audio.dataValues.creator = await audio.user(models);
+    for (const track of tracks) {
+      track.dataValues = (await track.formatedTrack(models)).dataValues;
     }
 
-    if (audios === undefined) return res.status(200).json({ audios: [] });
+    if (tracks === undefined) return res.status(200).json({ audios: [] });
 
-    return res.status(200).json(audios);
+    return res.status(200).json(tracks);
   },
 
   /**
@@ -127,27 +122,6 @@ module.exports = {
 
     for (const track of tracks.rows) {
       track.dataValues = (await track.formatedTrack(models)).dataValues;
-      // const user = await track.user(models);
-
-      // track.dataValues.categories = await track.categories(models);
-      // track.dataValues.creator = {
-      //   pseudo: user.pseudo,
-      //   picture:
-      //     process.env.APP_URL + "/public/default" + user.picture
-      //       ? user.picture
-      //       : "",
-      // };
-
-      // const likes = await track.getLikes(models);
-      // track.dataValues.likes = {
-      //   count: likes.count,
-      //   userLike:
-      //     likes.rows.find((item) => item.userid == req.user.id) != undefined,
-      // };
-
-      // track.dataValues.release = calculateTimePassed(
-      //   track.dataValues.createdAt
-      // );
     }
 
     if (tracks === undefined) return res.status(200).json({ audios: [] });
@@ -216,7 +190,8 @@ module.exports = {
       return manageCatchErrorModel(error);
     });
 
-    return res.status(200).json(audio);
+    const formatedAudio = await audio.formatedTrack(models);
+    return res.status(200).json(formatedAudio.dataValues);
   },
 
   update: async function (req, res) {

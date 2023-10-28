@@ -8,15 +8,16 @@
             <div class="track-item-line-top">
                 <div class="track-item-name-actions">
                     <!-- TODO: to review -->
-                    <!-- <v-icon @click="updateTrackName"
+                    <v-icon @click="updateTrackName"
                         v-if="$store.state.userProfile && $store.state.userProfile.isMyProfile && !onUpdate"
-                        :size="16">mdi-pencil</v-icon>
+                        :size="14">mdi-pencil</v-icon>
 
                     <v-icon @click="updateTrackName"
                         v-if="$store.state.userProfile && $store.state.userProfile.isMyProfile && onUpdate"
-                        :size="16">mdi-check</v-icon> -->
+                        :size="16">mdi-check</v-icon>
 
-                    <input class="track-name-input" v-model="trackName" ref="refNameInput" type="text" disabled>
+                    <input class="track-name-input" v-on:keypress.enter="updateTrackName" v-model="trackName"
+                        ref="refNameInput" type="text" disabled>
                     <!-- <p>{{ track.name }}</p> -->
                 </div>
                 <div class="line-fit">
@@ -91,7 +92,7 @@ export default {
         play: function () {
             if (this.onPlay) this.onPlay = false
             else this.onPlay = true
-            SimpleAudioPlayer.play(this.track.src, this.track)
+            SimpleAudioPlayer.play(this.track)
         },
 
 
@@ -111,13 +112,13 @@ export default {
         updateTrackName: async function () {
             if (this.track.name != this.trackName) {
                 console.log("update");
-                // const response = await apiAudio.update({
-                //     trackid: this.track.id,
-                //     fields: "name",
-                //     datas: String(this.trackName)
-                // })
+                const response = await apiAudio.update({
+                    trackid: this.track.id,
+                    fields: "name",
+                    datas: String(this.trackName)
+                })
 
-                // console.log(response);
+                console.log(response);
             }
             this.onUpdate = !this.onUpdate
             if (this.onUpdate) {
@@ -148,7 +149,6 @@ export default {
         },
 
         Playing: function () {
-            console.log("Playing", SimpleAudioPlayer.getCurrentAudio().src == this.track.src, this.onPlay);
             return this.onPlay && SimpleAudioPlayer.getCurrentAudio().src == this.track.src
         }
     }

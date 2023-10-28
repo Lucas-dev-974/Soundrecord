@@ -33,6 +33,28 @@ class ApiAudio {
     const response = await api.delete("/track/" + trackid);
     return response.data;
   }
+
+  async upload(formData) {
+    const response = await api
+      .post("/track", formData, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": undefined,
+        },
+      })
+      .catch((error) => error.response);
+    console.log(response);
+    if (response.status != 200) {
+      window.App.$store.commit("push_alert", {
+        message: response.data.message
+          ? response.data.message
+          : response.data.error,
+        type: "info",
+      });
+      console.log("ookok");
+    }
+    return response.data;
+  }
 }
 
 export default new ApiAudio();
