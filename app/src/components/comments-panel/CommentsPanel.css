@@ -47,8 +47,10 @@
 
 .comments-header-title{
     width: 80%;
+    text-wrap: nowrap;
     overflow-x: hidden;
-    font-size: 18px;
+    text-overflow: ellipsis;
+    font-size: 16px;
 }
 
 .comments-footer{
@@ -56,6 +58,11 @@
     width: 100%;
     bottom: 0;
     left: 0;
+}
+
+.comments-footer-text{
+    font-size: 12px;
+    text-align: center;
 }
 
 .comments-content{

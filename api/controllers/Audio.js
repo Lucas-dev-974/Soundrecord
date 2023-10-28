@@ -43,9 +43,9 @@ module.exports = {
         "imagesrc",
         "filename",
       ],
-      // include: [{ model: models.User, as: "User" }],
     });
 
+    console.log("Audio:", audio);
     if (!audio)
       return res.status(403).json({ errors: "L'audio n'a pas été trouver." });
 

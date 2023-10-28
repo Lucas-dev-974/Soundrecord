@@ -2,10 +2,10 @@
     <section id="simple-player-container">
         <div class="sp-content">
             <div class="play-container">
-                <PlayPause :onClick="play" :onPlay="Playing" />
+                <PlayPause :onClick="play" :onPlay="isPlaying" />
             </div>
-            <p class="timer-duration">00:00</p>
-            <Progress :onInput="onInputDuration" :onPlay="() => true" :on-grab-duration="onGrabDuration"
+            <p ref="timer" class="timer-duration">00:00</p>
+            <Progress :onInput="onInputDuration" :onPlay="isPlaying" :on-grab-duration="onGrabDuration"
                 :track="getTrack"></Progress>
 
             <div class="line-fit">
@@ -23,6 +23,19 @@ import PlayPause from "./play-pause/PlayPause.vue"
 import Progress from "./progress-bar/Progress.vue"
 import { trouverPourcentage, trouverValeurPourcentage } from "../../utils"
 
+function convertTime(time) {
+    var mins = Math.floor(time / 60);
+    if (mins < 10) {
+        mins = '0' + String(mins);
+    }
+    var secs = Math.floor(time % 60);
+    if (secs < 10) {
+        secs = '0' + String(secs);
+    }
+
+    return mins + ':' + secs;
+}
+
 export default {
     components: {
         VolumeSlider, PlayPause, Progress
@@ -31,8 +44,8 @@ export default {
     data() {
         return {
             onPlay: false,
-            intervals: [],
-            progressBar: null
+            progressBar: null,
+            playInterval: undefined
         }
     },
 
@@ -45,44 +58,36 @@ export default {
 
         })
 
-        document.addEventListener('DOMContentLoaded', () => {
-            if (this.progressBar == null) {
-                try {
-                    this.progressBar = document.getElementById('spl-progress')
-                } catch (error) {
-                    console.log("la progress na pas été trouver");
-                }
-            }
-        })
-
-        this.setEvent(this.setOnPlay)
+        this.setEvent()
     },
 
     methods: {
-        setEvent: function (callback) {
+        setEvent: function () {
+            const refTimer = this.$refs.timer
             document.addEventListener('spl-play', function () {
-                callback(true)
+                this.playInterval = setInterval(() => {
+                    const playingDuration = convertTime(SimpleAudioPlayer.getPlayingMinutes())
+                    refTimer.textContent = String(playingDuration)
+                }, 100)
             })
 
             document.addEventListener('spl-pause', function () {
-                callback(false)
                 SimpleAudioPlayer.clearGlobalFallback()
+                clearInterval(this.playInterval)
             })
         },
 
         setOnPlay: function (value) {
-            this.onPlay = value
+            console.log("okoko", value);
         },
 
         play: function () {
             console.log(SimpleAudioPlayer.getAudioList());
-            // if (!this.onPlay) this.onPlay = true
-            // else this.onPlay = false
             SimpleAudioPlayer.play()
         },
 
-        Playing: function () {
-            return this.onPlay
+        isPlaying: function () {
+            return SimpleAudioPlayer.isPaused()
         },
 
         onGrabDuration: function (durationPercent) {

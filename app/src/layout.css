@@ -55,3 +55,7 @@
 .w-full{
   width: 100%;
 }
+
+.cursor-pointer{
+  cursor: pointer;
+}

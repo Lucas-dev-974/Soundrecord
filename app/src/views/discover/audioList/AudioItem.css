@@ -2,6 +2,7 @@
   color: white;
   overflow-x: hidden;
   height: 22vh;
+  min-height: 200px;
 }
 
 .audio-header {

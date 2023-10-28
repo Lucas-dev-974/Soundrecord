@@ -32,12 +32,11 @@ export default {
 
     mounted() {
         document.addEventListener('spl-play', () => {
-            console.log("PLAY PAUSE", this.onPlay(), SimpleAudioPlayer.getCurrentAudio());
-            this.onplay = this.onPlay()
+            this.onplay = !SimpleAudioPlayer.isPaused()
         })
 
         document.addEventListener('spl-pause', () => {
-            this.onplay = this.onPlay()
+            this.onplay = !SimpleAudioPlayer.isPaused()
         })
     }
 }

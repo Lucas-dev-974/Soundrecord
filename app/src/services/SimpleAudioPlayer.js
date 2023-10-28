@@ -64,6 +64,10 @@ class SimplePlayerAudio {
     return this.audioElement.duration;
   }
 
+  getPlayingMinutes() {
+    return this.audioElement.currentTime;
+  }
+
   async play(url = undefined, audio = undefined) {
     if (audio != undefined) this.currentAudio = audio;
     // If no url params & is not in pause & the current url is not empty
@@ -76,12 +80,14 @@ class SimplePlayerAudio {
     }
 
     if (!url && !this.currentUrl && this.audioList.length > 0) {
+      console.log("sete url", this.currentIndex);
       this.currentUrl = this.audioList[this.currentIndex].src;
-      this.currentAudio = this.audioList[this.currentIndex];
+      // this.currentAudio = this.audioList[this.currentIndex];
     }
 
     if (this.currentUrl != url || !this.currentUrl) {
       this.currentUrl = url != undefined ? url : this.currentUrl;
+      console.log("current url:", this.currentUrl);
       const audioBuffer = await this.fetchAudioBuffer(this.currentUrl);
       await this.createAudioBlobUrl(audioBuffer);
     }
@@ -101,7 +107,7 @@ class SimplePlayerAudio {
     this.paused = true;
   }
 
-  async setAudioList(audiosList) {
+  setAudioList(audiosList) {
     this.audioList = audiosList;
   }
 
