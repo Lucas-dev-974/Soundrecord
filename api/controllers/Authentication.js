@@ -1,12 +1,9 @@
 const bcrypt = require("bcrypt");
 const jwt = require("../middleware/Jwt");
 const models = require("../models");
+const JWT_SIGN_SECRET = process.env.JWT_SIGN_SECRET;
 
-const {
-  returnFields,
-  validator,
-  manageCatchErrorModel,
-} = require("../utils.js");
+const { validator, manageCatchErrorModel } = require("../utils.js");
 
 module.exports = {
   /**
@@ -43,8 +40,6 @@ module.exports = {
       return manageCatchErrorModel(res, error);
     });
 
-    console.log("USER:", user[1]);
-
     if (user[1] == false)
       return res.status(403).json({ message: "Le pseudo choisi existe déjà" });
     // 5 - Lets generate Token for the user
@@ -70,7 +65,7 @@ module.exports = {
    * @returns
    */
   login: async function (req, res) {
-    console.log("BODY: ", req.body);
+    console.log("BODY: ", req.body, JWT_SIGN_SECRET);
     let validated = validator(req.body, {
       email: "string|required",
       password: "string|required",
