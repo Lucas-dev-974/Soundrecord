@@ -100,7 +100,9 @@ exports.router = (() => {
   );
   router.route("/track/:id").delete(AudioController.delete);
   router.route("/track").patch(AudioController.update);
-  router.route("/audio/categorie").post(AudioCategorie.linkAudioToCategories);
+
+  router.route("/categories").get(AudioCategorie.all);
+  router.route("/track/categorie").post(AudioCategorie.linkAudioToCategories);
 
   // Medias routes
   router.route("/medias/audio/:id").get(MediasControlller.getAudio);
@@ -122,6 +124,7 @@ exports.router = (() => {
   // router.route("/search/pists").post(Search.SearchImport);
   // router.route("/search/users").post(Search.SearchUser);
   router.route("/search/audio").post(Search.SearchAudio);
+  router.route("/search/audio/genre").get(Search.SearchAudioByGender);
 
   // Mail routes
   // router.route("/mail/password-reset").post(EmailController.reset_password);

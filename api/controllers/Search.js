@@ -89,4 +89,28 @@ module.exports = {
     const response = GetPagingDatas(search, req.page, limit);
     return res.status(200).json(response);
   },
+
+  SearchAudioByGender: async function (req, res) {
+    const validated = validator(req.query, {
+      genres: "string|required",
+    });
+
+    if (validated.errors != undefined)
+      return res.status(400).json(validated.errors);
+
+    const { limit, offset } = GetPagination(req.page, req.size);
+    const search = await models.Audio.findAndCountAll({
+      where: {
+        name: {
+          [Op.like]: "%" + validated.query + "%",
+        },
+        public: true,
+      },
+      limit: limit,
+      offset: offset,
+    }).catch((erro) => console.log(erro));
+
+    const response = GetPagingDatas(search, req.page, limit);
+    return res.status(200).json(response);
+  },
 };

@@ -1,24 +1,27 @@
 <template>
     <li :class="'audio-container audio-' + track.id">
         <img class="audio-image" :class="'img-' + track.id" :src="track.imagesrc" />
-        <p :class="'audio-title audio-title-' + track.id">{{ track.name }}</p>
-        <div class="audio-header">
-            <a class="author-link" :href="'/profile?pseudo=' + track.creator.pseudo" rel="noopener noreferrer">
-                {{ track.creator.pseudo }}
-            </a>
-            <div class="categories">
-                <GenreTag :text="genre.name" v-for="genre of track.categories" v-bind:key="genre.id" />
-            </div>
-        </div>
+        <div class="audio-content">
 
-        <div class="audio-footer">
-            <div class="audio-action">
-                <v-icon @click="showComments" size="22">mdi-message-text-outline</v-icon>
-                <v-icon class="audio-action-item" size="22" @click="like">mdi-star-outline</v-icon>
-                {{ track.likes.count }}
+            <p :class="'audio-title audio-title-' + track.id">{{ track.name }}</p>
+            <div class="audio-header">
+                <a class="author-link" :href="'/profile?pseudo=' + track.creator.pseudo" rel="noopener noreferrer">
+                    {{ track.creator.pseudo }}
+                </a>
+                <div class="categories">
+                    <GenreTag :text="genre.name" v-for="genre of track.categories" v-bind:key="genre.id" />
+                </div>
             </div>
 
-            <AddToPlaylistDialog :track="track" />
+            <div class="audio-footer">
+                <div class="audio-action">
+                    <v-icon @click="showComments" size="22">mdi-message-text-outline</v-icon>
+                    <v-icon class="audio-action-item" size="22" @click="like">mdi-star-outline</v-icon>
+                    {{ track.likes.count }}
+                </div>
+
+                <AddToPlaylistDialog :track="track" />
+            </div>
         </div>
     </li>
 </template>

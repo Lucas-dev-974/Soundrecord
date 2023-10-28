@@ -53,7 +53,7 @@ module.exports = {
     console.log(data);
     const { count: count, rows: datas } = data;
     const currentPage = page ? +page : 0;
-    const totalPages = Math.ceil(count / limit);
+    const totalPages = Math.ceil(count / limit) - 1;
 
     return { totalItems: count, datas, totalPages, currentPage };
   },

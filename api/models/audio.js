@@ -26,6 +26,20 @@ module.exports = (sequelize, DataTypes) => {
         attributes: ["pseudo", "picture"],
       });
     }
+
+    async categories(models) {
+      const categories = [];
+      const categoriesAssociation = await models.AudioCategorie.findAll({
+        where: { audioId: this.id },
+      });
+
+      for (const asso of categoriesAssociation) {
+        const categorie = await models.Categories.findOne({
+          where: { id: asso.dataValues.categorieId },
+        });
+        if (categorie) categories.push(categorie.dataValues);
+      }
+    }
   }
 
   Audio.init(

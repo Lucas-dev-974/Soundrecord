@@ -117,7 +117,7 @@ module.exports = {
    */
   store: async function (req, res) {
     const { limit, offset } = GetPagination(req.page, req.size);
-    let audios = await models.Audio.findAndCountAll({
+    const audios = await models.Audio.findAndCountAll({
       where: { public: true },
       // If userid is not set in this list an  error popup
       attributes: ["id", "userid", "name", "src", "imagesrc", "createdAt"],
@@ -126,29 +126,9 @@ module.exports = {
     }).catch((error) => console.log(error));
 
     for (const audio of audios.rows) {
-      const user = await models.User.findOne({
-        where: { id: audio.dataValues.userid },
-      }).catch((error) => {
-        return manageCatchErrorModel(res, error);
-      });
+      const user = await audio.user(models);
 
-      const categories = await models.AudioCategorie.findAll({
-        where: { audioId: audio.id },
-      }).catch((error) => {
-        return manageCatchErrorModel(res, error);
-      });
-
-      audio.dataValues.categories = [];
-      for (const audioCate of categories) {
-        const categorie = await models.Categories.findOne({
-          where: { id: audioCate.categorieId },
-        }).catch((error) => {
-          return manageCatchErrorModel(res, req);
-        });
-
-        audio.dataValues.categories.push(categorie.dataValues);
-      }
-
+      audio.dataValues.categories = await audio.categories(models);
       audio.dataValues.creator = {
         pseudo: user.pseudo,
         picture:
@@ -156,20 +136,17 @@ module.exports = {
             ? user.picture
             : "",
       };
-      const like = await models.Like.findAndCountAll({
-        where: {
-          model: "audio",
-          modelid: audio.dataValues.id,
-        },
-      });
 
-      (audio.dataValues.likes = {
-        count: like.count,
-        userLike: like.userid,
-      }),
-        (audio.dataValues.release = calculateTimePassed(
-          audio.dataValues.createdAt
-        ));
+      const likes = await audio.getLikes(models);
+      audio.dataValues.likes = {
+        count: likes.count,
+        userLike:
+          likes.rows.find((item) => item.userid == req.user.id) != undefined,
+      };
+
+      audio.dataValues.release = calculateTimePassed(
+        audio.dataValues.createdAt
+      );
     }
 
     if (audios === undefined) return res.status(200).json({ audios: [] });
