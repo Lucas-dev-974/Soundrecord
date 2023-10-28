@@ -8,7 +8,8 @@
             </div>
             <div class="play-container">
                 <div class="line-fit">
-                    <svg width="18" height="14" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg @click="previousMusic" width="18" height="14" viewBox="0 0 22 18" fill="none"
+                        style="cursor: pointer;" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M6.05772 8.5263C6.05714 8.30362 6.11878 8.08459 6.23665 7.89051C6.35452 7.69643 6.5246 7.53391 6.73036 7.41875L19.4822 0.193043C19.6972 0.0711002 19.9434 0.00452995 20.1955 0.000205994C20.4475 -0.00411797 20.6963 0.0539627 20.916 0.168449C21.1336 0.281157 21.3149 0.445522 21.4412 0.644646C21.5675 0.843769 21.6343 1.07046 21.6346 1.30141V15.7512C21.6343 15.9821 21.5675 16.2088 21.4412 16.4079C21.3149 16.6071 21.1336 16.7714 20.916 16.8841C20.6963 16.9986 20.4475 17.0567 20.1955 17.0524C19.9434 17.0481 19.6972 16.9815 19.4822 16.8596L6.73036 9.63384C6.5246 9.51869 6.35452 9.35616 6.23665 9.16208C6.11878 8.96801 6.05714 8.74898 6.05772 8.5263Z"
                             fill="white" fill-opacity="0.8" />
@@ -19,7 +20,8 @@
                 </div>
                 <PlayPause :onClick="play" :onPlay="isPlaying" />
                 <div class="line-fit">
-                    <svg width="18" height="14" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg @click="nextMusic" width="18" height="14" viewBox="0 0 22 18" fill="none"
+                        xmlns="http://www.w3.org/2000/svg" style="cursor: pointer;">
                         <path
                             d="M15.9423 9.4737C15.9429 9.69638 15.8812 9.91541 15.7634 10.1095C15.6455 10.3036 15.4754 10.4661 15.2696 10.5813L2.5178 17.807C2.30281 17.9289 2.05657 17.9955 1.80452 17.9998C1.55247 18.0041 1.30374 17.946 1.08402 17.8316C0.866393 17.7188 0.685105 17.5545 0.558797 17.3554C0.432489 17.1562 0.36572 16.9295 0.365356 16.6986V2.24882C0.36572 2.01787 0.432489 1.79118 0.558797 1.59205C0.685105 1.39293 0.866393 1.22856 1.08402 1.11586C1.30374 1.00137 1.55247 0.943289 1.80452 0.947613C2.05657 0.951936 2.30281 1.01851 2.5178 1.14045L15.2696 8.36616C15.4754 8.48131 15.6455 8.64384 15.7634 8.83792C15.8812 9.03199 15.9429 9.25102 15.9423 9.4737Z"
                             fill="white" fill-opacity="0.8" />
@@ -77,8 +79,7 @@ export default {
     mounted() {
         document.addEventListener('keypress', event => {
             if (event.code === 'Space') {
-                if (SimpleAudioPlayer.paused) SimpleAudioPlayer.play()
-                else SimpleAudioPlayer.pause()
+                SimpleAudioPlayer.play()
             }
 
         })
@@ -87,6 +88,14 @@ export default {
     },
 
     methods: {
+        nextMusic: function () {
+            SimpleAudioPlayer.next()
+        },
+
+        previousMusic: function () {
+            SimpleAudioPlayer.previous()
+        },
+
         setEvent: function () {
             const refTimer = this.$refs.timer
             document.addEventListener('spl-play', function () {
@@ -100,10 +109,6 @@ export default {
                 SimpleAudioPlayer.clearGlobalFallback()
                 clearInterval(this.playInterval)
             })
-        },
-
-        setOnPlay: function (value) {
-            console.log("okoko", value);
         },
 
         play: function () {

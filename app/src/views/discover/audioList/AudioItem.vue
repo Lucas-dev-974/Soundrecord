@@ -59,7 +59,7 @@ export default {
     // TODO: add like method
     methods: {
         play: async function () {
-            await SimpleAudioPlayer.play(this.track.src);
+            await SimpleAudioPlayer.play(this.track);
         },
 
         pause: function () {

@@ -23,9 +23,10 @@ class SimplePlayerAudio {
     this.audioElement = new Audio();
     this.audioElement.onended = () => this.handleAudioEnd();
     this.paused = false;
-    this.currentAudio = {};
+    this.currentAudio = undefined;
 
     this.globalFallack = undefined;
+    this.playNext = false;
   }
 
   async fetchAudioBuffer(audioUrl) {
@@ -68,36 +69,47 @@ class SimplePlayerAudio {
     return this.audioElement.currentTime;
   }
 
-  async play(url = undefined, audio = undefined) {
+  async play(audio = undefined) {
     // If no url params & is not in pause & the current url is not empty
     // lets play the current url
-    if (!this.paused && this.currentUrl) {
-      console.log("okok");
-      this.audioElement.pause();
-      this.paused = true;
-      this.onPause();
-      return;
+    if (!this.paused && this.currentAudio) {
+      if (
+        (audio && this.currentAudio.src == audio.src) ||
+        (!audio && this.pause)
+      ) {
+        this.audioElement.pause();
+        this.paused = true;
+        this.onPause();
+        return;
+      }
     }
-    if (audio != undefined) this.currentAudio = audio;
 
-    if (!url && !this.currentUrl && this.audioList.length > 0) {
-      this.currentUrl = this.audioList[this.currentIndex];
+    if (
+      (!this.currentAudio && !audio) ||
+      (audio != undefined && !this.currentAudio) ||
+      (audio != undefined &&
+        this.currentAudio != undefined &&
+        this.currentAudio.src != audio.src)
+    ) {
+      if (!this.currentAudio && !audio && this.audioList.length > 0) {
+        console.log(this.audioList);
+        this.currentAudio = this.audioList[this.currentIndex];
+      } else {
+        this.currentAudio = audio;
+      }
+
+      this.currentIndex = this.audioList.findIndex(
+        (item) => item.id == this.currentAudio.id
+      );
+      const audioBuffer = await this.fetchAudioBuffer(this.currentAudio.src);
+      await this.createAudioBlobUrl(audioBuffer);
     }
 
-    console.log(!url && this.paused && this.currentUrl);
-    if (!url && this.paused && this.currentUrl) {
-      console.log("okokok");
+    if (!audio && this.paused && this.currentAudio) {
       this.paused = false;
       this.audioElement.play();
       this.onPlay();
       return;
-    }
-
-    if (this.currentUrl != url || !this.currentUrl) {
-      this.currentUrl = url != undefined ? url : this.currentUrl;
-      console.log("current url:", this.currentUrl);
-      const audioBuffer = await this.fetchAudioBuffer(this.currentUrl);
-      await this.createAudioBlobUrl(audioBuffer);
     }
 
     this.paused = false;
@@ -123,9 +135,23 @@ class SimplePlayerAudio {
     return this.audioList;
   }
 
-  playNext() {
-    this.currentIndex = (this.currentIndex + 1) % this.audioList.length;
-    this.play();
+  next() {
+    this.audioElement.pause();
+    if (this.currentIndex + 1 < this.audioList.length)
+      this.currentIndex = this.currentIndex + 1;
+    else if (this.currentIndex + 1 == this.audioList.length)
+      this.currentIndex = 0;
+
+    this.play(this.audioList[this.currentIndex]);
+  }
+
+  previous() {
+    this.audioElement.pause();
+    if (this.currentIndex > 0) this.currentIndex = this.currentIndex - 1;
+    else if (this.currentIndex == 0) {
+      this.currentIndex = this.audioList.length - 1;
+    }
+    this.play(this.audioList[this.currentIndex]);
   }
 
   setVolume(volume) {
@@ -154,7 +180,7 @@ class SimplePlayerAudio {
   }
 
   handleAudioEnd() {
-    this.playNext();
+    this.next();
   }
 
   static getInstance() {

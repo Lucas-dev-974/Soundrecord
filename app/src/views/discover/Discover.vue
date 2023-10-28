@@ -62,10 +62,8 @@ export default {
     async mounted() {
         await this.getAudios();
         this.dataLoaded = true;
-        const srcList = this.audios.datas.map((audio) => audio.src);
-        console.log("srcList:", srcList);
+        const srcList = this.audios.datas;
         SimpleAudioPlayer.setAudioList(srcList);
-        console.log(SimpleAudioPlayer.getAudioList());
     },
 
     methods: {
