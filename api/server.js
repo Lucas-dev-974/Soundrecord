@@ -13,10 +13,7 @@ const port = process.env.SERVER_PORT;
 
 // Instanciate server
 const server = express();
-server.use((req, res, next) => {
-  res.set("Access-Control-Allow-Origin", "*");
-  next();
-});
+server.use(cors());
 server.use(cors());
 server.use(JwtMidle);
 server.use(publicPath);
