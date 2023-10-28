@@ -117,7 +117,7 @@ module.exports = {
    */
   store: async function (req, res) {
     const { limit, offset } = GetPagination(req.page, req.size);
-    const audios = await models.Audio.findAndCountAll({
+    const tracks = await models.Audio.findAndCountAll({
       where: { public: true },
       // If userid is not set in this list an  error popup
       attributes: ["id", "userid", "name", "src", "imagesrc", "createdAt"],
@@ -125,52 +125,61 @@ module.exports = {
       offset: offset,
     }).catch((error) => console.log(error));
 
-    for (const audio of audios.rows) {
-      const user = await audio.user(models);
+    for (const track of tracks.rows) {
+      track.dataValues = (await track.formatedTrack(models)).dataValues;
+      // const user = await track.user(models);
 
-      audio.dataValues.categories = await audio.categories(models);
-      audio.dataValues.creator = {
-        pseudo: user.pseudo,
-        picture:
-          process.env.APP_URL + "/public/default" + user.picture
-            ? user.picture
-            : "",
-      };
+      // track.dataValues.categories = await track.categories(models);
+      // track.dataValues.creator = {
+      //   pseudo: user.pseudo,
+      //   picture:
+      //     process.env.APP_URL + "/public/default" + user.picture
+      //       ? user.picture
+      //       : "",
+      // };
 
-      const likes = await audio.getLikes(models);
-      audio.dataValues.likes = {
-        count: likes.count,
-        userLike:
-          likes.rows.find((item) => item.userid == req.user.id) != undefined,
-      };
+      // const likes = await track.getLikes(models);
+      // track.dataValues.likes = {
+      //   count: likes.count,
+      //   userLike:
+      //     likes.rows.find((item) => item.userid == req.user.id) != undefined,
+      // };
 
-      audio.dataValues.release = calculateTimePassed(
-        audio.dataValues.createdAt
-      );
+      // track.dataValues.release = calculateTimePassed(
+      //   track.dataValues.createdAt
+      // );
     }
 
-    if (audios === undefined) return res.status(200).json({ audios: [] });
-    const response = GetPagingDatas(audios, req.page, limit);
+    if (tracks === undefined) return res.status(200).json({ audios: [] });
+    const response = GetPagingDatas(tracks, req.page, limit);
     return res.status(200).json(response);
   },
 
   byCategories: async function (req, res) {
+    const { limit, offset } = GetPagination(req.page, req.size);
     const validated = validator(req.query, {
       // * format de la chaine de caractère: 1,3,10
-      categorieIds: "string",
+      categorieId: "string",
     });
 
     if (validated.errors) return res.status(400).json(validated.errors);
 
-    // Todo découper la chaine de caractère pour extraire la liste des id de catégorie
-    // * format de la chaine de caractère: 1,3,10
-    const categorieIds = [];
-    const audiosCategorie = await models.AudioCategorie.fincdAll({
-      where: {
-        // Todo à revoir parceque c'est un tableau qui d'id et la je fait que pour un id de catégorie
-        categorieId: validated.categorieIds,
-      },
+    const categorie = await models.Categories.findOne({
+      where: { id: validated.categorieId },
+    }).catch((error) => {
+      return manageCatchErrorModel(res, error);
     });
+
+    if (!categorie)
+      return res.status(404).json({ message: "La catégorie n'existe pas." });
+    categorie.dataValues.tracks = await categorie.tracks(
+      models,
+      limit,
+      offset,
+      req.page
+    );
+
+    return res.status(200).json(categorie);
   },
 
   /**

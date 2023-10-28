@@ -8,16 +8,16 @@ const models = require("../models");
 
 module.exports = {
   all: async function (req, res) {
-    const { limit, offset } = GetPagination(req.page, 1);
+    const { limit, offset } = GetPagination(req.page, 5);
     limit; // * Hack
 
     console.log("LIMIT - OFFSET:", limit, offset);
     const categories = await models.Categories.findAndCountAll({
-      limit: 1,
+      limit: 5,
       offset: offset,
     });
 
-    const response = GetPagingDatas(categories, req.page, 1);
+    const response = GetPagingDatas(categories, req.page, 5);
     return res.status(200).json(response);
   },
 

@@ -9,7 +9,8 @@
                     {{ track.creator.pseudo }}
                 </a>
                 <div class="categories">
-                    <GenreTag :text="genre.name" v-for="genre of track.categories" v-bind:key="genre.id" />
+                    <GenreTag :onClick="() => { }" :text="genre.name" v-for="genre of track.categories"
+                        v-bind:key="genre.id" />
                 </div>
             </div>
 

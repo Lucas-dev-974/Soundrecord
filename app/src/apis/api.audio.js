@@ -7,6 +7,13 @@ class ApiAudio {
     return response.data;
   }
 
+  async byCategorie(categorie) {
+    const response = await api.get(
+      "/tracks/categorie?categorieId=" + categorie
+    );
+    return response.data;
+  }
+
   async library(userPseudo) {
     const response = await api.get("/library?userPseudo=" + userPseudo);
     return response.data;

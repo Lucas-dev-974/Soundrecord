@@ -17,6 +17,7 @@
 
     "GET|/api/media/",
     "GET|/api/user/",
-    "POST|/api/search/audio"
+    "POST|/api/search/audio",
+    "GET|/api/tracks/categorie"
   ]
 }

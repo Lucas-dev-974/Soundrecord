@@ -103,6 +103,7 @@ exports.router = (() => {
 
   router.route("/categories").get(AudioCategorie.all);
   router.route("/track/categorie").post(AudioCategorie.linkAudioToCategories);
+  router.route("/tracks/categorie").get(AudioController.byCategories);
 
   // Medias routes
   router.route("/medias/audio/:id").get(MediasControlller.getAudio);

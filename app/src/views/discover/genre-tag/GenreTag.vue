@@ -1,5 +1,14 @@
 <template>
-    <p class="button genre-tag" @onClick="clickHandler">{{ text }}</p>
+    <button class="button genre-tag" @click="onClick">{{ text }}</button>
 </template>
 
-<script src="./GenreTag.js"/>
+<script>
+import "./GenreTag.css"
+
+export default {
+    props: {
+        text: { required: true },
+        onClick: { required: true }
+    },
+}
+</script>
