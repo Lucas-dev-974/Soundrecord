@@ -22,14 +22,13 @@ const server = express();
 // * ... Import ?
 
 // Setup Middleware
-server.use(cors(corsOptions));
+server.use(cors());
 // server.use(MediaManager)
 server.use(JwtMidle);
 server.use(publicPath);
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 server.use(checkPagingParams);
-server.use();
 // Handle Api Routes
 server.use("/api/", router);
 
