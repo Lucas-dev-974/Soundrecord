@@ -12,7 +12,7 @@ const JwtMidle = require("./middleware/Jwt").isAuthorized;
 // Server params
 const port = process.env.SERVER_PORT;
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN,
+  origin: "*",
   methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
 };
 
@@ -29,7 +29,7 @@ server.use(publicPath);
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 server.use(checkPagingParams);
-
+server.use();
 // Handle Api Routes
 server.use("/api/", router);
 
