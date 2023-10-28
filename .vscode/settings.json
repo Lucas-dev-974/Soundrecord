@@ -8,5 +8,8 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "better-comments.multilineComments": true,
-  "better-comments.highlightPlainText": false
+  "better-comments.highlightPlainText": false,
+  "[ignore]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  }
 }
