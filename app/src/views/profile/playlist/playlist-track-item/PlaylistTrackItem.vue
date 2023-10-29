@@ -45,32 +45,12 @@ export default {
         }
     },
 
-    mounted() {
-        const track = this.track
-        const setOnPlay = (value) => this.onPlay = value
-
-        document.addEventListener('spl-play', () => {
-            if (track.src == SimpleAudioPlayer.getCurrentAudio().src)
-                setOnPlay(true)
-        })
-
-        document.addEventListener('spl-play', () => {
-            if (track.src == SimpleAudioPlayer.getCurrentAudio().src)
-                setOnPlay(false)
-        })
-    },
-
     methods: {
         // TODO to complete 
         play: function () {
-            if (this.onPlay) this.onPlay = false
-            else this.onPlay = true
-            SimpleAudioPlayer.play(this.track.src, this.track)
+            console.log("PLAYLIST PLAY TRACK:", this.track);
+            SimpleAudioPlayer.play(this.track)
         },
-
-
-
-        updatePublic: function () { },
 
         onInputDuration: function (ref, hover) {
             SimpleAudioPlayer.setFallback(() => {
@@ -86,8 +66,8 @@ export default {
         },
 
         Playing: function () {
-            console.log("Playing", SimpleAudioPlayer.getCurrentAudio().src == this.track.src, this.onPlay);
-            return this.onPlay && SimpleAudioPlayer.getCurrentAudio().src == this.track.src
+            if (!SimpleAudioPlayer.getCurrentAudio()) return false
+            return !SimpleAudioPlayer.getCurrentAudio() && SimpleAudioPlayer.getCurrentAudio().src == this.track.src
         },
 
         openAuthor: function () {

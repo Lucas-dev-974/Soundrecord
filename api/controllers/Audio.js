@@ -6,6 +6,7 @@ require("dotenv").config();
 const { GetPagination, GetPagingDatas } = require("../utils.js");
 const { StoragePath } = require("../middleware/MulterFileManager.js");
 const path = require("path");
+const { Op } = require("sequelize");
 
 function calculateTimePassed(dateString) {
   const pastDate = new Date(dateString);
@@ -74,6 +75,11 @@ module.exports = {
    * @param {Response} res
    */
   library: async function (req, res) {
+    const { limit, offset } = GetPagination(req.page, req.size);
+    const validated = validator(req.query, {
+      query: "string",
+    });
+
     if (!req.userPseudo)
       return res
         .status(404)
@@ -89,21 +95,32 @@ module.exports = {
     if (!user)
       return res.status(404).json({ message: "L'utilisateur n'existe pas." });
 
-    const tracks = await models.Audio.findAll({
-      where: { userid: user.dataValues.id, ...where },
+    let searchQuery = {};
+    if (validated.query != "*") {
+      searchQuery = {
+        name: {
+          [Op.like]: "%" + validated.query + "%",
+        },
+      };
+    }
+
+    const tracks = await models.Audio.findAndCountAll({
+      where: { userid: user.dataValues.id, ...where, ...searchQuery },
+      limit: limit,
+      offset: offset,
     }).catch((error) => {
       return manageCatchErrorModel(res, error);
     });
 
-    for (const track of tracks) {
+    for (const track of tracks.rows) {
       track.dataValues = (
         await track.formatedTrack(models, req.user ? req.user.id : undefined)
       ).dataValues;
     }
 
     if (tracks === undefined) return res.status(200).json({ audios: [] });
-
-    return res.status(200).json(tracks);
+    const response = GetPagingDatas(tracks, req.page, limit);
+    return res.status(200).json(response);
   },
 
   /**

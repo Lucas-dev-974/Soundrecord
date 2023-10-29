@@ -78,7 +78,6 @@ export default {
         // TODO to complete 
         play: function () {
             SimpleAudioPlayer.play(this.track)
-            console.log("PLAY CLICK SPL state:", SimpleAudioPlayer.getCurrentAudio().id == this.track.id);
         },
 
 

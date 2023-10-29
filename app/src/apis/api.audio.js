@@ -14,8 +14,10 @@ class ApiAudio {
     return response.data;
   }
 
-  async library(userPseudo) {
-    const response = await api.get("/library?userPseudo=" + userPseudo);
+  async library(userPseudo, query = "*") {
+    const response = await api.get(
+      "/library?userPseudo=" + userPseudo + "&query=" + query
+    );
     return response.data;
   }
 

@@ -58,6 +58,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    width: 100%;
 }
 
 .track-name-input:disabled{
@@ -67,7 +68,7 @@
 }
 
 .track-name-input{
-    width: fit-content;
+    width: 100%;
     color: white;
     background-color: transparent;
     border-bottom: 1px solid white;

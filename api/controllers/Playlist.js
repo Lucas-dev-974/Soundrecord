@@ -9,18 +9,13 @@ module.exports = {
 
     let public = { public: true };
     if (req.isMyProfile) public = {};
+
     const playlists = await models.Playlist.findAll({
       where: { userid: req.user.id, ...public },
-    }).catch((error) => {
-      return manageCatchErrorModel(res, error);
     });
 
     for (const playlist of playlists) {
-      playlist.dataValues.tracks = await playlist
-        .tracks(models)
-        .catch((error) => {
-          return manageCatchErrorModel(res, error);
-        });
+      playlist.dataValues.tracks = await playlist.tracks(models);
     }
     return res.status(200).json(playlists);
   },

@@ -6,7 +6,7 @@
         </header>
 
         <div class="profile-content-content">
-            <div v-for="track of tracks" :key="track.id">
+            <div v-for="track of tracks.datas" :key="track.id">
                 <TrackItem :track="track" :removeTrack="removeTrack" />
             </div>
         </div>
@@ -15,7 +15,6 @@
 
 <script>
 import apiAudio from "../../../apis/api.audio"
-import ApiSession from "../../../apis/api.session"
 import Searchbar from "../../discover/searchbar/Searchbar.vue"
 import TrackItem from "./track-item/TrackItem.vue"
 import "./SessionList.css"
@@ -36,9 +35,10 @@ export default {
         },
 
         search: async function (inputKeys) {
+            const userPseudo = this.$store.state.userProfile ? this.$store.state.userProfile.user.pseudo : undefined
             if (inputKeys == "") return this.getTracks()
-            const sessions = await ApiSession.search(inputKeys)
-            this.tracks = sessions.datas
+            const response = await apiAudio.library(userPseudo, inputKeys)
+            this.tracks = response
         },
 
         uploadTrack: async function () {
