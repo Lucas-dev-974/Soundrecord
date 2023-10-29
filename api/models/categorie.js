@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
   class Categorie extends Model {
     static associate(models) {}
 
-    async tracks(models, limit = 5, offset = 0, page = 0) {
+    async tracks(models, requestUserId, limit = 5, offset = 0, page = 0) {
       const assos = await models.AudioCategorie.findAndCountAll({
         where: { categorieId: this.id },
         limit: limit,
@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
 
       for (const asso of assos.rows) {
         const track = await asso.track(models);
-        const formatedTrack = await track.formatedTrack(models);
+        const formatedTrack = await track.formatedTrack(models, requestUserId);
         console.log("TRACK:", formatedTrack.dataValues);
         asso.dataValues = formatedTrack.dataValues;
       }

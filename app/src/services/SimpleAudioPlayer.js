@@ -1,10 +1,14 @@
 class SimplePlayerAudio {
   onPlay() {
+    this.audioElement.play();
+    this.paused = false;
     const event = new Event("spl-play", { bubbles: true });
     document.dispatchEvent(event);
   }
 
   onPause() {
+    this.audioElement.pause();
+    this.paused = true;
     const event = new Event("spl-pause", { bubbles: true });
     document.dispatchEvent(event);
   }
@@ -77,8 +81,6 @@ class SimplePlayerAudio {
         (audio && this.currentAudio.src == audio.src) ||
         (!audio && this.pause)
       ) {
-        this.audioElement.pause();
-        this.paused = true;
         this.onPause();
         return;
       }
@@ -92,7 +94,6 @@ class SimplePlayerAudio {
         this.currentAudio.src != audio.src)
     ) {
       if (!this.currentAudio && !audio && this.audioList.length > 0) {
-        console.log(this.audioList);
         this.currentAudio = this.audioList[this.currentIndex];
       } else {
         this.currentAudio = audio;
@@ -105,15 +106,6 @@ class SimplePlayerAudio {
       await this.createAudioBlobUrl(audioBuffer);
     }
 
-    if (!audio && this.paused && this.currentAudio) {
-      this.paused = false;
-      this.audioElement.play();
-      this.onPlay();
-      return;
-    }
-
-    this.paused = false;
-    this.audioElement.play();
     this.onPlay();
   }
 

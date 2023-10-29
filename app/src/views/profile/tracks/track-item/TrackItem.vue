@@ -65,60 +65,40 @@ export default {
 
     data() {
         return {
-            onPlay: false,
             trackName: "defaultnamùe",
             onUpdate: false
         }
     },
 
     mounted() {
-        const track = this.track
         this.trackName = this.track.name
-        const setOnPlay = (value) => this.onPlay = value
-
-        document.addEventListener('spl-play', () => {
-            if (track.src == SimpleAudioPlayer.getCurrentAudio().src)
-                setOnPlay(true)
-        })
-
-        document.addEventListener('spl-play', () => {
-            if (track.src == SimpleAudioPlayer.getCurrentAudio().src)
-                setOnPlay(false)
-        })
     },
 
     methods: {
         // TODO to complete 
         play: function () {
-            if (this.onPlay) this.onPlay = false
-            else this.onPlay = true
             SimpleAudioPlayer.play(this.track)
+            console.log("PLAY CLICK SPL state:", SimpleAudioPlayer.getCurrentAudio().id == this.track.id);
         },
 
 
 
         updatePublic: async function (value) {
-            console.log("public upate");
-            const response = await apiAudio.update({
+            await apiAudio.update({
                 trackid: this.track.id,
                 fields: "public",
                 datas: String(value)
             })
-
-            console.log(response);
         },
 
         // TODO: To review, when import track to locate track in server create new field <filename>
         updateTrackName: async function () {
             if (this.track.name != this.trackName) {
-                console.log("update");
-                const response = await apiAudio.update({
+                await apiAudio.update({
                     trackid: this.track.id,
                     fields: "name",
                     datas: String(this.trackName)
                 })
-
-                console.log(response);
             }
             this.onUpdate = !this.onUpdate
             if (this.onUpdate) {
@@ -149,7 +129,9 @@ export default {
         },
 
         Playing: function () {
-            return this.onPlay && SimpleAudioPlayer.getCurrentAudio().src == this.track.src
+            if (!SimpleAudioPlayer.getCurrentAudio()) return false
+            console.log("TRACK PLAYING:", !SimpleAudioPlayer.isPaused() && SimpleAudioPlayer.getCurrentAudio().id == this.track.id)
+            return !SimpleAudioPlayer.isPaused() && SimpleAudioPlayer.getCurrentAudio().id == this.track.id
         }
     }
 }

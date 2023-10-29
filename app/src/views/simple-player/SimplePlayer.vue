@@ -18,7 +18,7 @@
                             fill="white" />
                     </svg>
                 </div>
-                <PlayPause :onClick="play" :onPlay="isPlaying" />
+                <PlayPause :onClick="play" :onPlay="isPlaying" mode="global" />
                 <div class="line-fit">
                     <svg @click="nextMusic" width="18" height="14" viewBox="0 0 22 18" fill="none"
                         xmlns="http://www.w3.org/2000/svg" style="cursor: pointer;">
@@ -70,7 +70,6 @@ export default {
 
     data() {
         return {
-            onPlay: false,
             progressBar: null,
             playInterval: undefined
         }
@@ -81,7 +80,6 @@ export default {
             if (event.code === 'Space') {
                 SimpleAudioPlayer.play()
             }
-
         })
 
         this.setEvent()
@@ -126,16 +124,15 @@ export default {
 
         onInputDuration: function (ref, hover) {
             SimpleAudioPlayer.setGlobalFallback(() => {
-                if (!hover())
+                if (!hover()) {
                     ref.value = trouverPourcentage(SimpleAudioPlayer.getCurrentTime(), SimpleAudioPlayer.getDuration())
-
+                }
             })
         },
 
         getTrack: function () {
             return SimpleAudioPlayer.currentAudio
         }
-
     }
 }
 </script>

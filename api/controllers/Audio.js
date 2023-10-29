@@ -96,7 +96,9 @@ module.exports = {
     });
 
     for (const track of tracks) {
-      track.dataValues = (await track.formatedTrack(models)).dataValues;
+      track.dataValues = (
+        await track.formatedTrack(models, req.user ? req.user.id : undefined)
+      ).dataValues;
     }
 
     if (tracks === undefined) return res.status(200).json({ audios: [] });
@@ -121,7 +123,9 @@ module.exports = {
     }).catch((error) => console.log(error));
 
     for (const track of tracks.rows) {
-      track.dataValues = (await track.formatedTrack(models)).dataValues;
+      track.dataValues = (
+        await track.formatedTrack(models, req.user ? req.user.id : undefined)
+      ).dataValues;
     }
 
     if (tracks === undefined) return res.status(200).json({ audios: [] });
@@ -146,8 +150,10 @@ module.exports = {
 
     if (!categorie)
       return res.status(404).json({ message: "La catégorie n'existe pas." });
+
     categorie.dataValues.tracks = await categorie.tracks(
       models,
+      req.user ? req.user.id : undefined,
       limit,
       offset,
       req.page
@@ -176,7 +182,7 @@ module.exports = {
         .json({ error: "Un fichier de type mp3, wav est attendu !" });
 
     const lastAudio = await models.Audio.findOne({ order: [["id", "DESC"]] });
-    const lastid = lastAudio == null ? 1 : lastAudio.id + 1;
+    const lastid = lastAudio.dataValues.id;
 
     const audio = await models.Audio.create({
       name: req.orignalname,
@@ -184,13 +190,16 @@ module.exports = {
       userid: req.user.id,
       public: true,
       filename: req.filename,
-      src: process.env.APP_URL + "/api/audio/" + lastid,
+      src: process.env.APP_URL + "/api/audio/" + (Number(lastid) + 1),
       imagesrc: process.env.APP_URL + "/api/medias/audio/default",
     }).catch((error) => {
       return manageCatchErrorModel(error);
     });
 
-    const formatedAudio = await audio.formatedTrack(models);
+    const formatedAudio = await audio.formatedTrack(
+      models,
+      req.user ? req.user.id : undefined
+    );
     return res.status(200).json(formatedAudio.dataValues);
   },
 

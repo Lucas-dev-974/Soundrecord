@@ -49,8 +49,5 @@ export default {
         };
     },
 
-    mounted() {
-        console.log(this.isLogedInProfile());
-    },
 };
 </script>

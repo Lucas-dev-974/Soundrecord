@@ -1,7 +1,7 @@
 <template>
     <div class="play-pause-container">
 
-        <button class="play-btn" @click="onClick" v-if="!onplay">
+        <button class="play-btn" @click="onClick" v-if="!isPlaying">
             <PlayIcon />
         </button>
 
@@ -21,22 +21,30 @@ export default {
 
     props: {
         onClick: { required: true },
-        onPlay: { required: true }
+        onPlay: { required: true },
+        mode: { required: false } // global player
     },
 
     data() {
         return {
-            onplay: this.onPlay()
+            isPlaying: this.onPlay()
         }
     },
 
     mounted() {
+        console.log("isPlaying btn:", this.isPlaying);
         document.addEventListener('spl-play', () => {
-            this.onplay = !SimpleAudioPlayer.isPaused()
+            console.log("Mode:", this.mode, this.onPlay());
+            if (this.mode == "global") this.isPlaying = !SimpleAudioPlayer.isPaused()
+            else this.isPlaying = !SimpleAudioPlayer.isPaused() && this.onPlay()
         })
 
         document.addEventListener('spl-pause', () => {
-            this.onplay = !SimpleAudioPlayer.isPaused()
+            this.isPlaying = false;
+            return
+            // console.log("SPL Puase, isplaying:", this.isPlaying, "SPL paused:", SimpleAudioPlayer.isPaused());
+            // if (this.mode == "global") this.isPlaying = !SimpleAudioPlayer.isPaused()
+            // else this.isPlaying = !SimpleAudioPlayer.isPaused() && this.onPlay()
         })
     }
 }

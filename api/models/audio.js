@@ -66,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
       return categories;
     }
 
-    async formatedTrack(models) {
+    async formatedTrack(models, requestUserId) {
       const track = { ...this };
       const user = await this.user(models);
       track.dataValues.categories = await this.categories(models);
@@ -82,7 +82,7 @@ module.exports = (sequelize, DataTypes) => {
       track.dataValues.likes = {
         count: likes.count,
         userLike:
-          likes.rows.find((item) => item.userid == req.user.id) != undefined,
+          likes.rows.find((item) => item.userid == requestUserId) != undefined,
       };
 
       track.dataValues.release = calculateTimePassed(this.createdAt);

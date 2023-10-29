@@ -21,9 +21,7 @@ export default {
     },
 
     mounted() {
-        console.log(this.checked);
         this.checkedValue = this.checked
-        console.log("switch mounted");
     },
 
     methods: {

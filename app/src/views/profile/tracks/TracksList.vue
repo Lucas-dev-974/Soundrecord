@@ -32,7 +32,6 @@ export default {
             const userPseudo = this.$store.state.userProfile ? this.$store.state.userProfile.user.pseudo : undefined
             const tracks = await apiAudio.library(userPseudo)
             this.tracks = tracks
-            console.log("TRACKS:", tracks);
             SimpleAudioPlayer.setAudioList(tracks)
         },
 
