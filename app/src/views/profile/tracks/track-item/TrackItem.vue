@@ -21,6 +21,8 @@
                     <!-- <p>{{ track.name }}</p> -->
                 </div>
                 <div class="line-fit">
+                    <CategorieDialog :remove-categorie="removeCategorie" :append-categorie="appendCategorie"
+                        :track="track" />
                     <v-icon @click="deleteTrack" :size="18" color="red">mdi-trash-can</v-icon>
                     <p class="line-fit">
                         <v-icon class="audio-action-item" size="22">mdi-star-outline</v-icon>
@@ -33,13 +35,15 @@
                     :on-grab-duration="onGrabDuration" :track="track" />
             </div>
             <div class="track-item-line-bottom">
-                <div>
+                <div class="line-fit">
                     <p class="line-fit" v-if="$store.state.userProfile && $store.state.userProfile.isMyProfile">
                         public: <SwitchToggler :checked="track.public" :onChange="updatePublic"></SwitchToggler>
                     </p>
+                    <div v-for="categorie of track.categories" v-bind:key="categorie.id">
+                        <GenreTag :on-click="() => { }" :text="categorie.name" />
+                    </div>
                 </div>
                 <p>créer: {{ track.createdAt.substring(0, 10) }} </p>
-
             </div>
         </div>
     </div>
@@ -53,10 +57,11 @@ import SimpleAudioPlayer from "../../../../services/SimpleAudioPlayer";
 import { trouverPourcentage, trouverValeurPourcentage } from "../../../../utils";
 
 import apiAudio from "../../../../apis/api.audio";
-
+import CategorieDialog from "../categories-dialog/CategorieDialog.vue";
+import GenreTag from "../../../discover/genre-tag/GenreTag.vue"
 
 export default {
-    components: { SwitchToggler, PlayProgress },
+    components: { CategorieDialog, SwitchToggler, PlayProgress, GenreTag },
 
     props: {
         track: { required: true },
@@ -131,6 +136,16 @@ export default {
             if (!SimpleAudioPlayer.getCurrentAudio()) return false
             console.log("TRACK PLAYING:", !SimpleAudioPlayer.isPaused() && SimpleAudioPlayer.getCurrentAudio().id == this.track.id)
             return !SimpleAudioPlayer.isPaused() && SimpleAudioPlayer.getCurrentAudio().id == this.track.id
+        },
+
+        removeCategorie: function (categorie) {
+            this.track.categories = this.track.categories.filter(categ => categ.id != categ.id)
+            console.log("remove categorie:", categorie);
+        },
+
+        appendCategorie: function (categorie) {
+            this.track.categories.push(categorie)
+            console.log("append categorie:", categorie);
         }
     }
 }

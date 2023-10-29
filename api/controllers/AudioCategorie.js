@@ -26,8 +26,7 @@ module.exports = {
   linkAudioToCategories: async function (req, res) {
     const validated = validator(req.body, {
       audioId: "required|int",
-      categorieId: "required|int",
-      categorieName: "string",
+      categorieName: "required|string",
     });
 
     if (validated.errors) return res.status(400).json(validated.errors);
@@ -39,37 +38,34 @@ module.exports = {
     });
 
     if (!audio)
-      return res.status(404).json({ message: "L'audio n'existe pas/plus." });
+      return res.status(404).json({ message: "L'audio n'existe pas." });
 
-    let categorie = await models.Categories.findOne({
-      where: { id: validated.categorieId },
+    if (audio.userid != req.user.id) {
+      return res
+        .status(401)
+        .json({ message: "Vous n'êtes pas autorisé à faire cet action." });
+    }
+
+    const categorie = await models.Categories.findOrCreate({
+      where: { name: validated.categorieName },
     }).catch((error) => {
       return manageCatchErrorModel(res, error);
     });
 
-    if (!validated.categorieName && !categorie) {
-      return res
-        .status(400)
-        .json({ message: "Veuillez spécifier un nom pour la catégorie." });
-    }
-
-    if (!categorie) {
-      categorie = await models.Categories.create({
-        name: validated.categorieName,
-      }).catch((error) => {
-        return manageCatchErrorModel(error);
-      });
-    }
+    console.log("CATEGORIE:", categorie);
 
     const audioCategorie = await models.AudioCategorie.findOrCreate({
       where: {
         audioId: audio.id,
-        categorieId: categorie.id ?? categorie.dataValues.id,
+        categorieId: categorie[0].id,
       },
     }).catch((error) => {
       return manageCatchErrorModel(res, error);
     });
 
-    return res.status(200).json(audioCategorie);
+    console.log("TRACK CATEGORIE ASSO:", audioCategorie);
+    if (!audioCategorie[1]) audioCategorie[0].destroy();
+
+    return res.status(200).json([categorie[0], audioCategorie[1]]);
   },
 };

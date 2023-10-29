@@ -57,6 +57,15 @@ class ApiAudio {
     }
     return response.data;
   }
+
+  async appendCategorie(audioid, categorieName) {
+    const response = await api.post("/track/categorie", {
+      audioId: audioid,
+      categorieName: categorieName,
+    });
+
+    return response.data;
+  }
 }
 
 export default new ApiAudio();
