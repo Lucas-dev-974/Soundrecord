@@ -2,20 +2,23 @@
     <div class="playlist-item">
         <div class="playlist-item-head">
             <div class="line-fit edit-name">
-                <v-icon v-if="!onUpdate" :size="16" style="margin-top: 6px" @click="updatePlaylistName">mdi-pencil</v-icon>
-                <v-icon v-else :size="16" style="margin-top: 6px" @click="() => onUpdate = false">mdi-check</v-icon>
+                <div v-if="myProfile" class="line-fit">
+                    <v-icon v-if="!onUpdate" :size="16" style="margin-top: 6px"
+                        @click="updatePlaylistName">mdi-pencil</v-icon>
+                    <v-icon v-else :size="16" style="margin-top: 6px" @click="() => onUpdate = false">mdi-check</v-icon>
+                </div>
                 <input v-on:keypress.enter="() => onUpdate = false" ref="playlistInputName" class="edit-name-input"
                     type="text" v-model="playlistName" disabled>
             </div>
 
             <div class="line-fit">
-                <p>{{ playlist.tracks.count }} titres -</p>
-                <p class="line-fit">
-                    public:
+                <p>{{ playlist.tracks.count }} titres</p>
+                <p class="line-fit" v-if="myProfile">
+                    - public:
                     <SwitchToggler :checked="playlist.public" :onChange="updatePublic" />
                     -
                 </p>
-                <v-icon @click="deletePlaylist" color="red" :size="18">mdi-trash-can</v-icon>
+                <v-icon v-if="myProfile" @click="deletePlaylist" color="red" :size="18">mdi-trash-can</v-icon>
             </div>
             <div class="line-fit">
                 <v-icon v-if="collapsed" @click="() => collapsed = false">mdi-chevron-down</v-icon>
@@ -49,7 +52,8 @@ export default {
             collapsed: true, // CLosed
             collapseElement: undefined,
             playlistName: undefined,
-            onUpdate: false
+            onUpdate: false,
+            myProfile: false
         }
     },
 
@@ -69,7 +73,13 @@ export default {
     },
 
     mounted() {
+        if (this.$store.state.user == "null" || this.$store.state.user == null || this.$store.state.user == undefined) {
+            this.myProfile = false
+        } else if (this.$store.state.user.id == this.playlist.userid) {
+            this.myProfile = true
+        } else this.myProfile = false
         this.playlistName = this.playlist.name
+        console.log("my profile:", this.myProfile);
     },
 
     methods: {

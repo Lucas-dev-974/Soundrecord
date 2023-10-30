@@ -1,0 +1,18 @@
+.studio{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    color: white;
+}
+
+.title{
+    font-size: 30px;
+}
+
+.return-btn{
+    padding: 4px 6px;
+    background-color: #ffffff30;
+    border-radius: 5px;
+}

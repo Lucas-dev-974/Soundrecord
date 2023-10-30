@@ -17,12 +17,17 @@ module.exports = (sequelize, DataTypes) => {
 
       for (const asso of assos.rows) {
         const track = await asso.track(models);
-        const formatedTrack = await track.formatedTrack(models, requestUserId);
-        console.log("TRACK:", formatedTrack.dataValues);
-        asso.dataValues = formatedTrack.dataValues;
+        if (track != null) {
+          const formatedTrack = await track.formatedTrack(
+            models,
+            requestUserId
+          );
+          asso.dataValues = formatedTrack.dataValues;
+        }
       }
 
       const response = GetPagingDatas(assos, page, limit);
+      console.log("RESPONSE:", response);
       return response;
     }
   }

@@ -1,7 +1,7 @@
 <template>
     <section class="profile-content-section">
         <header class="profile-content-header">
-            <Searchbar onKeyPressEnter="search" placeholder="Recherchez une session" :onInput="search" />
+            <Searchbar onKeyPressEnter="search" placeholder="Recherchez une playlist" :onInput="search" />
             <button @click="createPlaylistOpenDialog">Créer</button>
             <div class="dialog-input-container" :class="onCreate ? 'active' : ''">
                 <input ref="newPlayListNameInput" class="dialog-input" v-model="playlistName"

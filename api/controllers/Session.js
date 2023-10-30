@@ -1,9 +1,6 @@
 const models = require("../models");
 const { validator, manageCatchErrorModel } = require("../utils");
-const fs = require("fs");
-const { returnFields, GetPagination, GetPagingDatas } = require("../utils.js");
-const session = require("../models/session");
-const { StoragePath } = require("../middleware/MulterFileManager");
+const { GetPagination, GetPagingDatas } = require("../utils.js");
 
 module.exports = {
   get: async function (req, res) {
@@ -138,6 +135,7 @@ module.exports = {
       order: [["id", "DESC"]],
     });
 
+    console.log("LAST AUDIO:", lastAudio);
     let lastid = lastAudio == null ? 1 : lastAudio.id + 1;
 
     // Create audio entity from source import song on use account

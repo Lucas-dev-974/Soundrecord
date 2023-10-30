@@ -1,8 +1,8 @@
 <template>
     <div class="comment-item">
-        <div class="comment-informations">
-            <img :src="authorPicture()" alt="">
-            <p @click="goToAuthor" class="cursor-pointer">{{ comment.author.pseudo }}</p>
+        <div class="comment-informations" @click="goToAuthor">
+            <img class="author-image" :src="authorPicture()" alt="">
+            <p class="cursor-pointer">{{ comment.author.pseudo }}</p>
         </div>
         <div class="comment-content">
             <p class="comment-text">{{ comment.content }}</p>
@@ -11,6 +11,8 @@
                 <v-icon size="20" v-if="comment.signaled" class="comment-alert  active"
                     @click="signalComment">mdi-alert-circle-outline</v-icon>
                 <v-icon size="20" v-else class="comment-alert" @click="signalComment">mdi-alert-circle-outline</v-icon>
+                <v-icon v-if="comment.author.id == $store.state.user.id" color="red"
+                    @click="removeComment">mdi-close</v-icon>
             </div>
         </div>
     </div>
@@ -52,14 +54,18 @@ export default {
 
         authorPicture() {
             let host;
-            if (window.location.host.includes('localhost')) host = "https://localhost:3000"
-            else true // TODO
+            if (window.location.host.includes('localhost')) host = "http://localhost:3000"
+            console.log(host);
             return host + "/api/user-picture?pseudo=" + this.comment.author.pseudo
         },
 
         reply: function () {
             this.setReplyTo(this.comment.id)
             this.getInputRef().focus()
+        },
+
+        removeComment() {
+            console.log("remove comment");
         }
     }
 

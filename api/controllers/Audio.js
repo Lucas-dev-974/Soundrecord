@@ -199,7 +199,6 @@ module.exports = {
         .json({ error: "Un fichier de type mp3, wav est attendu !" });
 
     const lastAudio = await models.Audio.findOne({ order: [["id", "DESC"]] });
-    const lastid = lastAudio ? lastAudio.dataValues.id : 1;
 
     const audio = await models.Audio.create({
       name: req.orignalname,
@@ -207,11 +206,14 @@ module.exports = {
       userid: req.user.id,
       public: true,
       filename: req.filename,
-      src: process.env.APP_URL + "/api/audio/" + (Number(lastid) + 1),
+      src: "",
       imagesrc: process.env.APP_URL + "/api/medias/audio/default",
     }).catch((error) => {
       return manageCatchErrorModel(error);
     });
+
+    audio.set("src", process.env.APP_URL + "/api/audio/" + audio.dataValues.id);
+    audio.save();
 
     const formatedAudio = await audio.formatedTrack(
       models,
@@ -288,8 +290,9 @@ module.exports = {
     if (track.userid !== req.user.id)
       return res.status(401).json({ error: "Vous n'avez pas l'autirisation" });
 
+    console.log("TRACK", track);
+    track.destroy();
     try {
-      // Destroy entry in the database
       await track.destroy();
     } catch (error) {
       return res.status(500).json({ error: "Une erreur s'est produite !" });

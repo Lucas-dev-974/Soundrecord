@@ -15,18 +15,11 @@ const self = (module.exports = {
 
     if (validated.errors) return res.status(403).json(validated.errors);
 
-    let attributes = {
-      exclude: ["password", "email", "updatedAt"],
-    };
-
+    let attributes = { exclude: ["password", "email", "updatedAt"] };
     let isMyProfile = false;
 
     if (req.user && req.user.pseudo == validated.pseudo) {
-      attributes = { exclude: ["password"] };
       isMyProfile = true;
-    }
-
-    if (isMyProfile) {
     }
 
     const user = await models.User.findOne({
@@ -39,22 +32,20 @@ const self = (module.exports = {
       return res.status(404).json({ message: "L'utilisateur n'existe pas." });
 
     user.dataValues.followers = await user.followers(models);
-
     user.dataValues.tracks = await user.tracks(
       models,
       isMyProfile ? {} : { public: user.dataValues.public }
     );
-
     user.dataValues.sessions = await user.sessions(
       models,
       isMyProfile ? {} : { public: user.dataValues.public }
     );
-
     user.dataValues.playlists = await user.playlists(
       models,
       isMyProfile ? {} : { public: user.dataValues.public }
     );
 
+    console.log("USER PROFILE:", user.dataValues.picture);
     return res.status(200).json(user);
   },
 

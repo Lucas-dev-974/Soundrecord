@@ -47,17 +47,19 @@ export default {
             user: undefined,
             sessions: [],
             tracks: [],
-            playlist: []
+            playlist: [],
+            myProfile: false
         };
     },
 
     mounted() {
+        if (this.$store.state.user != undefined) {
+            console.log("loged in");
+        }
         const params = (new URL(document.location)).searchParams;
         const pseudo = params.get("pseudo")
 
         if (pseudo == null && this.$store.state.user == null) this.$router.push("/")
-
-
         this.getUserInformations()
     },
 
@@ -75,10 +77,8 @@ export default {
 
             if (!this.isLogedInProfile()) this.viewname = "tracks"
             else this.viewname = "sessions"
-            console.log(this.viewname);
             // Todo review the fact of use userProfile in store instead of datas
             this.$store.commit('setUserProfile', { user: this.user, isMyProfile: this.isLogedInProfile() })
-            console.log("Is my profile:", this.isLogedInProfile(), this.$store.state.userProfile);
         },
 
         changeView: function (viewname) {

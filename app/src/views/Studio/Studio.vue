@@ -1,5 +1,9 @@
 <template>
-    <section id="studio">
+    <section class="studio">
+        <p class="title">
+            Page en cour de construction
+        </p>
+        <button @click="goToProfile" class="return-btn">retour au profile</button>
         <!-- ! Topbar -->
         <!-- ! Vertical TrackList -->
         <!-- ! Track view -->
@@ -7,6 +11,7 @@
 </template>
 
 <script>
+import "./Studio.css"
 export default {
     data() {
         return {
@@ -20,7 +25,10 @@ export default {
     },
 
     methods: {
-        getSession: function () { }
+        getSession: function () { },
+        goToProfile: function () {
+            this.$router.push("/profile")
+        }
     }
 }
 </script>

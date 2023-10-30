@@ -1,5 +1,17 @@
-.comment-item{
-    
+.comment-informations{
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+.author-image{
+    width: 25px;
+    object-fit: contain;
+}
+
+.comment-actions{
+    display: flex;
 }
 
 .comment-content{
@@ -8,6 +20,7 @@
     display: flex;
     padding: 0 5px;
     padding-bottom: 5px;
+    padding-left: 30px;
 }
 
 .comment-text{

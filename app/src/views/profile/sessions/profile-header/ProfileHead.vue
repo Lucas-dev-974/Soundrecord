@@ -1,8 +1,7 @@
 <template>
     <div class="profile-head-container">
         <div id="profile-head-img-container" profilePictureRef={profilePictureRef}>
-            <img src="https://images.pexels.com/photos/3693108/pexels-photo-3693108.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                alt="">
+            <img :src="'http://localhost:3000/api/user-picture?pseudo=' + user.pseudo" alt="">
         </div>
 
         <div class="profile-head-lines">

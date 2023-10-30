@@ -38,7 +38,12 @@ const self = (module.exports = {
 
     for (const comment of comments) {
       comment.dataValues.author = await comment.author(models);
-      comment.dataValues.signaled = await comment.signaled(models, req.user.id);
+      if (req.user) {
+        comment.dataValues.signaled = await comment.signaled(
+          models,
+          req.user.id
+        );
+      }
 
       if (comment.dataValues.responseof != null) {
         _response[comment.dataValues.id] = comment.dataValues;

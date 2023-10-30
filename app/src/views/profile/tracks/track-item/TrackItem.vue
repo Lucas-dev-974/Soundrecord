@@ -116,7 +116,8 @@ export default {
         deleteTrack: async function () {
             const response = await apiAudio.delete(this.track.id)
             if (!response) return console.log("Error lors de la suppression d'un track");
-            await this.removeTrack(response)
+
+            this.removeTrack(response)
         },
 
         onInputDuration: function (ref, hover) {
@@ -139,13 +140,11 @@ export default {
         },
 
         removeCategorie: function (categorie) {
-            this.track.categories = this.track.categories.filter(categ => categ.id != categ.id)
-            console.log("remove categorie:", categorie);
+            this.track.categories = this.track.categories.filter(categ => categ.id != categorie.id)
         },
 
         appendCategorie: function (categorie) {
             this.track.categories.push(categorie)
-            console.log("append categorie:", categorie);
         }
     }
 }

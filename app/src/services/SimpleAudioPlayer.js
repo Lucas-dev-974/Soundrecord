@@ -99,6 +99,7 @@ class SimplePlayerAudio {
         this.currentAudio = audio;
       }
 
+      console.log(this.audioList);
       this.currentIndex = this.audioList.findIndex(
         (item) => item.id == this.currentAudio.id
       );

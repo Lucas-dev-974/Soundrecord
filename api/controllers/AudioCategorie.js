@@ -52,20 +52,21 @@ module.exports = {
       return manageCatchErrorModel(res, error);
     });
 
-    console.log("CATEGORIE:", categorie);
+    console.log("CATEGORIE:", categorie[0].dataValues.id);
 
     const audioCategorie = await models.AudioCategorie.findOrCreate({
       where: {
         audioId: audio.id,
-        categorieId: categorie[0].id,
+        categorieId: categorie[0].dataValues.id,
       },
     }).catch((error) => {
       return manageCatchErrorModel(res, error);
     });
 
+    console.log("TRACK CATEGORIE ASSO:", audioCategorie[0]);
     console.log("TRACK CATEGORIE ASSO:", audioCategorie);
-    if (!audioCategorie[1]) audioCategorie[0].destroy();
 
+    if (!audioCategorie[1]) audioCategorie[0].destroy();
     return res.status(200).json([categorie[0], audioCategorie[1]]);
   },
 };

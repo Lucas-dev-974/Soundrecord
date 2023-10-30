@@ -1,7 +1,7 @@
 <template>
     <section class="profile-content-section">
         <header class="profile-content-header">
-            <Searchbar onKeyPressEnter="sz" placeholder="Recherchez une session" :onInput="search" />
+            <Searchbar onKeyPressEnter="sz" placeholder="Recherchez un audio" :onInput="search" />
             <button @click="uploadTrack">Importer</button>
         </header>
 
@@ -31,7 +31,7 @@ export default {
             const userPseudo = this.$store.state.userProfile ? this.$store.state.userProfile.user.pseudo : undefined
             const tracks = await apiAudio.library(userPseudo)
             this.tracks = tracks
-            SimpleAudioPlayer.setAudioList(tracks)
+            SimpleAudioPlayer.setAudioList(tracks.datas)
         },
 
         search: async function (inputKeys) {
@@ -45,8 +45,9 @@ export default {
             const input = document.createElement('input');
             input.type = 'file';
             const pushTrack = (track) => {
-                this.tracks.push(track)
+                this.tracks.datas.push(track)
             }
+
             input.addEventListener('change', async () => {
                 const files = Array.from(input.files);
                 const formData = new FormData()
@@ -60,9 +61,9 @@ export default {
         },
 
         removeTrack: async function (trackid) {
-            const trackIndex = this.tracks.findIndex(item => item.id == trackid)
+            const trackIndex = this.tracks.datas.findIndex(item => item.id == trackid)
             if (trackIndex == -1) return console.log("ERROR le track na pas été trouver");
-            this.tracks = this.tracks.filter(item => item.id != trackid)
+            this.tracks = this.tracks.datas.filter(item => item.id == trackid)
         }
     }
 }

@@ -7,11 +7,17 @@ module.exports = {
     if (!req.userPseudo)
       return res.status(404).json({ message: "L'utilisateur n'existe pas." });
 
+    const user = await models.User.findOne({
+      where: { pseudo: req.userPseudo },
+    }).catch((error) => {
+      return manageCatchErrorModel(res, error);
+    });
+
     let public = { public: true };
     if (req.isMyProfile) public = {};
 
     const playlists = await models.Playlist.findAll({
-      where: { userid: req.user.id, ...public },
+      where: { userid: user.id, ...public },
     });
 
     for (const playlist of playlists) {
@@ -80,10 +86,8 @@ module.exports = {
     if (validated.value == "false") validated.value = false;
     if (validated.value == "true") validated.value = true;
 
-    if (playlist.dataValues[validated.field] != undefined) {
-      await playlist.set(validated.field, validated.value);
-      await playlist.save();
-    }
+    playlist.set(validated.field, validated.value);
+    playlist.save();
 
     return res.status(200).json(playlist);
   },
