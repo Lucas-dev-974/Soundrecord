@@ -48,3 +48,7 @@
   justify-content: space-between;
 }
 
+.update-profile-btn{
+  position: relative;
+  top: -5px;
+}

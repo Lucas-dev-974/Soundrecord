@@ -6,8 +6,9 @@
 
         <div class="profile-head-lines">
             <div class="line justify-between">
-                <div class="line-left">
+                <div class="line-left line-fit w-100 justify-between">
                     <h2>{{ user.pseudo }}</h2>
+                    <UpdateProfileDialog />
                 </div>
                 <div class="line-right">
                     <button v-if="!isLogedInProfile()">Suivre</button>
@@ -21,11 +22,12 @@
                     </div>
                     <div class="line">
                         <p>Production Total: {{ user.totalProductions }}</p>
+
                     </div>
                 </div>
 
                 <div class="line-right">
-                    <span>followers: {{ user.followers.followingMe.count }} </span>
+                    <span>suiveur: {{ user.followers.followingMe.count }} </span>
                     <span>suivis: {{ user.followers.IFollow.count }} </span>
                 </div>
             </div>
@@ -34,12 +36,15 @@
 </template>
 
 <script>
+import UpdateProfileDialog from "../../update-profile-dialog/UpdateProfileDialog.vue";
 import "./ProfileHead.css";
 
 export default {
+    components: { UpdateProfileDialog },
+
     props: {
         user: { required: true },
-        isLogedInProfile: { required: true }
+        isLogedInProfile: { required: true },
     },
 
     data() {
@@ -47,6 +52,13 @@ export default {
             name: "Name",
         };
     },
+
+    methods: {
+        openDialogUpdateProfile: function () {
+
+        }
+    }
+
 
 };
 </script>

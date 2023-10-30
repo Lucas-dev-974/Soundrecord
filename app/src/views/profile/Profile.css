@@ -15,6 +15,11 @@
 
 .profile-view-selector{
   cursor: pointer;
+  transition: all 400ms;
+}
+
+.profile-view-selector.active{
+  border-bottom: 0.4px solid #ffffff88;
 }
 
 .profile-content-header{

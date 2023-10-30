@@ -22,6 +22,7 @@ const storage = multer.diskStorage({
    * @param {Function} cb
    */
   destination: async (req, file, cb) => {
+    console.log("MULTER FILENAME");
     cb(null, folderPath);
   },
 
@@ -37,6 +38,7 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const name = file.originalname.replace(/ /g, "");
     req.filename = Date.now() + name;
+
     req.orignalname = path.parse(file.originalname).name;
     cb(null, req.filename);
   },

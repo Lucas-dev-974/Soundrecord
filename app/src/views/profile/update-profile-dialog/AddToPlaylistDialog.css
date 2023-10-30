@@ -1,0 +1,56 @@
+.dialog-layout{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #0000006e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: unset;
+    z-index: 1;
+}
+
+.dialog-content-update-profile{
+    width: 15vw;
+    min-width: 350px;
+    padding: 15px 10px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 5px;
+    color: black;
+    z-index: 10;
+    background-color: #282828;
+    color: white;
+}
+
+.dialog-title{
+    font-size: 22px;
+}
+
+.v-application{
+    margin-top: none;
+}
+.mt-1 {
+    margin-top: 5px !important;
+}
+
+.mt-5{
+    margin-top: 10px;
+}
+
+.grid {
+    display:  grid;
+}
+
+.upload-picture-btn{
+    background-color: #ffffff30;
+    border-radius: 4px;
+    padding: 5px 0;
+}
+
+.validate-btn{
+    background-color: #4ECB71;
+    border-radius: 4px;
+    padding: 5px 0;
+}

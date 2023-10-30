@@ -55,6 +55,20 @@ class ApiUser {
     }
     return response.data;
   }
+
+  async uploadPictureProfile(file) {
+    const formData = new FormData();
+    formData.append("picture", file);
+
+    const response = await api.post("/user-picture", formData, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": undefined,
+      },
+    });
+
+    return response;
+  }
 }
 
 export default new ApiUser();

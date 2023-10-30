@@ -1,0 +1,14 @@
+.input-form.dark-mode{
+    padding: 0 5px;
+    border-radius: 4px;
+    margin-left: 5px;
+    background-color: white;
+}
+
+.labeled-input-container{
+    display: grid;
+}
+
+.labeled-input-container > label{
+    font-size: 18px;
+}

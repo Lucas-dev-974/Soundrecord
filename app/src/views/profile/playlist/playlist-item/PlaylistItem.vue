@@ -27,7 +27,7 @@
         </div>
         <div class="playlist-collapse" :class="collapsed ? '' : 'active'">
             <div class="" v-for="track of playlist.tracks.rows" v-bind:key="track.id">
-                <PlaylistTrackItem :track="track" />
+                <PlaylistTrackItem :track="track" :removeTrackFromPlaylist="removeTrackFromPlaylist" />
             </div>
         </div>
     </div>
@@ -100,6 +100,13 @@ export default {
             const response = await ApiPlaylist.delete(this.playlist.id)
             console.log(response);
             this.removePlaylist(response.id)
+        },
+
+        removeTrackFromPlaylist: async function (trackid) {
+            console.log(trackid);
+            const response = await ApiPlaylist.removeTrack(this.playlist.id, trackid)
+            console.log(response);
+            this.playlist.tracks.rows = this.playlist.tracks.rows.filter(track => track.id != trackid)
         }
     }
 }

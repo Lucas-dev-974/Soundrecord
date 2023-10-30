@@ -16,7 +16,8 @@
                 <PlayProgress :audioUrl="track.src" :onPlay="Playing" :onClickPlay="play" :onInputDuration="onInputDuration"
                     :on-grab-duration="onGrabDuration" :track="track" />
 
-                <v-icon class="btn-icon" :size="18">mdi-trash-can</v-icon>
+                <v-icon @click="() => removeTrackFromPlaylist(track.id)" class="btn-icon" :size="18"
+                    color="red">mdi-trash-can</v-icon>
             </div>
             <div class="playlist-track-item-line-bottom">
                 <div class="author-picture" @click="openAuthor">
@@ -37,7 +38,10 @@ import "./PlaylistTrackItem.css"
 export default {
     components: { PlayProgress },
 
-    props: { track: { required: true } },
+    props: {
+        track: { required: true },
+        removeTrackFromPlaylist: { required: true }
+    },
 
     data() {
         return {
@@ -72,7 +76,8 @@ export default {
 
         openAuthor: function () {
             window.location.href = '/profile?pseudo=' + this.track.creator.pseudo
-        }
+        },
+
     }
 }
 

@@ -6,11 +6,14 @@
 
         <section id="profile-tab">
             <div class="line gap-5">
-                <p v-if="isLogedInProfile()" class="profile-view-selector" @click="() => changeView('sessions')">
+                <p v-if="isLogedInProfile()" :class="{ 'active': viewname == 'sessions' }" class="profile-view-selector"
+                    @click="() => changeView('sessions')">
                     Sessions
                 </p>
-                <p class="profile-view-selector" @click="() => changeView('tracks')">Tracks</p>
-                <p class="profile-view-selector" @click="() => changeView('playlist')">Playlist</p>
+                <p :class="{ 'active': viewname == 'tracks' }" class="profile-view-selector"
+                    @click="() => changeView('tracks')">Tracks</p>
+                <p :class="{ 'active': viewname == 'playlists' }" class="profile-view-selector"
+                    @click="() => changeView('playlists')">Playlist</p>
             </div>
 
             <div>
@@ -22,7 +25,7 @@
                     <SimplePlayer />
                 </div>
 
-                <Playlist v-if="viewname == 'playlist'" />
+                <Playlist v-if="viewname == 'playlists'" />
             </div>
         </section>
     </div>
@@ -30,12 +33,13 @@
 
 <script>
 import ProfileHead from "./sessions/profile-header/ProfileHead.vue";
-import "./Profile.css"
 import ApiUser from "../../apis/api.user"
 import SessionsList from "./sessions/SessionsList.vue";
 import TracksList from "./tracks/TracksList.vue";
 import SimplePlayer from "../simple-player/SimplePlayer.vue";
 import Playlist from "./playlist/Playlist.vue";
+
+import "./Profile.css"
 
 export default {
     name: "profile",

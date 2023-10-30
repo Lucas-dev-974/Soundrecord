@@ -67,30 +67,29 @@ const self = (module.exports = {
     if (!user)
       return res.status(404).json({ message: "L'utilisateur n'existe pas." });
 
+    if (req.user.id != user.dataValues.id)
+      return res
+        .status(401)
+        .json({ message: "Vous n'êtes pas autorisé à faire cet action." });
+
     const validated = validator(req.body, {
-      name: "string",
-      email: "string",
-      password: "string",
-      facebook_link: "string",
-      instagram_link: "string",
-      public: "boolean",
+      fields: "string|required",
+      values: "string|required",
     });
 
-    let updated = false;
-    if (!validated.errors) {
-      Object.entries(validated).forEach(async (data) => {
-        user.set(data[0], data[1]);
-        await user.save();
-        updated = true;
-      });
+    if (validated.errors) return res.status(200).json();
+
+    const fields = validated.fields.split("|");
+    const values = validated.values.split("|");
+    console.log("IN UPDATE", validated);
+
+    for (let i = 0; i < fields.length; i++) {
+      console.log(fields[i]);
+      user.set(fields[i], values[i]);
+      user.save();
     }
 
-    if (!updated && Object.keys(validated).length != 0)
-      return res.status(400).json({
-        message:
-          "Une erreur est survenue: le champs sur lequel une mise à jour est demander possiblement non existant",
-      });
-    return res.status(200).json(req.body);
+    return res.status(200).json(user);
   },
 
   delete: async function (req, res) {
@@ -113,14 +112,15 @@ const self = (module.exports = {
   },
 
   upload: async function (req, res) {
-    if (!req.AutorizedFile || !req.Isimage)
-      return res.status(403).json({
-        error: "Un fichier de type .png - .jpg - .jpeg est attendu !",
-      });
+    // if (!req.AutorizedFile || !req.Isimage)
+    //   return res.status(403).json({
+    //     error: "Un fichier de type .png - .jpg - .jpeg est attendu !",
+    //   });
 
     const user = await models.User.findByPk(req.user.id);
+    console.log("PICTURE FILENAME", req.filename);
     user.set("picture", req.filename);
-    await user.save();
+    user.save();
     return res.status(200).json();
   },
 
