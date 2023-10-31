@@ -28,7 +28,6 @@ module.exports = (sequelize, DataTypes) => {
         "id",
         "email",
         "picture",
-        "name",
         "pseudo",
         "role",
         "instagram_link",
@@ -114,6 +113,7 @@ module.exports = (sequelize, DataTypes) => {
       password: DataTypes.STRING,
       facebook_link: DataTypes.STRING,
       instagram_link: DataTypes.STRING,
+      enable: DataTypes.BOOLEAN,
     },
     {
       sequelize,

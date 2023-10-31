@@ -8,7 +8,7 @@ import Profile from "./views/profile/Profile.vue";
 import Studio from "./views/Studio/Studio.vue";
 import Register from "./views/authentication/Register.vue";
 import Login from "./views/authentication/Login.vue";
-
+import Admin from "../src/views/admin/Admin.vue";
 Vue.use(VueRouter);
 
 const router = new VueRouter({
@@ -42,6 +42,12 @@ const router = new VueRouter({
       path: "/studio",
       name: "studio",
       component: Studio,
+    },
+
+    {
+      path: "/dashboard",
+      name: "dashboard",
+      component: Admin,
     },
   ],
 });

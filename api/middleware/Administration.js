@@ -1,7 +1,7 @@
 const checkAutority = (req, res, next) => {
   if (req.path.includes("reset-password")) return next();
 
-  if (req.method == "GET" && req.params.id) {
+  if (req.url.includes("admin")) {
     if (req.user.id == req.params.id || req.user.role == 1) {
       return next();
     }
@@ -12,15 +12,15 @@ const checkAutority = (req, res, next) => {
   next();
 };
 
-function haveModeratorAccess(req){
-  if(!req.user) return false
-  if(req.user.role == 1 || req.user.role == 2) return true
-  else return false
+function haveModeratorAccess(req) {
+  if (!req.user) return false;
+  if (req.user.role == 1 || req.user.role == 2) return true;
+  else return false;
 }
 
-function haveModeratorAdministratorAccess(req){
-  if(!req.user) return false
-  if(req.user.role == 1) return true
+function haveModeratorAdministratorAccess(req) {
+  if (!req.user) return false;
+  if (req.user.role == 1) return true;
 }
 
 exports.checkAutority = checkAutority;

@@ -198,8 +198,6 @@ module.exports = {
         .status(403)
         .json({ error: "Un fichier de type mp3, wav est attendu !" });
 
-    const lastAudio = await models.Audio.findOne({ order: [["id", "DESC"]] });
-
     const audio = await models.Audio.create({
       name: req.orignalname,
       imported_date: Date.now(),

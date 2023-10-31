@@ -8,7 +8,7 @@
         <div class="profile-content-content">
             <!-- List of  sessions -->
             <div v-for="session of sessions" :key="session.id">
-                <SessionItem :session="session" />
+                <SessionItem :session="session" :removeSession="removeSession" />
             </div>
         </div>
     </section>
@@ -61,6 +61,10 @@ export default {
             const sessions = await ApiSession.search(inputKeys)
             console.log("Searched sessions:", sessions);
             this.sessions = sessions.datas
+        },
+
+        removeSession: function (session) {
+            this.sessions = this.sessions.filter(item => item.id != session.id)
         }
     }
 }

@@ -13,7 +13,7 @@ module.exports = self = {
     for (const [key, rule] of Object.entries(params)) {
       if (body[key] || rule) {
         // Check if the field is required
-        if (!body[key] && rule.includes('required')) {
+        if (!body[key] && rule.includes("required")) {
           result.fails[key] = `Le champ ${key} doit être renseigné !`;
         } else {
           // Validate the field based on the specified data type rule
@@ -44,7 +44,8 @@ module.exports = self = {
     const [type, isRequired] = this.getRules(rules.split("|"));
 
     // Check if the field is required
-    if (isRequired && !body[key]) {e
+    if (isRequired && !body[key]) {
+      e;
       errors.push({ [key]: `Le champ ${key} doit être renseigné !` });
     } else if (body[key] !== undefined) {
       // Validate the field based on the specified data type rule

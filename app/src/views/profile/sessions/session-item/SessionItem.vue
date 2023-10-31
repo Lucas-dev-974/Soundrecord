@@ -38,6 +38,7 @@ export default {
 
     props: {
         session: { required: true },
+        removeSession: { required: true }
     },
 
     methods: {
@@ -60,6 +61,7 @@ export default {
         deleteSession: async function () {
             const response = await ApiSession.delete(this.session.id)
             console.log(response);
+            this.removeSession(this.session)
         }
     }
 }

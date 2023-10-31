@@ -27,13 +27,23 @@ module.exports = {
     // 3 - Hash password before registering it in database
     const password = bcrypt.hashSync(validated.password, bcrypt.genSaltSync(8));
 
+    const _user = await models.User.findOne({
+      where: {
+        pseudo: validated.pseudo,
+      },
+    });
+
+    if (_user != null)
+      return res.status(403).json({
+        message: "Le pseudo choisi est déjà enregistrer, connectez vous.",
+      });
     // 4 - Create user
     const user = await models.User.findOrCreate({
       where: {
-        email: validated.email,
         pseudo: validated.pseudo,
       },
       defaults: {
+        email: validated.email,
         password: password,
         role: 2,
       },
@@ -41,8 +51,11 @@ module.exports = {
       return manageCatchErrorModel(res, error);
     });
 
+    console.log(user);
     if (user[1] == false)
-      return res.status(403).json({ message: "Le pseudo choisi existe déjà" });
+      return res
+        .status(403)
+        .json({ message: "L'email un compte, connectez vous." });
     // 5 - Lets generate Token for the user
     const token = jwt.generateToken({
       id: user[0].dataValues.id,
@@ -75,12 +88,17 @@ module.exports = {
     if (validated.errors != undefined)
       return res.status(400).json(validated.errors);
 
-    let user = await models.User.findOne({ where: { email: validated.email } });
+    const user = await models.User.findOne({
+      where: { email: validated.email },
+    });
 
     if (!user)
       return res
         .status(403)
         .json({ errors: "Email ou mot de passe incorrecte" });
+
+    if (!user.dataValues.enable)
+      return res.status(401).json({ message: "Votre compté à été désactivé" });
 
     const password = bcrypt.compareSync(validated.password, user.password);
     if (!password) {

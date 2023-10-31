@@ -19,9 +19,14 @@ const MediasControlller = require("./controllers/MediasControlller");
 const Comment = require("./controllers/Comment");
 const FollowController = require("./controllers/Follow");
 const AudioCategorie = require("./controllers/AudioCategorie");
+const AdminController = require("./controllers/Admin");
 
 exports.router = (() => {
   let router = express.Router();
+  // Administration
+  router.route("/admin/users").get(AdminController.users);
+  router.route("/admin/search/users").get(AdminController.searchUser);
+  router.route("/admin/user/:userid").patch(AdminController.update);
 
   // Authentications routes
   router.route("/auth").patch(AuthController.register);
